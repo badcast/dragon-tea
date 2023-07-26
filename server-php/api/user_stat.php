@@ -1,19 +1,17 @@
 <?php
-
 require_once __DIR__ . '/sender.php';
 
 /*
  Request Json Structure:
-    user_nickname: The User NickName, DisplayName, or Name;
+    user_id: The User Id (Unique Identification Number)
 
  Responce:
     status - the status of code
-    authorized - the authorized result
-    result - result new ID for created date
+    result - user data
 */
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    send_auth_fail(STATUS_INVALID_AUTH_METHOD);
+    send(STATUS_INVALID_AUTH_METHOD);
     exit;
 }
 
@@ -24,27 +22,23 @@ $json_data = file_get_contents('php://input');
 $data = json_decode($json_data);
 
 // Проверяем, удалось ли распарсить JSON
-if ($data === null || !is_string($data->user_nickname)) {
+if ($data === null) {
     //uncorrect data
-    send_auth_fail(STATUS_INVALID_REQUEST_DATA);
+    send(STATUS_INVALID_REQUEST_DATA);
     exit;
 } else {
-    if (!check_valid_nickname($data->user_nickname)) {
-        send_auth_fail(STATUS_INVALID_NICKNAME);
-        exit;
-    }
 
     require_once __DIR__ . '/user.php';
 
-    //User ID
-    $uid = push_user($data->user_nickname);
+    //Get User ID
+    $uid = get_user($data->user_id, false);
 
     //if user not registered
     if ($uid == null) {
-        send_auth_fail(STATUS_INVALID_REGISTER);
+        send(STATUS_ID_NO_EXIST);
         exit;
     }
 
     //user found, and send information
-    send_auth(true, STATUS_OK, $uid);
+    send(STATUS_OK, $uid);
 }

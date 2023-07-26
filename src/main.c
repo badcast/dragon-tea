@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     gtk_init(&argc, &argv);
 
     // Запускаем Чай
-    tea_run();
+    tea_init();
 
     // Запуск основного цикла GTK
     gtk_main();

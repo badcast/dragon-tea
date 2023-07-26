@@ -23,33 +23,37 @@ typedef DWORD uid_t;
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <curl/curl.h>
 #include <json-c/json.h>
 
 #include "tea_structs.h"
 #include "tea_api.h"
 
 extern struct tea_settings app_settings;
+extern struct tea_app_widgets widgets;
 
-void tea_run();
+void tea_init();
 
 int tea_version();
 
+// User Interface Implementation
+GtkWidget *create_auth_widget();
+GtkWidget *create_chat_widget();
+void show_about_dialog();
+
 // TODO: Get server version
 int tea_server_version();
-
 // result state is connected (Logged in system)
 int tea_is_connected();
 // to login
-int tea_login(long user_id, struct tea_login_result *login_info);
+void tea_login(const struct tea_id_info *login);
 // try login from settings
 int tea_try_login();
-// create a new account
-int tea_create_account(const char *nickname, tea_register_result *registration_info);
-// create account and signin
-int tea_create_account_and_signin(const char *nickname, tea_register_result *registration_info);
 // to logout
 void tea_logout();
+
+void tea_load();
+
+void tea_save();
 
 void error(const char *str);
 
@@ -61,14 +65,39 @@ void net_init();
 
 void net_free();
 
-int net_api_signin(long user_id, struct tea_login_result *output);
+int net_api_read_messages(const struct tea_id_info *user, tea_id_t target_user_id, tea_id_t msg_id_start, int max_messages, struct tea_message_read_result *output);
+
+int net_api_write_message(
+    const struct tea_id_info *user_sender, tea_id_t target_user_id, const char *message, int len, struct tea_message_send_result *output);
+
+int net_api_signin(tea_id_t user_id, tea_login_result *output);
 
 int net_api_signup(const char *nickname, tea_register_result *output);
 
-GtkWidget *create_auth_widget();
+void tea_ui_init();
 
-GtkWidget *create_main_widget();
+void tea_ui_focus_tab(enum UiTabs tabIndex);
 
-void show_about_dialog(gpointer, gpointer);
+void tea_ui_chat_enable(int value);
+
+void tea_ui_chat_interactable(int value);
+
+void tea_ui_chat_status_text(const char *status_text);
+
+void tea_ui_chat_clear();
+
+void tea_ui_chat_set_text(const char *text);
+
+void tea_ui_chat_vscroll_max();
+
+void tea_ui_chat_push_block(struct tea_message_id *message);
+
+void tea_ui_chat_push_text_raw(const char *text, int len);
+
+void tea_ui_auth_sigin();
+
+void tea_ui_auth_lock(gboolean state);
+
+void tea_ui_reg_lock(gboolean state);
 
 #endif

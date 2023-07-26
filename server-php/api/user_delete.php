@@ -1,18 +1,20 @@
 <?php
+
 require_once __DIR__ . '/sender.php';
 
+//var_dump($_SERVER);
+
 /*
- Request Json Structure:
-    user_id: The User Id (Unique Identification Number)
+ Request: 
+    user_id: The User ID
 
  Responce:
-    status - the status of code
-    authorized - the authorized result
-    result - data logged
+    error: the status of code
+    result: deleted account from server 
 */
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    send_auth_fail(STATUS_INVALID_AUTH_METHOD);
+    send(STATUS_INVALID_AUTH_METHOD);
     exit;
 }
 
@@ -25,21 +27,23 @@ $data = json_decode($json_data);
 // Проверяем, удалось ли распарсить JSON
 if ($data === null) {
     //uncorrect data
-    send_auth_fail(STATUS_INVALID_REQUEST_DATA);
+    send(STATUS_INVALID_REQUEST_DATA);
     exit;
 } else {
     require_once __DIR__ . '/user.php';
 
     //User ID
-    $uid = get_user($data->user_id);
-
-    //if user not registered
-    if ($uid == null) {
-        send_auth_fail(STATUS_ID_NO_EXIST);
+    $user_del_status = pop_user($data->user_id);
+    if ($user_del_status === null) {
+        send(STATUS_ADMIN_ACCOUNT_REACHABLE, false);
         exit;
     }
 
+    if ($user_del_status === false) {
+        send(STATUS_ID_NO_EXIST, false);
+        exit;
+    }
     //user found, and send information
-    send_auth(true, STATUS_OK, $uid);
+    send(STATUS_OK, true);
 }
 ?>
