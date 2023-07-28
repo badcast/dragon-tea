@@ -71,8 +71,6 @@ struct tea_settings
     char config_dir[TEA_MAXLEN_PATH];
     // setting file
     char setting_filename[TEA_MAXLEN_PATH];
-    // message handler
-    int timer_message_handler;
 
     // User messages
     GArray *local_msg_db;
@@ -106,6 +104,11 @@ struct tea_app_widgets
         GtkWidget *button_send;
         GtkWidget *label_status;
         GtkWidget *entry_message_set;
+        GtkWidget *top_box;
+        GtkWidget *top_button_logout;
+        GtkWidget *top_label_user_state;
+        guint timeout_periodic_sync;
+        gboolean chat_synched;
     } chat_tab;
 
     GtkWidget *widget_main;

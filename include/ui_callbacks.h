@@ -1,3 +1,6 @@
+#ifndef UI_CALLBACKS_H
+#define UI_CALLBACKS_H
+
 #include "tea.h"
 
 void ui_on_close_window(GtkWidget *window, gpointer data);
@@ -9,3 +12,5 @@ void on_chat_send_button(GtkWidget *widget, gpointer data);
 gboolean on_chat_sending_async(const gchar *text);
 
 gboolean on_chat_message_handler_async(gpointer);
+
+#endif

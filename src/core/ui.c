@@ -16,7 +16,6 @@ void tea_ui_init()
     gtk_container_add(GTK_CONTAINER(main_window), notebook);
 
     // Инициализация виджетов
-
     widgets.widget_auth = create_auth_widget();
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_auth, gtk_label_new("Аутентификация"));
     widgets.widget_main = create_chat_widget();
@@ -36,7 +35,6 @@ void tea_ui_init()
 
     // Попытка автоматический войти, если настройки успешно загружены
     tea_ui_focus_tab(UI_TAB_AUTH);
-
     tea_try_login();
 }
 
@@ -48,6 +46,7 @@ void tea_ui_focus_tab(enum UiTabs tabIndex)
 void tea_ui_chat_enable(int value)
 {
     tea_ui_chat_status_text("");
+    tea_ui_chat_set_text_top("");
     gtk_entry_set_text(GTK_ENTRY(widgets.chat_tab.entry_message_set), "");
 
     if(value)
@@ -60,8 +59,9 @@ void tea_ui_chat_enable(int value)
 
 void tea_ui_chat_interactable(int value)
 {
-    gtk_widget_set_sensitive(widgets.chat_tab.entry_message_set, value);
     gtk_widget_set_sensitive(widgets.widget_main, value);
+    gtk_widget_set_sensitive(widgets.chat_tab.entry_message_set, value);
+    gtk_widget_grab_focus(widgets.chat_tab.entry_message_set);
 }
 
 void tea_ui_chat_status_text(const char *status_text)
@@ -72,6 +72,15 @@ void tea_ui_chat_status_text(const char *status_text)
 void tea_ui_chat_clear()
 {
     tea_ui_chat_set_text("");
+}
+
+void tea_ui_chat_sync()
+{
+    widgets.chat_tab.chat_synched = FALSE;
+}
+
+void tea_ui_chat_set_text_top(const char *text){
+    gtk_label_set_text(GTK_LABEL(widgets.chat_tab.top_label_user_state), text);
 }
 
 void tea_ui_chat_set_text(const char *text)
@@ -91,10 +100,9 @@ void tea_ui_chat_vscroll_max()
     GtkTextMark *end_mark = gtk_text_buffer_create_mark(buffer, "end", &endIter, FALSE);
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(widgets.chat_tab.textview_chat), end_mark, 0.0, TRUE, 0, 1.0);
     gtk_text_buffer_delete_mark(buffer, end_mark);
-
 }
 
-void tea_ui_chat_push_block(struct tea_message_id *message)
+void tea_ui_chat_push_block(const struct tea_message_id *message)
 {
     /*
      *  FORMAT VIEW for Message Block
@@ -119,6 +127,6 @@ void tea_ui_chat_push_text_raw(const char *text, int len)
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widgets.chat_tab.textview_chat));
     GtkTextIter iter;
     gtk_text_buffer_get_end_iter(buffer, &iter);
-   // gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, text, len, "red_foreground");
+    // gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, text, len, "red_foreground");
     gtk_text_buffer_insert(buffer, &iter, text, len);
 }

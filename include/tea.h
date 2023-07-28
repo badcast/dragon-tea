@@ -28,8 +28,13 @@ typedef DWORD uid_t;
 #include "tea_structs.h"
 #include "tea_api.h"
 
+#define INTERVAL_SEND 100
+#define INTERVAL_CHAT_SYNC 500
+#define CHANGE_TO_LOGOUT 3
+
 extern struct tea_settings app_settings;
 extern struct tea_app_widgets widgets;
+
 
 void tea_init();
 
@@ -86,11 +91,15 @@ void tea_ui_chat_status_text(const char *status_text);
 
 void tea_ui_chat_clear();
 
+void tea_ui_chat_sync();
+
+void tea_ui_chat_set_text_top(const char *text);
+
 void tea_ui_chat_set_text(const char *text);
 
 void tea_ui_chat_vscroll_max();
 
-void tea_ui_chat_push_block(struct tea_message_id *message);
+void tea_ui_chat_push_block(const struct tea_message_id *message);
 
 void tea_ui_chat_push_text_raw(const char *text, int len);
 

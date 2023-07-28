@@ -73,6 +73,8 @@ void tea_on_authenticate(struct tea_id_info *user_info)
 
     tea_ui_chat_status_text("Вход выполнен.");
 
+    tea_ui_chat_set_text_top(user_info->user_nickname);
+
     GDateTime *gtime = g_date_time_new_from_unix_local(user_info->creation_date);
     gchar *tmdate_regged = g_date_time_format(gtime, "%d.%m.%y %H:%M");
     g_free(gtime);
@@ -84,10 +86,10 @@ void tea_on_authenticate(struct tea_id_info *user_info)
         sizeof(buffer),
         "------\n"
         "Добро пожаловать на сервер Драконего Чая!\n"
-        "Вход выполнен: ID %lld\n"
-        "Никнейм: %s\n"
+        "Ваш ID: %lld\n"
+        "Ваш Ник: %s\n"
         "Время регистраций: %s\n"
-        "Время входа: %s\n"
+        "Время последнего входа: %s\n"
         "------\n",
         user_info->user_id,
         user_info->user_nickname,
@@ -99,7 +101,8 @@ void tea_on_authenticate(struct tea_id_info *user_info)
     tea_ui_chat_push_text_raw(buffer, -1);
 
     on_chat_message_handler_async(NULL);
-    app_settings.timer_message_handler = g_timeout_add(10000, G_CALLBACK(on_chat_message_handler_async), NULL);
+
+    widgets.chat_tab.timeout_periodic_sync = g_timeout_add(INTERVAL_CHAT_SYNC, G_CALLBACK(on_chat_message_handler_async), NULL);
 }
 
 void tea_on_logouted()
@@ -107,7 +110,11 @@ void tea_on_logouted()
     app_settings.connected = FALSE;
 
     // remove message handler
-    g_source_remove(app_settings.timer_message_handler);
+    if(widgets.chat_tab.timeout_periodic_sync)
+    {
+        g_source_remove(widgets.chat_tab.timeout_periodic_sync);
+        widgets.chat_tab.timeout_periodic_sync = 0;
+    }
 
     // disable chat
     tea_ui_chat_enable(FALSE);
