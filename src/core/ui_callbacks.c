@@ -159,7 +159,7 @@ gboolean on_chat_message_handler_async(gpointer)
                 if(error_string == NULL)
                 {
                     error_string = "Ваш аккаунт был удален.";
-                    check_chance_logouting = 0;
+                    check_chance_logouting = 1;
                 }
             // Сетевая ошибка, отменяем вход и выходим от прослушивания
             case TEA_STATUS_NETWORK_ERROR:
@@ -172,7 +172,7 @@ gboolean on_chat_message_handler_async(gpointer)
                     tea_ui_chat_status_text(error_string);
 
                 // Account has logouting in chances = 0
-                if(--check_chance_logouting <= 0)
+                if(--check_chance_logouting == 0)
                 {
                     tea_logout();
                     check_chance_logouting = CHANGE_TO_LOGOUT; // revert to default
@@ -187,7 +187,8 @@ gboolean on_chat_message_handler_async(gpointer)
                 break;
         }
         // Resend
-        thread_reply_msg = g_thread_new(NULL, G_CALLBACK(async_reply), NULL);
+        if(check_chance_logouting)
+            thread_reply_msg = g_thread_new(NULL, G_CALLBACK(async_reply), NULL);
     }
     return TRUE; // EVERYTHING
 }
