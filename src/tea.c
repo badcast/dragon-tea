@@ -1,7 +1,11 @@
 #include "tea.h"
 
-#include <sys/types.h> // Для Linux
-// #include <direct.h> // Для Windows
+#if __linux__
+#include <sys/types.h>
+#include <sys/stat.h>
+#elif WIN32
+#include <direct.h>
+#endif
 
 #include "ui_callbacks.h"
 
@@ -126,7 +130,6 @@ void tea_on_logouted()
     g_array_set_size(app_settings.local_msg_db, 0);
 }
 
-#include <sys/stat.h>
 const char *get_conf_dir()
 {
     const char *home_dir;
@@ -147,8 +150,10 @@ const char *get_conf_dir()
         }
 #elif WIN32
         home_dir = getenv("APPDATA");
-        // strcat(tea_settings.config_dir, home_dir);
-        // strcat(tea_settings.config_dir, "/DragonTea");
+        strcat(app_settings.config_dir, home_dir);
+        strcat(app_settings.config_dir, "\\DragonTea");
+
+        _mkdir(app_settings.config_dir);
 #endif
     }
 
@@ -254,7 +259,7 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
 void error(const char *str)
 {
     GtkWidget *dialog = gtk_message_dialog_new(widgets.main_window, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Ошибка");
-    gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), str);
+    gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s", str);
 
     gtk_dialog_run(GTK_DIALOG(dialog));
 

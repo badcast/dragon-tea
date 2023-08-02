@@ -53,7 +53,6 @@ GtkWidget *create_chat_widget()
     GtkTextBuffer *textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
     red_tag = gtk_text_buffer_create_tag(textbuffer, "red_foreground", "foreground", "red", NULL);
 
-
     gtk_container_add(GTK_CONTAINER(scrolled_text), text_view);
     // Запрещаем GtkTextView изменять размеры
     gtk_widget_set_size_request(text_view, 200, 100);

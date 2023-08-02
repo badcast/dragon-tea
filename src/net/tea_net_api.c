@@ -63,7 +63,6 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, net_write_data);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, len);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
 
     // SEND
     net = curl_easy_perform(curl);

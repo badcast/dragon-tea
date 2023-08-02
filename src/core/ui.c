@@ -48,7 +48,6 @@ void tea_ui_chat_enable(int value)
     tea_ui_chat_status_text("");
     tea_ui_chat_set_text_top("");
     gtk_entry_set_text(GTK_ENTRY(widgets.chat_tab.entry_message_set), "");
-
     if(value)
         tea_ui_chat_clear();
     else
