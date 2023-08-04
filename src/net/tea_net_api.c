@@ -63,7 +63,7 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, net_write_data);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, len);
-    #ifndef NDEBUG
+    #ifdef NDEBUG
     // timeout 10 seconds
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
     #endif

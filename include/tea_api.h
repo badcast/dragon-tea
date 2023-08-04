@@ -8,7 +8,7 @@
 #define TEA_API_H
 
 #ifndef TEA_SERVER
-#ifndef NDEBUG
+#ifdef NDEBUG
 //#define TEA_SERVER "https://dragontea.000webhostapp.com/"
 //#define TEA_SERVER "http://dragontea.getenjoyment.net/"
 #define TEA_SERVER "https://dragontea.lightmister.repl.co/"
