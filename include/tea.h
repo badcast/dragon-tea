@@ -30,7 +30,7 @@ typedef DWORD uid_t;
 
 #define INTERVAL_SEND 100
 #define INTERVAL_CHAT_SYNC 500
-#define CHANGE_TO_LOGOUT 3
+#define CHANCE_TO_LOGOUT 3
 
 extern struct tea_settings app_settings;
 extern struct tea_app_widgets widgets;
@@ -64,7 +64,7 @@ void error(const char *str);
 
 void error_fail(const char *str);
 
-const char *tea_get_error_string(int error_code);
+const char *error_string(int error_code);
 
 void net_init();
 
@@ -102,6 +102,8 @@ void tea_ui_chat_vscroll_max();
 void tea_ui_chat_push_block(const struct tea_message_id *message);
 
 void tea_ui_chat_push_text_raw(const char *text, int len);
+
+void tea_ui_auth_set_id(tea_id_t user_id);
 
 void tea_ui_auth_sigin();
 

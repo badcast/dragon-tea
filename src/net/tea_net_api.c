@@ -63,6 +63,10 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, net_write_data);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, len);
+    #ifndef NDEBUG
+    // timeout 10 seconds
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
+    #endif
 
     // SEND
     net = curl_easy_perform(curl);
@@ -175,7 +179,7 @@ int net_api_read_messages(
 
                     json_object_object_get_ex(jmsg, "message", &jval);
                     jstr = json_object_get_string(jval);
-                    strncpy(msg->message_text, jstr, TEA_MAXLEN_MESSAGE);
+                    msg->message_text = strdup(jstr);
                 }
             }
         }

@@ -26,7 +26,7 @@ struct tea_id_info
     tea_id_t user_id;
     long creation_date;
     long last_login;
-    char user_nickname[TEA_MAXLEN_USERNAME];
+    char user_nickname[TEA_MAXLEN_USERNAME*2];
 };
 
 struct tea_message_id
@@ -35,8 +35,8 @@ struct tea_message_id
     long time_saved;
     long time_received;
     tea_id_t sent_user_id;
-    char sent_user_name[TEA_MAXLEN_USERNAME];
-    char message_text[TEA_MAXLEN_MESSAGE];
+    char sent_user_name[TEA_MAXLEN_USERNAME*2];
+    char* message_text;
 };
 
 struct tea_message_read_result

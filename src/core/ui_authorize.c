@@ -77,7 +77,7 @@ gboolean on_sigin_user(gointer)
                     error_msg = "Данный пользователь не существует.";
                     break;
                 default:
-                    error_msg = tea_get_error_string(widgets.signin_tab.tea_signed_result.status);
+                    error_msg = error_string(widgets.signin_tab.tea_signed_result.status);
                     break;
             }
             snprintf(
@@ -90,8 +90,6 @@ gboolean on_sigin_user(gointer)
         }
         else
         {
-            gtk_entry_set_text(GTK_ENTRY(widgets.signin_tab.entry_userid), "");
-            gtk_entry_set_text(GTK_ENTRY(widgets.signup_tab.entry_username), "");
             tea_login(&widgets.signin_tab.tea_signed_result.result);
         }
         tea_ui_auth_lock(FALSE);
@@ -116,12 +114,13 @@ gboolean on_signup_user(gpointer)
                 sizeof(buf),
                 "Ошибка регистраций:\nКод ошибки: %d\nСообщение ошибки: %s",
                 widgets.signup_tab.tea_reg_result.status,
-                tea_get_error_string(widgets.signup_tab.tea_reg_result.status));
+                error_string(widgets.signup_tab.tea_reg_result.status));
             error(buf);
         }
         else
         {
-            gtk_entry_set_text(GTK_ENTRY(widgets.signin_tab.entry_userid), "");
+            // set new user id to auth
+            tea_ui_auth_set_id(widgets.signup_tab.tea_reg_result.result.user_id);
             gtk_entry_set_text(GTK_ENTRY(widgets.signup_tab.entry_username), "");
             tea_login(&widgets.signup_tab.tea_reg_result.result);
         }
@@ -132,6 +131,13 @@ gboolean on_signup_user(gpointer)
     {
         return TRUE;
     }
+}
+
+void tea_ui_auth_set_id(tea_id_t user_id)
+{
+    char buffer[64];
+    snprintf(buffer, sizeof(buffer), "%lld", user_id);
+    gtk_entry_set_text(GTK_ENTRY(widgets.signin_tab.entry_userid), buffer);
 }
 
 void tea_ui_auth_sigin()
@@ -153,6 +159,7 @@ void on_signup_click(GtkWidget *widget, gpointer)
         return;
     }
 
+    // Logout if is logged
     tea_logout();
 
     memset(&widgets.signup_tab.tea_reg_result, 0, sizeof(widgets.signup_tab.tea_reg_result));
@@ -167,7 +174,7 @@ void on_signin_click(GtkWidget *widget, gpointer)
     if(widgets.signin_tab.gtask != NULL)
         return;
 
-    user_id = atol(gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
+    user_id = atoll(gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
     if(user_id < 128)
     {
         error("Вы указали не валидный ID");
@@ -221,7 +228,7 @@ GtkWidget *create_auth_widget()
 
     // Loading wideget
     GtkWidget *image_loading_state = widgets.signin_tab.image_loading = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    GtkWidget* widgetImage = gtk_image_new_from_icon_name("content-loading-symbolic", GTK_ICON_SIZE_DIALOG);
+    GtkWidget *widgetImage = gtk_image_new_from_icon_name("content-loading-symbolic", GTK_ICON_SIZE_DIALOG);
     gtk_box_pack_start(GTK_BOX(image_loading_state), widgetImage, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(image_loading_state), gtk_label_new("Входим..."), FALSE, TRUE, 0);
 
@@ -236,16 +243,6 @@ GtkWidget *create_auth_widget()
     gtk_box_pack_start(GTK_BOX(horizontal1), entry_user_id, TRUE, TRUE, 0);
     g_signal_connect(entry_user_id, "insert-text", G_CALLBACK(on_insert_text), NULL);
     g_signal_connect(entry_user_id, "activate", G_CALLBACK(on_signin_click), entry_user_id);
-
-    if(app_settings.id_info.user_id != -1)
-    {
-        int s = snprintf(NULL, 0, "%lld", app_settings.id_info.user_id) + 1;
-        char *buf = (char *) malloc(s);
-        snprintf(buf, s, "%lld", app_settings.id_info.user_id);
-        buf[s]='\0';
-        gtk_entry_set_text(GTK_ENTRY(entry_user_id), buf);
-        free(buf);
-    }
 
     GtkWidget *send_button = widgets.signin_tab.button_send = gtk_button_new();
     icon = gtk_image_new_from_icon_name("contact-new", GTK_ICON_SIZE_BUTTON);

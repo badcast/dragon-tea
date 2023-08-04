@@ -78,7 +78,8 @@ void tea_ui_chat_sync()
     widgets.chat_tab.chat_synched = FALSE;
 }
 
-void tea_ui_chat_set_text_top(const char *text){
+void tea_ui_chat_set_text_top(const char *text)
+{
     gtk_label_set_text(GTK_LABEL(widgets.chat_tab.top_label_user_state), text);
 }
 
@@ -107,18 +108,24 @@ void tea_ui_chat_push_block(const struct tea_message_id *message)
      *  FORMAT VIEW for Message Block
      *   bad@(21:16): Hello
      */
-    static const char format_message_block[] = "\n%s@(%s): %s\n";
-    static char text_buffer[TEA_MAXLEN_MESSAGE + TEA_MAXLEN_USERNAME + 32];
+    static const char format_message_block[] = "\n\n%s@[%s]: %s\n";
     GDateTime *_gdatetime = g_date_time_new_from_unix_local(message->time_received);
     gchar *date_time = g_date_time_format(_gdatetime, "%H:%M");
-    snprintf(text_buffer, sizeof(text_buffer), format_message_block, message->sent_user_name, date_time, message->message_text);
+
+    int require_size = snprintf(NULL, 0, format_message_block, message->sent_user_name, date_time, message->message_text);
+
+    char *text_buffer = (char *) malloc(require_size + 1);
+    if(text_buffer == NULL)
+        error_fail("Out of memory!");
+
+    snprintf(text_buffer, require_size, format_message_block, message->sent_user_name, date_time, message->message_text);
+
     g_free(_gdatetime);
     g_free(date_time);
 
-    int len = strlen(text_buffer);
-    len = len < sizeof(text_buffer) ? len : sizeof(text_buffer);
-    text_buffer[len] = '\0';
-    tea_ui_chat_push_text_raw(text_buffer, len);
+    tea_ui_chat_push_text_raw(text_buffer, -1);
+
+    free(text_buffer);
 }
 
 void tea_ui_chat_push_text_raw(const char *text, int len)

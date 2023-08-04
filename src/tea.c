@@ -53,9 +53,10 @@ void tea_login(const struct tea_id_info *login_info)
 
 int tea_try_login()
 {
-    int result;
-    if(result = app_settings.id_info.user_id != -1 && strcmp("", app_settings.id_info.user_nickname) != 0)
+    int result = app_settings.id_info.user_id != -1 && strcmp("", app_settings.id_info.user_nickname) != 0;
+    if(result)
     {
+        tea_ui_auth_set_id(app_settings.id_info.user_id);
         tea_ui_auth_sigin();
     }
     return result;
@@ -64,70 +65,6 @@ int tea_try_login()
 void tea_logout()
 {
     tea_on_logouted();
-}
-
-void tea_on_authenticate(struct tea_id_info *user_info)
-{
-    char buffer[300];
-    app_settings.connected = TRUE;
-
-    tea_ui_focus_tab(UI_TAB_CHAT);
-
-    tea_ui_chat_enable(TRUE);
-
-    tea_ui_chat_status_text("Вход выполнен.");
-
-    tea_ui_chat_set_text_top(user_info->user_nickname);
-
-    GDateTime *gtime = g_date_time_new_from_unix_local(user_info->creation_date);
-    gchar *tmdate_regged = g_date_time_format(gtime, "%d.%m.%y %H:%M");
-    g_free(gtime);
-    gtime = g_date_time_new_from_unix_local(user_info->last_login);
-    gchar *tmdate_logged = g_date_time_format(gtime, "%d.%m.%y %H:%M");
-    g_free(gtime);
-    snprintf(
-        buffer,
-        sizeof(buffer),
-        "------\n"
-        "Добро пожаловать на сервер Драконего Чая!\n"
-        "Ваш ID: %lld\n"
-        "Ваш Ник: %s\n"
-        "Время регистраций: %s\n"
-        "Время последнего входа: %s\n"
-        "------\n",
-        user_info->user_id,
-        user_info->user_nickname,
-        tmdate_regged,
-        tmdate_logged);
-
-    g_free(tmdate_regged);
-    g_free(tmdate_logged);
-    tea_ui_chat_push_text_raw(buffer, -1);
-
-    on_chat_message_handler_async(NULL);
-
-    widgets.chat_tab.timeout_periodic_sync = g_timeout_add(INTERVAL_CHAT_SYNC, G_CALLBACK(on_chat_message_handler_async), NULL);
-}
-
-void tea_on_logouted()
-{
-    app_settings.connected = FALSE;
-
-    // remove message handler
-    if(widgets.chat_tab.timeout_periodic_sync)
-    {
-        g_source_remove(widgets.chat_tab.timeout_periodic_sync);
-        widgets.chat_tab.timeout_periodic_sync = 0;
-    }
-
-    // disable chat
-    tea_ui_chat_enable(FALSE);
-
-    // focusing to tab
-    tea_ui_focus_tab(UI_TAB_AUTH);
-
-    // Clear local messages
-    g_array_set_size(app_settings.local_msg_db, 0);
 }
 
 const char *get_conf_dir()
@@ -258,11 +195,10 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
 
 void error(const char *str)
 {
-    GtkWidget *dialog = gtk_message_dialog_new(widgets.main_window, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Ошибка");
-    gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s", str);
-
+    GtkWidget *dialog = gtk_message_dialog_new(
+        widgets.main_window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Ошибка");
+    gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "%s", str);
     gtk_dialog_run(GTK_DIALOG(dialog));
-
     gtk_widget_destroy(dialog);
 }
 
@@ -272,7 +208,7 @@ void error_fail(const char *str)
     exit(EXIT_FAILURE);
 }
 
-const char *tea_get_error_string(int error_code)
+const char *error_string(int error_code)
 {
 #define MACRO_PUT_CASE(X)  \
     case X:                \
@@ -288,6 +224,7 @@ const char *tea_get_error_string(int error_code)
         MACRO_PUT_CASE(TEA_STATUS_INVALID_NICKNAME);
         MACRO_PUT_CASE(TEA_STATUS_INVALID_REGISTER);
         MACRO_PUT_CASE(TEA_STATUS_ADMIN_ACCOUNT_REACHABLE);
+
         MACRO_PUT_CASE(TEA_STATUS_PRIVATE_MESSAGE_NOT_SUPPORTED);
 
         MACRO_PUT_CASE(TEA_STATUS_INTERNAL_SERVER_ERROR);
