@@ -111,6 +111,7 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                         }
                     }
                     else {
+                        fclose($fd_index);
                         unlink($msg_cache_file);
                     }
                     fclose($fd_mesg);

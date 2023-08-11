@@ -83,7 +83,7 @@ const char *get_conf_dir()
         strncat(app_settings.config_dir, "/.config/DragonTea", sizeof(app_settings.config_dir));
         if(mkdir(app_settings.config_dir, 0700) != 0 && errno != EEXIST)
         {
-            g_print(strerror(errno));
+            g_print("%s", strerror(errno));
         }
 #elif WIN32
         home_dir = getenv("APPDATA");

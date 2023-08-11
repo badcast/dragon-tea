@@ -76,6 +76,7 @@ void tea_ui_chat_clear()
 void tea_ui_chat_sync()
 {
     widgets.chat_tab.chat_synched = FALSE;
+    on_chat_message_handler_async(NULL);
 }
 
 void tea_ui_chat_set_text_top(const char *text)

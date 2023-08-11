@@ -286,7 +286,8 @@ void tea_on_authenticate(struct tea_id_info *user_info)
     // reset chances
     check_chance_logouting = CHANCE_TO_LOGOUT;
 
-    on_chat_message_handler_async(NULL);
+    //sync
+    tea_ui_chat_sync();
 
     widgets.chat_tab.timeout_periodic_sync = g_timeout_add(INTERVAL_CHAT_SYNC, G_CALLBACK(on_chat_message_handler_async), NULL);
 }
