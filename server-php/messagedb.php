@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/api/sender.php';
 
+const MESSAGE_INDEXER_ENABLE = true;
 const MESSAGE_DIRS = __DIR__ . "/messages";
 const MESSAGE_FILE_EXT = ".tea";
 const MESSAGE_FILE_CACHE_EXT = ".cache";
+const MESSAGE_MAX_COUNT = 2048;
 const PACK_FORMAT = "Q";
 const WAITOUT_LOCK_MICROS = 10000;
 const WAITOUT_TIME_CHANCES = 10;
@@ -44,14 +46,17 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
 
     while ($max_messages != 0) {
 
-        if (!file_exists($msg_file)) {
-            //Remove old cache_file
+        if (!file_exists($msg_file) || !MESSAGE_INDEXER_ENABLE) {
+            //Remove cache_file then, message_file not exists or message_indexer turned off
             unlink($msg_cache_file);
             break;
         }
 
+        if ($max_messages < 0 || $max_messages > MESSAGE_MAX_COUNT)
+            $max_messages = MESSAGE_MAX_COUNT;
+
         //cache exist ? Load from cache 
-        if (file_exists($msg_cache_file)) {
+        if (MESSAGE_INDEXER_ENABLE && file_exists($msg_cache_file)) {
             // $fd_index - The Message ID Cache
             $fd_index = fopen($msg_cache_file, "rb");
             if ($fd_index) {
@@ -63,7 +68,7 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                     $filelen = ftell($fd_mesg);
                     fseek($fd_index, -PHP_INT_SIZE, SEEK_END);
                     $flenw = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1];
-
+                    
                     // Check filelength with last msg_id_len
                     if ($filelen === $flenw) {
                         //set to begin
@@ -81,7 +86,7 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                             // Установка позиций к начальному msg_id 
                             fseek($fd_index, PHP_INT_SIZE * 2 * $msg_id_start, SEEK_CUR);
 
-                            for ($iter_id = $msg_id_start; $result->length <= $max_messages && $iter_id < $relative_id_max; ++$iter_id) {
+                            for ($iter_id = $msg_id_start; $result->length < $max_messages && $iter_id < $relative_id_max; ++$iter_id) {
                                 //Прочитать данные из cache_file 
 
                                 //read message position 
@@ -105,19 +110,22 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                             }
                         }
                     }
+                    else {
+                        unlink($msg_cache_file);
+                    }
                     fclose($fd_mesg);
                 }
                 fclose($fd_index);
             }
             //Cache no exist, then create and load
         } else {
-            $fd = fopen($msg_cache_file, "wb+");
+            $fd_cache = fopen($msg_cache_file, "wb+");
 
-            if ($fd) {
+            if ($fd_cache) {
                 $lock_while = WAITOUT_TIME_CHANCES;
 
                 //while file not locked, wait for complete other I/O
-                while (flock($fd, LOCK_SH) == false && --$lock_while != 0) usleep(WAITOUT_LOCK_MICROS);
+                while (flock($fd_cache, LOCK_SH) == false && --$lock_while != 0) usleep(WAITOUT_LOCK_MICROS);
 
                 if ($lock_while != 0) {
                     //Lock complete
@@ -127,7 +135,7 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                         //Header 
                         $fmsg_id = 0;
                         $ftotal_len = 0;
-                        fseek($fd, PHP_INT_SIZE * 2);
+                        fseek($fd_cache, PHP_INT_SIZE * 2);
                         while (($line = fgets($fdm)) !== false) {
                             $fmsg_id++;
 
@@ -139,26 +147,26 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                             }
 
                             //write message position 
-                            fwrite($fd, pack(PACK_FORMAT, $ftotal_len));
+                            fwrite($fd_cache, pack(PACK_FORMAT, $ftotal_len));
                             //write message position + flength
-                            fwrite($fd, pack(PACK_FORMAT, ($ftotal_len += mb_strlen($line))));
+                            fwrite($fd_cache, pack(PACK_FORMAT, ($ftotal_len += mb_strlen($line))));
                         }
                         fclose($fdm);
 
                         //Set to header position 
-                        fseek($fd, 0, SEEK_SET);
+                        fseek($fd_cache, 0, SEEK_SET);
 
                         //Update header 
 
                         //write lines 
-                        fwrite($fd, pack(PACK_FORMAT, $fmsg_id));
+                        fwrite($fd_cache, pack(PACK_FORMAT, $fmsg_id));
                         //write offset message id
-                        fwrite($fd, pack(PACK_FORMAT, 0));
+                        fwrite($fd_cache, pack(PACK_FORMAT, 0));
                     }
 
-                    flock($fd, LOCK_UN);
+                    flock($fd_cache, LOCK_UN);
                 }
-                fclose($fd);
+                fclose($fd_cache);
             }
         }
         break;
@@ -199,7 +207,7 @@ function message_write($uid_writer, $uid_reply, $message_text)
             $msg->message = $message_text;
             $msg_string = json_encode($msg) . "\n";
 
-            if (file_exists($msg_cache_file)) {
+            if (MESSAGE_INDEXER_ENABLE && file_exists($msg_cache_file)) {
                 //has cache file 
                 $fd_index = fopen($msg_cache_file, "rb+");
                 if ($fd_index) {
@@ -226,9 +234,9 @@ function message_write($uid_writer, $uid_reply, $message_text)
 
                         //Update head index 
                         fseek($fd_index, 0, SEEK_SET);
-                        fwrite($fd_index, pack(PACK_FORMAT, $msg_ids + 1));                        
+                        fwrite($fd_index, pack(PACK_FORMAT, $msg_ids + 1));
 
-                        flock($fd_index, LOCK_UN); 
+                        flock($fd_index, LOCK_UN);
                     }
                     fclose($fd_index);
                 }
