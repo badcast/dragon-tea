@@ -108,9 +108,8 @@ gboolean on_chat_message_handler_async(gpointer)
 {
     char buffer[128];
     const char *error_string = NULL;
-    int worked = thread_reply_msg == NULL;
 
-    if(worked)
+    if(thread_reply_msg == NULL)
     {
         if(last_read_result.message_length > 0)
         {
@@ -165,7 +164,7 @@ gboolean on_chat_message_handler_async(gpointer)
                 // VScroll to max
                 tea_ui_chat_vscroll_max();
                 break;
-                // Аккаунт удален на стороне серевера, выводим предупреждение и выходим с сервера
+                // Аккаунт удален на стороне сервера, выводим предупреждение и выходим с сервера
             case TEA_STATUS_ID_NO_EXIST:
                 if(error_string == NULL)
                 {
@@ -198,7 +197,7 @@ gboolean on_chat_message_handler_async(gpointer)
 
                 if(error_string)
                     error(error_string);
-                // уничтожение Taimer ID
+
                 break;
         }
         // Resend
