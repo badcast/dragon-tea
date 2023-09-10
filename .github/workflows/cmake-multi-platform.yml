@@ -23,9 +23,9 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang, cl]
+        c_compiler: [gcc, clang] #, cl]
         include:
           #- os: windows-latest
           #  c_compiler: cl
@@ -36,13 +36,13 @@ jobs:
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
-        exclude:
-          - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
+        #exclude:
+          #- os: windows-latest
+          #  c_compiler: gcc
+          #- os: windows-latest
+          #  c_compiler: clang
+          #- os: ubuntu-latest
+          #  c_compiler: cl
 
     steps:
     - uses: actions/checkout@v3
@@ -51,8 +51,7 @@ jobs:
       run: |
         sudo apt-get update -y
         sudo apt-get install -y cmake pkg-config libgtk-3-dev libcurl4-openssl-dev libjson-c-dev
-        # Вышеуказанные команды установят cmake, pkg-config и gtk3
-    
+           
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
