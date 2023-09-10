@@ -16,16 +16,20 @@ static const char nicknames[102][17] = {
     "JollyDolphin",    "ShinyDragon",   "BraveEagle",      "FunnyCat",      "ShinyDog",       "FearlessPanda", "ShinyDragon",
     "BraveCat",        "LuckyCat",      "JollyCat",        "CleverDog",     "FunnyTiger",     "FearlessPanda", "FearlessTiger",
     "FunnyDolphin",    "HappyRabbit",   "Drakozyabra",     "Marina"};
-static int select_nick = sizeof(nicknames) / 17;
+static int select_nick = sizeof(nicknames) / sizeof(nicknames[0]);
 
 const char *get_random_nickname()
 {
-    if(select_nick == sizeof(nicknames) / 17)
+    if(select_nick == sizeof(nicknames) / sizeof(nicknames[0]))
         select_nick = 0;
     else
         select_nick++;
     return nicknames[select_nick];
 }
+
+void on_signup_click(GtkWidget *, gpointer);
+
+void on_signin_click(GtkWidget *, gpointer);
 
 void on_click_generate_nick(GtkWidget *widget, GtkWidget *entry)
 {
@@ -62,7 +66,7 @@ void tea_ui_auth_lock(gboolean state)
     gtk_widget_set_sensitive(widgets.signin_tab.entry_userid, !state);
 }
 
-gboolean on_sigin_user(gointer)
+gboolean on_sigin_user(gpointer userData)
 {
     // Thread end state
     if(widgets.signin_tab.gtask == NULL)
@@ -101,7 +105,7 @@ gboolean on_sigin_user(gointer)
     }
 }
 
-gboolean on_signup_user(gpointer)
+gboolean on_signup_user(gpointer userData)
 {
     // Thread end state
     if(widgets.signup_tab.gtask == NULL)
@@ -145,7 +149,7 @@ void tea_ui_auth_sigin()
     on_signin_click(NULL, NULL);
 }
 
-void on_signup_click(GtkWidget *widget, gpointer)
+void on_signup_click(GtkWidget *widget, gpointer userData)
 {
     const char *user_nickname;
     if(widgets.signup_tab.gtask != NULL)
@@ -163,12 +167,12 @@ void on_signup_click(GtkWidget *widget, gpointer)
     tea_logout();
 
     memset(&widgets.signup_tab.tea_reg_result, 0, sizeof(widgets.signup_tab.tea_reg_result));
-    widgets.signup_tab.gtask = g_thread_new(NULL, on_signup_async, user_nickname);
+    widgets.signup_tab.gtask = g_thread_new(NULL, (GThreadFunc)on_signup_async, user_nickname);
     tea_ui_reg_lock(widgets.signup_tab.gtask != NULL);
-    g_timeout_add(1000, G_CALLBACK(on_signup_user), NULL);
+    g_timeout_add(1000, on_signup_user, NULL);
 }
 
-void on_signin_click(GtkWidget *widget, gpointer)
+void on_signin_click(GtkWidget *widget, gpointer userData)
 {
     tea_id_t user_id;
     if(widgets.signin_tab.gtask != NULL)
@@ -184,13 +188,13 @@ void on_signin_click(GtkWidget *widget, gpointer)
     tea_logout();
 
     memset(&widgets.signin_tab.tea_signed_result, 0, sizeof(widgets.signin_tab.tea_signed_result));
-    widgets.signin_tab.gtask = g_thread_new(NULL, on_signin_async, gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
+    widgets.signin_tab.gtask = g_thread_new(NULL, (GThreadFunc)on_signin_async, gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
     tea_ui_auth_lock(widgets.signin_tab.gtask != NULL);
-    g_timeout_add(1000, G_CALLBACK(on_sigin_user), NULL);
+    g_timeout_add(1000, on_sigin_user, NULL);
 }
 
 // entry only number
-void on_insert_text(GtkEntry *entry, const gchar *text, gint length, gint *position, gpointer user_data)
+void on_insert_text(GtkEntry *entry, const gchar *text, gint length, gint *position, gpointer userData)
 {
     for(int i = 0; i < length; i++)
     {

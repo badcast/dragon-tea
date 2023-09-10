@@ -20,6 +20,7 @@ typedef DWORD uid_t;
 #include <errno.h>
 #include <limits.h>
 #include <time.h>
+#include <ctype.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>

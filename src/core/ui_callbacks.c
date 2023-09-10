@@ -111,6 +111,8 @@ gboolean on_chat_message_handler_async(gpointer)
 
     if(thread_reply_msg == NULL)
     {
+        guint last_chance_state;
+
         if(last_read_result.message_length > 0)
         {
             snprintf(buffer, sizeof(buffer), "Синхронизация %ld сообщений", last_read_result.message_length);
@@ -124,13 +126,12 @@ gboolean on_chat_message_handler_async(gpointer)
             case TEA_STATUS_INTERNAL_SERVER_ERROR:
             // Успех при чтений данных
             case TEA_STATUS_OK:
-                guint last_chance_state = check_chance_logouting;
+                last_chance_state = check_chance_logouting;
                 // Reset logouting chances
                 check_chance_logouting = CHANCE_TO_LOGOUT;
 
                 if(widgets.chat_tab.chat_synched == TRUE)
                 {
-
                     if(last_chance_state != CHANCE_TO_LOGOUT)
                         strcpy(buffer, "Ваша сеть восстановлена. ");
                     else
@@ -203,7 +204,7 @@ gboolean on_chat_message_handler_async(gpointer)
         // Resend
         if(check_chance_logouting)
         {
-            thread_reply_msg = g_thread_new(NULL, G_CALLBACK(async_reply), NULL);
+            thread_reply_msg = g_thread_new(NULL, (GThreadFunc) async_reply, NULL);
         }
     }
     return TRUE; // EVERYTHING
@@ -240,9 +241,9 @@ void on_chat_send_button(GtkWidget *widget, gpointer data)
     gtk_widget_set_sensitive(widgets.widget_main, FALSE);
     tea_ui_chat_status_text("Отправка...");
 
-    thread_sending = g_thread_new(NULL, G_CALLBACK(async_send), text);
+    thread_sending = g_thread_new(NULL, (GThreadFunc) async_send, text);
 
-    g_timeout_add(INTERVAL_SEND, G_CALLBACK(on_chat_sending_async), text);
+    g_timeout_add(INTERVAL_SEND, (GSourceFunc) on_chat_sending_async, text);
 }
 
 void tea_on_authenticate(struct tea_id_info *user_info)
@@ -286,10 +287,10 @@ void tea_on_authenticate(struct tea_id_info *user_info)
     // reset chances
     check_chance_logouting = CHANCE_TO_LOGOUT;
 
-    //sync
+    // sync
     tea_ui_chat_sync();
 
-    widgets.chat_tab.timeout_periodic_sync = g_timeout_add(INTERVAL_CHAT_SYNC, G_CALLBACK(on_chat_message_handler_async), NULL);
+    widgets.chat_tab.timeout_periodic_sync = g_timeout_add(INTERVAL_CHAT_SYNC, (GSourceFunc) on_chat_message_handler_async, NULL);
 }
 
 void tea_on_logouted()
@@ -330,6 +331,4 @@ void tea_on_logouted()
         free(g_array_index(app_settings.local_msg_db, struct tea_message_id, x).message_text);
     }
     g_array_set_size(app_settings.local_msg_db, 0);
-
-
 }
