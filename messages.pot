@@ -1,0 +1,191 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-09-18 00:23+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/core/ui_about.c:9 src/core/ui.c:7
+msgid "Драконий Чай"
+msgstr ""
+
+#: src/core/ui_about.c:11
+msgid "Свободный мессенджер для обмена информациями."
+msgstr ""
+
+#: src/core/ui_about.c:13
+msgid "Веб-страница"
+msgstr ""
+
+#: src/core/ui_authorize.c:84
+msgid "Данный пользователь не существует."
+msgstr ""
+
+#: src/core/ui_authorize.c:93
+#, c-format
+msgid ""
+"Аутентификация не прошла:\n"
+"Код ошибки: %d\n"
+"Сообщение ошибки: %s"
+msgstr ""
+
+#: src/core/ui_authorize.c:123
+#, c-format
+msgid ""
+"Ошибка регистраций:\n"
+"Код ошибки: %d\n"
+"Сообщение ошибки: %s"
+msgstr ""
+
+#: src/core/ui_authorize.c:167
+msgid "Ник не может быть пустым."
+msgstr ""
+
+#: src/core/ui_authorize.c:191
+msgid "Вы указали не валидный ID"
+msgstr ""
+
+#: src/core/ui_authorize.c:225
+msgid "Вход"
+msgstr ""
+
+#: src/core/ui_authorize.c:226
+msgid "Зарегистрироваться"
+msgstr ""
+
+#: src/core/ui_authorize.c:234
+msgid "dialog-information-symbolic"
+msgstr ""
+
+#: src/core/ui_authorize.c:235
+msgid ""
+"Выполните вход через свой UserID\n"
+"Примечание: Только числа, и он должен быть уникальным."
+msgstr ""
+
+#: src/core/ui_authorize.c:246
+msgid "Входим..."
+msgstr ""
+
+#: src/core/ui_authorize.c:254
+msgid "Введите UserID..."
+msgstr ""
+
+#: src/core/ui_authorize.c:262
+msgid "Войти"
+msgstr ""
+
+#: src/core/ui_authorize.c:274
+msgid ""
+"Введите свой никнейм.\n"
+"Принудительно используйте латинский алфавит,\n"
+"длина ника не более 16 и не менее 3."
+msgstr ""
+
+#: src/core/ui_authorize.c:285
+msgid "Регистрация..."
+msgstr ""
+
+#: src/core/ui_authorize.c:293
+msgid "Введите никнейм..."
+msgstr ""
+
+#: src/core/ui_authorize.c:306
+msgid "Зарегистрировать"
+msgstr ""
+
+#: src/core/ui.c:20
+msgid "Аутентификация"
+msgstr ""
+
+#: src/core/ui.c:22
+msgid "Драконий чат"
+msgstr ""
+
+#: src/core/ui.c:24
+msgid "Конфигурация"
+msgstr ""
+
+#: src/core/ui.c:26
+msgid "О программе"
+msgstr ""
+
+#: src/core/ui.c:72
+msgid "Не выполнен вход на сервер"
+msgstr ""
+
+#: src/core/ui_callbacks.c:81
+#, c-format
+msgid "Сообщение отправлено. Время отправки %s, получено %s"
+msgstr ""
+
+#: src/core/ui_callbacks.c:98
+msgid "Ошибка отправки."
+msgstr ""
+
+#: src/core/ui_callbacks.c:118
+#, c-format
+msgid "Синхронизация %ld сообщений"
+msgstr ""
+
+#: src/core/ui_callbacks.c:136
+msgid "Ваша сеть восстановлена. "
+msgstr ""
+
+#: src/core/ui_callbacks.c:140
+msgid "Вы в сети."
+msgstr ""
+
+#: src/core/ui_callbacks.c:172
+msgid "Ваш аккаунт был удален."
+msgstr ""
+
+#: src/core/ui_callbacks.c:179
+#, c-format
+msgid "Сетевая ошибка. Ваше соединение было сброшено (%d осталось)"
+msgstr ""
+
+#: src/core/ui_callbacks.c:186
+msgid "Неизвестная ошибка"
+msgstr ""
+
+#: src/core/ui_callbacks.c:246
+msgid "Отправка..."
+msgstr ""
+
+#: src/core/ui_callbacks.c:262
+msgid "Вход выполнен."
+msgstr ""
+
+#: src/core/ui_callbacks.c:276
+#, c-format
+msgid ""
+"------\n"
+"Добро пожаловать на сервер Драконего Чая!\n"
+"Сервер: %s\n"
+"Ваш ID: %lld\n"
+"Ваш Ник: %s\n"
+"Время регистраций: %s\n"
+"Время последнего входа: %s\n"
+"------\n"
+msgstr ""
+
+#: src/core/ui_settings.c:32
+msgid "Предпочитаемый сервер: "
+msgstr ""
+
+#: src/core/ui_settings.c:46
+msgid "Применить изменения"
+msgstr ""

@@ -34,6 +34,10 @@ typedef DWORD uid_t;
 #define DRAGON_TEA_VERSION "Release"
 #endif
 
+#ifndef DRAGON_TEA_LOCALE_DIR
+#define DRAGON_TEA_LOCALE_DIR "locale"
+#endif
+
 #define INTERVAL_SEND 100
 #define INTERVAL_CHAT_SYNC 500
 #define CHANCE_TO_LOGOUT 4

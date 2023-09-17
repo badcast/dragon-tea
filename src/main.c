@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    bindtextdomain("dragon-tea", "./locale/");//"/usr/share/locale");
+    bindtextdomain("dragon-tea", DRAGON_TEA_LOCALE_DIR);
     textdomain("dragon-tea");
 
     // Init networking

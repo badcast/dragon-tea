@@ -1,0 +1,183 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR badcast
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
+"POT-Creation-Date: 2023-09-18 00:52+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/tea.c:270
+msgid "Error"
+msgstr ""
+
+#: ../src/core/ui_about.c:9 ../src/core/ui.c:7
+msgid "Dragon Tea"
+msgstr ""
+
+#: ../src/core/ui_about.c:11
+msgid "Free messenger for transmission"
+msgstr ""
+
+#: ../src/core/ui_about.c:13
+msgid "WEB-Page"
+msgstr ""
+
+#: ../src/core/ui_settings.c:32
+msgid "Switch server: "
+msgstr ""
+
+#: ../src/core/ui_settings.c:46
+msgid "Apply changes"
+msgstr ""
+
+#: ../src/core/ui_authorize.c:84
+msgid "User is not exists."
+msgstr ""
+
+#: ../src/core/ui_authorize.c:93
+#, c-format
+msgid ""
+"Authentication is not confirmed:\n"
+"Error code: %d\n"
+"Error message: %s"
+msgstr ""
+
+#: ../src/core/ui_authorize.c:123
+#, c-format
+msgid ""
+"Error registration:\n"
+"Error codew: %d\n"
+"Message error: %s"
+msgstr ""
+
+#: ../src/core/ui_authorize.c:167
+msgid "The nickname should not be empty."
+msgstr ""
+
+#: ../src/core/ui_authorize.c:191
+msgid "You set is invalid ID"
+msgstr ""
+
+#: ../src/core/ui_authorize.c:225 ../src/core/ui_authorize.c:262
+msgid "Sign in"
+msgstr ""
+
+#: ../src/core/ui_authorize.c:226 ../src/core/ui_authorize.c:306
+msgid "Sign up"
+msgstr ""
+
+#: ../src/core/ui_authorize.c:235
+msgid ""
+"Log in using your UserID\n"
+"note: Numbers only, and it must be unique."
+msgstr ""
+
+#: ../src/core/ui_authorize.c:246
+msgid "Signing..."
+msgstr ""
+
+#: ../src/core/ui_authorize.c:254
+msgid "Set UserID..."
+msgstr ""
+
+#: ../src/core/ui_authorize.c:274
+msgid ""
+"Enter your nickname.\n"
+"Force the use of the Latin alphabet,\n"
+"the length of the nickname is not more than 16 and not less than 3."
+msgstr ""
+
+#: ../src/core/ui_authorize.c:285
+msgid "Sign up..."
+msgstr ""
+
+#: ../src/core/ui_authorize.c:293
+msgid "Enter nickname..."
+msgstr ""
+
+#: ../src/core/ui.c:20
+msgid "Authentication"
+msgstr ""
+
+#: ../src/core/ui.c:22
+msgid "Dragon chat"
+msgstr ""
+
+#: ../src/core/ui.c:24
+msgid "Configuration"
+msgstr ""
+
+#: ../src/core/ui.c:26
+msgid "About"
+msgstr ""
+
+#: ../src/core/ui.c:72
+msgid "You state is offline"
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:81
+#, c-format
+msgid "The message has been sent. Time of sending %s, received %s"
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:98
+msgid "Error send."
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:118
+#, c-format
+msgid "Synchronization of %ld messages"
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:136
+msgid "Your network has been restored. "
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:140
+msgid "You're online."
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:172
+msgid "Your account has been deleted."
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:180
+#, c-format
+msgid "Network error. Your connection has been reset (%d remains)"
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:187
+msgid "Unknown error"
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:247
+msgid "Sending..."
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:263
+msgid "Login completed."
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:277
+#, c-format
+msgid ""
+"------\n"
+"Welcome to the Dragon Tea Server!\n"
+"Server: %s\n"
+"Your ID: %lld\n"
+"Your Nickname: %s\n"
+"Registration time: %s\n"
+"Last login time: %s\n"
+"------\n"
+msgstr ""

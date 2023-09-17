@@ -1,0 +1,206 @@
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# Copyright (C) 2023 badcast
+# This file is distributed under the same license as the PACKAGE package.
+# SPDX-FileCopyrightText: 2023 Bad Cast <lmecomposer@gmail.com>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
+"POT-Creation-Date: 2023-09-18 00:52+0600\n"
+"PO-Revision-Date: 2023-09-18 00:58+0600\n"
+"Last-Translator: Bad Cast <lmecomposer@gmail.com>\n"
+"Language-Team: Russian <kde-russian@lists.kde.ru>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 23.08.1\n"
+
+#: ../src/tea.c:270
+msgid "Error"
+msgstr "Ошибка"
+
+#: ../src/core/ui_about.c:9 ../src/core/ui.c:7
+msgid "Dragon Tea"
+msgstr "Драконий Чай"
+
+#: ../src/core/ui_about.c:11
+msgid "Free messenger for transmission"
+msgstr "Свободный мессенджер для обмена информациями."
+
+#: ../src/core/ui_about.c:13
+msgid "WEB-Page"
+msgstr "Веб-страница"
+
+#: ../src/core/ui_settings.c:32
+msgid "Switch server: "
+msgstr "Предпочитаемый сервер: "
+
+#: ../src/core/ui_settings.c:46
+msgid "Apply changes"
+msgstr "Применить изменения"
+
+#: ../src/core/ui_authorize.c:84
+msgid "User is not exists."
+msgstr "Данный пользователь не существует."
+
+#: ../src/core/ui_authorize.c:93
+#, c-format
+msgid ""
+"Authentication is not confirmed:\n"
+"Error code: %d\n"
+"Error message: %s"
+msgstr ""
+"Аутентификация не прошла:\n"
+"Код ошибки: %d\n"
+"Сообщение ошибки: %s"
+
+#: ../src/core/ui_authorize.c:123
+#, c-format
+msgid ""
+"Error registration:\n"
+"Error codew: %d\n"
+"Message error: %s"
+msgstr ""
+"Ошибка регистраций:\n"
+"Код ошибки: %d\n"
+"Сообщение ошибки: %s"
+
+#: ../src/core/ui_authorize.c:167
+msgid "The nickname should not be empty."
+msgstr "Ник не может быть пустым."
+
+#: ../src/core/ui_authorize.c:191
+msgid "You set is invalid ID"
+msgstr "Вы указали не валидный ID"
+
+#: ../src/core/ui_authorize.c:225 ../src/core/ui_authorize.c:262
+msgid "Sign in"
+msgstr "Войти"
+
+#: ../src/core/ui_authorize.c:226 ../src/core/ui_authorize.c:306
+msgid "Sign up"
+msgstr "Зарегистрироваться"
+
+#: ../src/core/ui_authorize.c:235
+msgid ""
+"Log in using your UserID\n"
+"note: Numbers only, and it must be unique."
+msgstr ""
+"Выполните вход через свой UserID\n"
+"Примечание: Только числа, и он должен быть уникальным."
+
+#: ../src/core/ui_authorize.c:246
+msgid "Signing..."
+msgstr "Входим..."
+
+#: ../src/core/ui_authorize.c:254
+msgid "Set UserID..."
+msgstr "Введите UserID..."
+
+#: ../src/core/ui_authorize.c:274
+msgid ""
+"Enter your nickname.\n"
+"Force the use of the Latin alphabet,\n"
+"the length of the nickname is not more than 16 and not less than 3."
+msgstr ""
+"Введите свой никнейм.\n"
+"Принудительно используйте латинский алфавит,\n"
+"длина ника не более 16 и не менее 3."
+
+#: ../src/core/ui_authorize.c:285
+msgid "Sign up..."
+msgstr "Регистрация..."
+
+#: ../src/core/ui_authorize.c:293
+msgid "Enter nickname..."
+msgstr "Введите никнейм..."
+
+#: ../src/core/ui.c:20
+msgid "Authentication"
+msgstr "Аутентификация"
+
+#: ../src/core/ui.c:22
+msgid "Dragon chat"
+msgstr "Драконий чат"
+
+#: ../src/core/ui.c:24
+msgid "Configuration"
+msgstr "Конфигурация"
+
+#: ../src/core/ui.c:26
+msgid "About"
+msgstr "О программе"
+
+#: ../src/core/ui.c:72
+msgid "You state is offline"
+msgstr "Не выполнен вход на сервер"
+
+#: ../src/core/ui_callbacks.c:81
+#, c-format
+msgid "The message has been sent. Time of sending %s, received %s"
+msgstr "Сообщение отправлено. Время отправки %s, получено %s"
+
+#: ../src/core/ui_callbacks.c:98
+msgid "Error send."
+msgstr "Ошибка отправки."
+
+#: ../src/core/ui_callbacks.c:118
+#, c-format
+msgid "Synchronization of %ld messages"
+msgstr "Синхронизация %ld сообщений"
+
+#: ../src/core/ui_callbacks.c:136
+msgid "Your network has been restored. "
+msgstr "Ваша сеть восстановлена. "
+
+#: ../src/core/ui_callbacks.c:140
+msgid "You're online."
+msgstr "Вы в сети."
+
+#: ../src/core/ui_callbacks.c:172
+msgid "Your account has been deleted."
+msgstr "Ваш аккаунт был удален."
+
+#: ../src/core/ui_callbacks.c:180
+#, c-format
+msgid "Network error. Your connection has been reset (%d remains)"
+msgstr "Сетевая ошибка. Ваше соединение было сброшено (%d осталось)"
+
+#: ../src/core/ui_callbacks.c:187
+msgid "Unknown error"
+msgstr "Неизвестная ошибка"
+
+#: ../src/core/ui_callbacks.c:247
+msgid "Sending..."
+msgstr "Отправка..."
+
+#: ../src/core/ui_callbacks.c:263
+msgid "Login completed."
+msgstr "Вход выполнен."
+
+#: ../src/core/ui_callbacks.c:277
+#, c-format
+msgid ""
+"------\n"
+"Welcome to the Dragon Tea Server!\n"
+"Server: %s\n"
+"Your ID: %lld\n"
+"Your Nickname: %s\n"
+"Registration time: %s\n"
+"Last login time: %s\n"
+"------\n"
+msgstr ""
+"------\n"
+"Добро пожаловать на сервер Драконего Чая!\n"
+"Сервер: %s\n"
+"Ваш ID: %lld\n"
+"Ваш Ник: %s\n"
+"Время регистраций: %s\n"
+"Время последнего входа: %s\n"
+"------\n"
+

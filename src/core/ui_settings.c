@@ -29,7 +29,7 @@ GtkWidget *create_settings_widget()
         gtk_list_store_set(server_list, &iter, 0, app_settings.servers[x], -1);
     }
 
-    gtk_box_pack_start(GTK_BOX(widgetbox), gtk_label_new(_("Предпочитаемый сервер: ")), TRUE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(widgetbox), gtk_label_new(_("Switch server: ")), TRUE, FALSE, 0);
 
     GtkWidget *combobox = widgets.settings_tab.combx_server_list = gtk_combo_box_new_with_model(GTK_TREE_MODEL(server_list));
     g_object_unref(server_list);
@@ -43,7 +43,7 @@ GtkWidget *create_settings_widget()
 
     gtk_box_pack_start(GTK_BOX(widgetbox), combobox, TRUE, FALSE, 0);
 
-    GtkWidget *button_apply = widgets.settings_tab.button_apply = gtk_button_new_with_label(_("Применить изменения"));
+    GtkWidget *button_apply = widgets.settings_tab.button_apply = gtk_button_new_with_label(_("Apply changes"));
     g_signal_connect(button_apply, "clicked", G_CALLBACK(apply_changes), NULL);
 
     gtk_box_pack_end(GTK_BOX(widgetbox), button_apply, TRUE, FALSE, 0);

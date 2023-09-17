@@ -78,7 +78,7 @@ gboolean on_chat_sending_async(const gchar *text)
             GDateTime *date2 = g_date_time_new_from_unix_local(last_sended_result.time_received);
             sended_time = g_date_time_format(datet, format);
             received_time = g_date_time_format(date2, format);
-            snprintf(buffer, sizeof(buffer), _("Сообщение отправлено. Время отправки %s, получено %s"), sended_time, received_time);
+            snprintf(buffer, sizeof(buffer), _("The message has been sent. Time of sending %s, received %s"), sended_time, received_time);
             g_free(sended_time);
             g_free(received_time);
             g_date_time_unref(datet);
@@ -95,7 +95,7 @@ gboolean on_chat_sending_async(const gchar *text)
         }
         else
         {
-            const char *msg = _("Ошибка отправки.");
+            const char *msg = _("Error send.");
             tea_ui_chat_status_text(msg);
             error(msg);
         }
@@ -115,7 +115,7 @@ gboolean on_chat_message_handler_async(gpointer)
 
         if(last_read_result.message_length > 0)
         {
-            snprintf(buffer, sizeof(buffer), _("Синхронизация %ld сообщений"), last_read_result.message_length);
+            snprintf(buffer, sizeof(buffer), _("Synchronization of %ld messages"), last_read_result.message_length);
             tea_ui_chat_status_text(buffer);
             widgets.chat_tab.chat_synched = FALSE;
         }
@@ -133,11 +133,11 @@ gboolean on_chat_message_handler_async(gpointer)
                 if(widgets.chat_tab.chat_synched == TRUE)
                 {
                     if(last_chance_state != CHANCE_TO_LOGOUT)
-                        strcpy(buffer, _("Ваша сеть восстановлена. "));
+                        strcpy(buffer, _("Your network has been restored. "));
                     else
                         buffer[0] = 0;
 
-                    strcat(buffer, _("Вы в сети."));
+                    strcat(buffer, _("You're online."));
                     tea_ui_chat_status_text(buffer);
                     break;
                 }
@@ -169,21 +169,22 @@ gboolean on_chat_message_handler_async(gpointer)
             case TEA_STATUS_ID_NO_EXIST:
                 if(error_string == NULL)
                 {
-                    error_string = _("Ваш аккаунт был удален.");
+                    error_string = _("Your account has been deleted.");
                     check_chance_logouting = 0; // logout
                 }
             // Сетевая ошибка, отменяем вход и выходим от прослушивания
             case TEA_STATUS_NETWORK_ERROR:
                 if(error_string == NULL)
                 {
-                    snprintf(buffer, sizeof(buffer), _("Сетевая ошибка. Ваше соединение было сброшено (%d осталось)"), check_chance_logouting);
+                    snprintf(
+                        buffer, sizeof(buffer), _("Network error. Your connection has been reset (%d remains)"), check_chance_logouting);
                     error_string = buffer;
                     --check_chance_logouting;
                 }
             default:
 
                 if(error_string == NULL)
-                    error_string = _("Неизвестная ошибка");
+                    error_string = _("Unknown error");
                 else
                     tea_ui_chat_status_text(error_string);
 
@@ -243,7 +244,7 @@ void on_chat_send_button(GtkWidget *widget, gpointer data)
 
     // disable Chat widget
     gtk_widget_set_sensitive(widgets.widget_main, FALSE);
-    tea_ui_chat_status_text(_("Отправка..."));
+    tea_ui_chat_status_text(_("Sending..."));
 
     thread_sending = g_thread_new(NULL, (GThreadFunc) async_send, (gpointer) text);
 
@@ -259,7 +260,7 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
 
     tea_ui_chat_enable(TRUE);
 
-    tea_ui_chat_status_text(_("Вход выполнен."));
+    tea_ui_chat_status_text(_("Login completed."));
 
     tea_ui_chat_set_text_top(user_info->user_nickname);
 
@@ -274,13 +275,13 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
         buffer,
         sizeof(buffer),
         _("------\n"
-        "Добро пожаловать на сервер Драконего Чая!\n"
-        "Сервер: %s\n"
-        "Ваш ID: %lld\n"
-        "Ваш Ник: %s\n"
-        "Время регистраций: %s\n"
-        "Время последнего входа: %s\n"
-        "------\n"),
+          "Welcome to the Dragon Tea Server!\n"
+          "Server: %s\n"
+          "Your ID: %lld\n"
+          "Your Nickname: %s\n"
+          "Registration time: %s\n"
+          "Last login time: %s\n"
+          "------\n"),
         tea_get_server_uri(),
         user_info->user_id,
         user_info->user_nickname,

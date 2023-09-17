@@ -20,11 +20,23 @@ file(GLOB_RECURSE DRAGONTEA_SOURCES "${CMAKE_SOURCE_DIR}/src/*.c"
      "${CMAKE_SOURCE_DIR}/include/*.h")
 
 add_executable(dragontea ${DRAGONTEA_SOURCES})
-target_compile_definitions(dragontea
-                           PUBLIC DRAGON_TEA_VERSION="${DRAGON_TEA_VERSION}")
+
 target_include_directories(
   dragontea
   PUBLIC "${CMAKE_SOURCE_DIR}/include/" ${gtk3ui_INCLUDE_DIRS}
          ${gthread_INCLUDE_DIRS} ${libcurl_INCLUDE_DIRS} ${json_INCLUDE_DIRS})
+
 target_link_libraries(dragontea ${gtk3ui_LIBRARIES} ${libcurl_LIBRARIES}
                       ${json_LIBRARIES} ${gthread_LIBRARIES})
+
+target_compile_definitions(dragontea
+                           PUBLIC DRAGON_TEA_VERSION="${DRAGON_TEA_VERSION}")
+
+if(UNIX OR LINUX)
+  set(LOCALE_DIR "${CMAKE_INSTALL_PREFIX}/share/locale")
+  target_compile_definitions(dragontea
+                             PUBLIC DRAGON_TEA_LOCALE_DIR="${LOCALE_DIR}")
+
+  install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/localization/locale"
+          DESTINATION "${CMAKE_INSTALL_PREFIX}/share")
+endif()
