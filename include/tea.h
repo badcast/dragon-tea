@@ -28,6 +28,7 @@ typedef DWORD uid_t;
 
 #include "tea_structs.h"
 #include "tea_api.h"
+#include "tea_localization.h"
 
 #ifndef DRAGON_TEA_VERSION
 #define DRAGON_TEA_VERSION "Release"

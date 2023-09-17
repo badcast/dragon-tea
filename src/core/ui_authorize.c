@@ -81,7 +81,7 @@ gboolean on_sigin_user(gpointer userData)
             switch(widgets.signin_tab.tea_signed_result.status)
             {
                 case TEA_STATUS_ID_NO_EXIST:
-                    error_msg = "Данный пользователь не существует.";
+                    error_msg = _("Данный пользователь не существует.");
                     break;
                 default:
                     error_msg = error_string(widgets.signin_tab.tea_signed_result.status);
@@ -90,7 +90,7 @@ gboolean on_sigin_user(gpointer userData)
             snprintf(
                 buf,
                 sizeof(buf),
-                "Аутентификация не прошла:\nКод ошибки: %d\nСообщение ошибки: %s",
+                _("Аутентификация не прошла:\nКод ошибки: %d\nСообщение ошибки: %s"),
                 widgets.signin_tab.tea_signed_result.status,
                 error_msg);
             error(buf);
@@ -120,7 +120,7 @@ gboolean on_signup_user(gpointer userData)
             snprintf(
                 buf,
                 sizeof(buf),
-                "Ошибка регистраций:\nКод ошибки: %d\nСообщение ошибки: %s",
+                _("Ошибка регистраций:\nКод ошибки: %d\nСообщение ошибки: %s"),
                 widgets.signup_tab.tea_reg_result.status,
                 error_string(widgets.signup_tab.tea_reg_result.status));
             error(buf);
@@ -164,7 +164,7 @@ void on_signup_click(GtkWidget *widget, gpointer userData)
 
     if(user_nickname == NULL || strlen(user_nickname) == 0)
     {
-        error("Ник не может быть пустым.");
+        error(_("Ник не может быть пустым."));
         return;
     }
 
@@ -188,7 +188,7 @@ void on_signin_click(GtkWidget *widget, gpointer userData)
     user_id = atoll(gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
     if(user_id < 128)
     {
-        error("Вы указали не валидный ID");
+        error(_("Вы указали не валидный ID"));
         return;
     }
 
@@ -222,8 +222,8 @@ GtkWidget *create_auth_widget()
 
     GtkWidget *signin_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *signup_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), signin_box, gtk_label_new("Вход"));
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), signup_box, gtk_label_new("Зарегистрироваться"));
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), signin_box, gtk_label_new(_("Вход")));
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), signup_box, gtk_label_new(_("Зарегистрироваться")));
 
     // Поля Входа ----------------------------------------------------------------------------------------
     GtkWidget *vertical = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -231,8 +231,8 @@ GtkWidget *create_auth_widget()
 
     GtkWidget *horizontal0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(vertical), horizontal0, FALSE, TRUE, 0);
-    GtkWidget *icon = gtk_image_new_from_icon_name("dialog-information-symbolic", GTK_ICON_SIZE_DIALOG);
-    GtkWidget *label_info = gtk_label_new("Выполните вход через свой UserID\nПримечание: Только числа, и он должен быть уникальным.");
+    GtkWidget *icon = gtk_image_new_from_icon_name(_("dialog-information-symbolic"), GTK_ICON_SIZE_DIALOG);
+    GtkWidget *label_info = gtk_label_new(_("Выполните вход через свой UserID\nПримечание: Только числа, и он должен быть уникальным."));
 
     gtk_box_pack_start(GTK_BOX(horizontal0), icon, TRUE, TRUE, 50);
     gtk_box_pack_end(GTK_BOX(horizontal0), label_info, TRUE, TRUE, 0);
@@ -243,7 +243,7 @@ GtkWidget *create_auth_widget()
     GtkWidget *image_loading_state = widgets.signin_tab.image_loading = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *widgetImage = gtk_image_new_from_icon_name("content-loading-symbolic", GTK_ICON_SIZE_DIALOG);
     gtk_box_pack_start(GTK_BOX(image_loading_state), widgetImage, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(image_loading_state), gtk_label_new("Входим..."), FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(image_loading_state), gtk_label_new(_("Входим...")), FALSE, TRUE, 0);
 
     gtk_box_pack_start(GTK_BOX(vertical), image_loading_state, FALSE, TRUE, 0);
 
@@ -251,7 +251,7 @@ GtkWidget *create_auth_widget()
     gtk_box_pack_end(GTK_BOX(vertical), horizontal1, FALSE, TRUE, 0);
 
     GtkWidget *entry_user_id = widgets.signin_tab.entry_userid = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry_user_id), "Введите UserID...");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry_user_id), _("Введите UserID..."));
     gtk_widget_set_hexpand(entry_user_id, TRUE);
     gtk_box_pack_start(GTK_BOX(horizontal1), entry_user_id, TRUE, TRUE, 0);
     g_signal_connect(entry_user_id, "insert-text", G_CALLBACK(on_insert_text), NULL);
@@ -259,7 +259,7 @@ GtkWidget *create_auth_widget()
 
     GtkWidget *send_button = widgets.signin_tab.button_send = gtk_button_new();
     icon = gtk_image_new_from_icon_name("contact-new", GTK_ICON_SIZE_BUTTON);
-    gtk_button_set_label(GTK_BUTTON(send_button), "Войти");
+    gtk_button_set_label(GTK_BUTTON(send_button), _("Войти"));
     gtk_button_set_image(GTK_BUTTON(send_button), icon);
     g_signal_connect(send_button, "clicked", G_CALLBACK(on_signin_click), NULL);
     gtk_box_pack_start(GTK_BOX(horizontal1), send_button, FALSE, FALSE, 0);
@@ -271,9 +271,9 @@ GtkWidget *create_auth_widget()
     horizontal0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(vertical), horizontal0, FALSE, TRUE, 0);
     icon = gtk_image_new_from_icon_name("dialog-information-symbolic", GTK_ICON_SIZE_DIALOG);
-    label_info = gtk_label_new("Введите свой никнейм.\n"
+    label_info = gtk_label_new(_("Введите свой никнейм.\n"
                                "Принудительно используйте латинский алфавит,\n"
-                               "длина ника не более 16 и не менее 3.");
+                               "длина ника не более 16 и не менее 3."));
     gtk_box_pack_start(GTK_BOX(horizontal0), icon, TRUE, TRUE, 50);
     gtk_box_pack_end(GTK_BOX(horizontal0), label_info, TRUE, TRUE, 0);
 
@@ -282,7 +282,7 @@ GtkWidget *create_auth_widget()
     image_loading_state = widgets.signup_tab.image_loading = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     widgetImage = gtk_image_new_from_icon_name("content-loading-symbolic", GTK_ICON_SIZE_DIALOG);
     gtk_box_pack_start(GTK_BOX(image_loading_state), widgetImage, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(image_loading_state), gtk_label_new("Регистрация..."), FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(image_loading_state), gtk_label_new(_("Регистрация...")), FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vertical), image_loading_state, FALSE, TRUE, 0);
 
     horizontal1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -290,7 +290,7 @@ GtkWidget *create_auth_widget()
 
     GtkWidget *entry_username = widgets.signup_tab.entry_username = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(entry_username), TEA_MAXLEN_USERNAME);
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry_username), "Введите никнейм...");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry_username), _("Введите никнейм..."));
     gtk_widget_set_hexpand(entry_username, TRUE);
     gtk_box_pack_start(GTK_BOX(horizontal1), entry_username, TRUE, TRUE, 0);
     g_signal_connect(entry_username, "activate", G_CALLBACK(on_signup_click), entry_username);
@@ -303,7 +303,7 @@ GtkWidget *create_auth_widget()
     gtk_box_pack_start(GTK_BOX(horizontal1), button_genick, FALSE, FALSE, 0);
 
     send_button = widgets.signup_tab.button_send = gtk_button_new();
-    gtk_button_set_label(GTK_BUTTON(send_button), "Зарегистрировать");
+    gtk_button_set_label(GTK_BUTTON(send_button), _("Зарегистрировать"));
     icon = gtk_image_new_from_icon_name("contact-new", GTK_ICON_SIZE_BUTTON);
     gtk_button_set_image(GTK_BUTTON(send_button), icon);
     g_signal_connect(send_button, "clicked", G_CALLBACK(on_signup_click), NULL);

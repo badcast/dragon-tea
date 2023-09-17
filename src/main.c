@@ -2,17 +2,19 @@
 
 int main(int argc, char *argv[])
 {
-    //Check runned on Root
-    #if __unix__
-        if(getuid() == 0)
-        {
-            printf("Program runned as root. It's maybe damage your system. Closing.");
-            return EXIT_FAILURE;
-        }
-    #endif
+    setlocale(LC_ALL, "");
 
-    // Glib init
-    g_thread_init(NULL);
+// Check runned on Root
+#if __unix__ || __linux__
+    if(getuid() == 0)
+    {
+        printf("Program runned as root. It's maybe damage your system. Closing.");
+        return EXIT_FAILURE;
+    }
+#endif
+
+    bindtextdomain("dragon-tea", "./locale/");//"/usr/share/locale");
+    textdomain("dragon-tea");
 
     // Init networking
     net_init();

@@ -4,7 +4,7 @@ void tea_ui_init()
 {
     // Инициализация окна
     GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(main_window), "Драконий Чай");
+    gtk_window_set_title(GTK_WINDOW(main_window), _("Драконий Чай"));
     gtk_window_set_default_size(GTK_WINDOW(main_window), 500, 400);
     gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
     gtk_window_set_resizable(GTK_WINDOW(main_window), FALSE);
@@ -17,13 +17,13 @@ void tea_ui_init()
 
     // Инициализация виджетов
     widgets.widget_auth = create_auth_widget();
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_auth, gtk_label_new("Аутентификация"));
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_auth, gtk_label_new(_("Аутентификация")));
     widgets.widget_main = create_chat_widget();
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_main, gtk_label_new("Драконий чат"));
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_main, gtk_label_new(_("Драконий чат")));
     widgets.widget_settings = create_settings_widget();
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_settings, gtk_label_new("Конфигурация"));
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_settings, gtk_label_new(_("Конфигурация")));
     gtk_notebook_append_page(
-        GTK_NOTEBOOK(notebook), gtk_image_new_from_icon_name("help-about", GTK_ICON_SIZE_LARGE_TOOLBAR), gtk_label_new("О программе"));
+        GTK_NOTEBOOK(notebook), gtk_image_new_from_icon_name("help-about", GTK_ICON_SIZE_LARGE_TOOLBAR), gtk_label_new(_("О программе")));
     g_signal_connect(notebook, "switch-page", G_CALLBACK(ui_on_notebook_switch_page), NULL);
 
     // Show window
@@ -69,7 +69,7 @@ void tea_ui_chat_enable(int value)
     if(value)
         tea_ui_chat_clear();
     else
-        tea_ui_chat_set_text("Не выполнен вход на сервер");
+        tea_ui_chat_set_text(_("Не выполнен вход на сервер"));
     // interactable
     tea_ui_chat_interactable(value);
 }

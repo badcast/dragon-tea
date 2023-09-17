@@ -30,7 +30,7 @@ void tea_load();
 
 void tea_save();
 
-const char* tea_version()
+const char *tea_version()
 {
     return DRAGON_TEA_VERSION;
 }
@@ -72,6 +72,7 @@ const char *get_conf_dir()
     const char *home_dir;
     if(strlen(app_settings.config_dir) == 0)
     {
+
 #ifdef __linux__
         home_dir = getenv("HOME");
         if(home_dir == NULL)
@@ -83,7 +84,7 @@ const char *get_conf_dir()
         strncat(app_settings.config_dir, "/.config/DragonTea", sizeof(app_settings.config_dir));
         if(mkdir(app_settings.config_dir, 0700) != 0 && errno != EEXIST)
         {
-            g_print("%s", strerror(errno));
+            printf("%s", strerror(errno));
         }
 #elif WIN32
         home_dir = getenv("APPDATA");
@@ -101,7 +102,7 @@ void tea_load()
 {
     const char *conf_dir = get_conf_dir();
     strncat(app_settings.setting_filename, conf_dir, sizeof(app_settings.setting_filename) - 1);
-    strncat(app_settings.setting_filename, "/tea.json", sizeof(app_settings.setting_filename) - 1);
+    strncat(app_settings.setting_filename, "/tea-config.json", sizeof(app_settings.setting_filename) - 1);
     app_settings.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
     tea_load_conf(&app_settings, app_settings.setting_filename);
 }
@@ -221,8 +222,8 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
 void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
 {
     json_object *jdata, *jarr;
-    int len;
     size_t cmp1, cmp2;
+    int len;
 
     // save only unchanged data
     struct tea_settings _from;
@@ -259,14 +260,14 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     // save as
     if(json_object_to_file_ext(filename, jdata, JSON_C_TO_STRING_PRETTY) != 0)
     {
-        g_print("error saving settings to \"%s\". %s", filename, json_util_get_last_err());
+        printf("error saving settings to \"%s\". %s", filename, json_util_get_last_err());
     }
 }
 
 void error(const char *str)
 {
     GtkWidget *dialog = gtk_message_dialog_new(
-        widgets.main_window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Ошибка");
+        widgets.main_window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Error"));
     gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "%s", str);
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
