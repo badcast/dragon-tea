@@ -7,20 +7,6 @@
 #ifndef TEA_API_H
 #define TEA_API_H
 
-#ifndef TEA_SERVER
-#ifdef NDEBUG
-//#define TEA_SERVER "https://dragontea.000webhostapp.com/"
-//#define TEA_SERVER "http://dragontea.getenjoyment.net/"
-#define TEA_SERVER "https://dragontea.lightmister.repl.co/"
-#else
-#define TEA_SERVER "http://localhost:8000/"
-#endif
-#endif
-
-#define TEA_SERVER_AUTH_URL TEA_SERVER "api/auth.php"
-#define TEA_SERVER_REGISTER_URL TEA_SERVER "api/register.php"
-#define TEA_SERVER_MESSAGE_HANDLER_URL TEA_SERVER "api/messageHandler.php"
-
 enum TeaErrorStatus
 {
     TEA_STATUS_OK = 0,
@@ -37,5 +23,11 @@ enum TeaErrorStatus
 
     TEA_STATUS_NETWORK_ERROR = 1000
 };
+
+const char *tea_get_server_uri();
+const char *tea_get_server_auth();
+const char *tea_get_server_register();
+const char *tea_get_server_message_handler();
+
 
 #endif

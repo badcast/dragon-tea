@@ -1,5 +1,8 @@
 #include "tea.h"
 
+static const char builtin_servers[3][64] = {
+    "https://dragontea.lightmister.repl.co/", "https://dragontea.000webhostapp.com/", "http://dragontea.getenjoyment.net/"};
+
 static const char nicknames[102][17] = {
     "LuckyUnicorn",    "SadEagle",      "LuckyTiger",      "ShinyRabbit",   "BraveDog",       "CoolDolphin",   "JollyEagle",
     "SadCat",          "ShinyRabbit",   "JollyEagle",      "ShinyEagle",    "LuckyCat",       "FearlessPanda", "SadDragon",
@@ -97,6 +100,7 @@ gboolean on_sigin_user(gpointer userData)
             tea_login(&widgets.signin_tab.tea_signed_result.result);
         }
         tea_ui_auth_lock(FALSE);
+        tea_ui_reg_lock(FALSE);
         return FALSE;
     }
     else
@@ -128,6 +132,7 @@ gboolean on_signup_user(gpointer userData)
             gtk_entry_set_text(GTK_ENTRY(widgets.signup_tab.entry_username), "");
             tea_login(&widgets.signup_tab.tea_reg_result.result);
         }
+        tea_ui_auth_lock(FALSE);
         tea_ui_reg_lock(FALSE);
         return FALSE;
     }
@@ -167,14 +172,16 @@ void on_signup_click(GtkWidget *widget, gpointer userData)
     tea_logout();
 
     memset(&widgets.signup_tab.tea_reg_result, 0, sizeof(widgets.signup_tab.tea_reg_result));
-    widgets.signup_tab.gtask = g_thread_new(NULL, (GThreadFunc)on_signup_async, user_nickname);
+    widgets.signup_tab.gtask = g_thread_new(NULL, (GThreadFunc) on_signup_async, (gpointer) user_nickname);
     tea_ui_reg_lock(widgets.signup_tab.gtask != NULL);
+    tea_ui_auth_lock(TRUE);
     g_timeout_add(1000, on_signup_user, NULL);
 }
 
 void on_signin_click(GtkWidget *widget, gpointer userData)
 {
     tea_id_t user_id;
+
     if(widgets.signin_tab.gtask != NULL)
         return;
 
@@ -188,8 +195,10 @@ void on_signin_click(GtkWidget *widget, gpointer userData)
     tea_logout();
 
     memset(&widgets.signin_tab.tea_signed_result, 0, sizeof(widgets.signin_tab.tea_signed_result));
-    widgets.signin_tab.gtask = g_thread_new(NULL, (GThreadFunc)on_signin_async, gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
+    widgets.signin_tab.gtask =
+        g_thread_new(NULL, (GThreadFunc) on_signin_async, (gpointer) gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
     tea_ui_auth_lock(widgets.signin_tab.gtask != NULL);
+    tea_ui_reg_lock(TRUE);
     g_timeout_add(1000, on_sigin_user, NULL);
 }
 
@@ -301,4 +310,72 @@ GtkWidget *create_auth_widget()
     gtk_box_pack_start(GTK_BOX(horizontal1), send_button, FALSE, FALSE, 0);
 
     return notebook;
+}
+
+int tea_get_server_id(const char *serverURI)
+{
+    int id = 1;
+
+    while(*serverURI && (id *= 1 | (int) *(serverURI++)))
+        ;
+
+    return id;
+}
+
+int tea_get_builtin_server_list(char list[3][64])
+{
+    memcpy(list, builtin_servers, sizeof(builtin_servers));
+    return sizeof(builtin_servers) / sizeof(builtin_servers[0]);
+}
+
+const char *tea_get_server_uri()
+{
+    int s = -1;
+    for(int x = 0; x < sizeof(app_settings.servers) / sizeof(app_settings.servers[0]); ++x)
+    {
+        if(strlen(app_settings.servers[x]) == 0)
+            break;
+        if(app_settings.active_server == tea_get_server_id(app_settings.servers[x]))
+        {
+            s = x;
+            break;
+        }
+    }
+
+    if(s == -1)
+    {
+        return NULL;
+    }
+
+    return app_settings.servers[s];
+}
+
+const char *tea_get_server_auth()
+{
+    static char SAUTH[255];
+    const char *server = tea_get_server_uri();
+    if(!server)
+        return server;
+    snprintf(SAUTH, sizeof(SAUTH), "%sapi/auth.php", server);
+    return SAUTH;
+}
+
+const char *tea_get_server_register()
+{
+    static char SREGISTER[255];
+    const char *server = tea_get_server_uri();
+    if(!server)
+        return server;
+    snprintf(SREGISTER, sizeof(SREGISTER), "%sapi/register.php", server);
+    return SREGISTER;
+}
+
+const char *tea_get_server_message_handler()
+{
+    static char SMHANDLER[255];
+    const char *server = tea_get_server_uri();
+    if(!server)
+        return server;
+    snprintf(SMHANDLER, sizeof(SMHANDLER), "%sapi/messageHandler.php", server);
+    return SMHANDLER;
 }

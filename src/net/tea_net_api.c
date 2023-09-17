@@ -134,7 +134,7 @@ int net_api_read_messages(
     json_object_object_add(json_request, "max_messages", json_object_new_int(max_messages));
     jstr = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(result = net_send(TEA_SERVER_MESSAGE_HANDLER_URL, jstr, _size, &input) && input.data != NULL)
+    if(result = net_send(tea_get_server_message_handler(), jstr, _size, &input) && input.data != NULL)
     {
         json_result = json_tokener_parse(input.data);
         // free result data
@@ -222,7 +222,7 @@ int net_api_write_message(
     json_object_object_add(json_request, "message", json_object_new_string_len(message, len));
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(net = net_send(TEA_SERVER_MESSAGE_HANDLER_URL, json_serialized, _size, &input) && input.data != NULL)
+    if(net = net_send(tea_get_server_message_handler(), json_serialized, _size, &input) && input.data != NULL)
     {
         json_result = json_tokener_parse(input.json_data);
 
@@ -266,7 +266,7 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
         json_object_object_add(json_request, "user_id", json_object_new_int64(user_id));
 
         json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
-        if(net = net_send(TEA_SERVER_AUTH_URL, json_serialized, _size, &input) && input.data != NULL)
+        if(net = net_send(tea_get_server_auth(), json_serialized, _size, &input) && input.data != NULL)
         {
             jresult = json_tokener_parse(input.json_data);
             // free result data
@@ -326,7 +326,7 @@ int net_api_signup(const char *nickname, tea_register_result *output)
 
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(net = net_send(TEA_SERVER_REGISTER_URL, json_serialized, _size, &input) && input.data != NULL)
+    if(net = net_send(tea_get_server_register(), json_serialized, _size, &input) && input.data != NULL)
     {
         jresult = json_tokener_parse(input.json_data);
         // free result data

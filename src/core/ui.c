@@ -6,7 +6,7 @@ void tea_ui_init()
     GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "Драконий Чай");
     gtk_window_set_default_size(GTK_WINDOW(main_window), 500, 400);
-    gtk_window_set_position(main_window, GTK_WIN_POS_CENTER);
+    gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
     gtk_window_set_resizable(GTK_WINDOW(main_window), FALSE);
     gtk_window_set_icon_name(GTK_WINDOW(main_window), "mail-message-new-symbolic");
     widgets.main_window = GTK_WINDOW(main_window);
@@ -20,6 +20,8 @@ void tea_ui_init()
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_auth, gtk_label_new("Аутентификация"));
     widgets.widget_main = create_chat_widget();
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_main, gtk_label_new("Драконий чат"));
+    widgets.widget_settings = create_settings_widget();
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_settings, gtk_label_new("Конфигурация"));
     gtk_notebook_append_page(
         GTK_NOTEBOOK(notebook), gtk_image_new_from_icon_name("help-about", GTK_ICON_SIZE_LARGE_TOOLBAR), gtk_label_new("О программе"));
     g_signal_connect(notebook, "switch-page", G_CALLBACK(ui_on_notebook_switch_page), NULL);
@@ -36,6 +38,22 @@ void tea_ui_init()
     // Попытка автоматический войти, если настройки успешно загружены
     tea_ui_focus_tab(UI_TAB_AUTH);
     tea_try_login();
+}
+
+void tea_ui_update_settings()
+{
+    int selServer = 0;
+    for(int x = 0; x < sizeof(app_settings.servers[0]); ++x)
+    {
+        if(strlen(app_settings.servers[x]) == 0)
+            break;
+
+        if(selServer == 0 && tea_get_server_id(app_settings.servers[x]) == app_settings.active_server)
+        {
+            selServer = x;
+        }
+    }
+    gtk_combo_box_set_active(GTK_COMBO_BOX(widgets.settings_tab.combx_server_list), selServer);
 }
 
 void tea_ui_focus_tab(enum UiTabs tabIndex)

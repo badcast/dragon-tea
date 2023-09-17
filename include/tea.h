@@ -29,6 +29,10 @@ typedef DWORD uid_t;
 #include "tea_structs.h"
 #include "tea_api.h"
 
+#ifndef DRAGON_TEA_VERSION
+#define DRAGON_TEA_VERSION "Release"
+#endif
+
 #define INTERVAL_SEND 100
 #define INTERVAL_CHAT_SYNC 500
 #define CHANCE_TO_LOGOUT 4
@@ -36,14 +40,14 @@ typedef DWORD uid_t;
 extern struct tea_settings app_settings;
 extern struct tea_app_widgets widgets;
 
-
 void tea_init();
 
-int tea_version();
+const char *tea_version();
 
 // User Interface Implementation
 GtkWidget *create_auth_widget();
 GtkWidget *create_chat_widget();
+GtkWidget *create_settings_widget();
 void show_about_dialog();
 
 // TODO: Get server version
@@ -56,6 +60,10 @@ void tea_login(const struct tea_id_info *login);
 int tea_try_login();
 // to logout
 void tea_logout();
+
+int tea_get_server_id(const char *serverURI);
+
+int tea_get_builtin_server_list(char list[3][64]);
 
 void tea_load();
 
@@ -71,7 +79,12 @@ void net_init();
 
 void net_free();
 
-int net_api_read_messages(const struct tea_id_info *user, tea_id_t target_user_id, tea_id_t msg_id_start, int max_messages, struct tea_message_read_result *output);
+int net_api_read_messages(
+    const struct tea_id_info *user,
+    tea_id_t target_user_id,
+    tea_id_t msg_id_start,
+    int max_messages,
+    struct tea_message_read_result *output);
 
 int net_api_write_message(
     const struct tea_id_info *user_sender, tea_id_t target_user_id, const char *message, int len, struct tea_message_send_result *output);
@@ -111,5 +124,7 @@ void tea_ui_auth_sigin();
 void tea_ui_auth_lock(gboolean state);
 
 void tea_ui_reg_lock(gboolean state);
+
+void tea_ui_update_settings();
 
 #endif

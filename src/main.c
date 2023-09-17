@@ -2,7 +2,6 @@
 
 int main(int argc, char *argv[])
 {
-
     //Check runned on Root
     #if __unix__
         if(getuid() == 0)
@@ -18,15 +17,16 @@ int main(int argc, char *argv[])
     // Init networking
     net_init();
 
-    // Инициализация GTK
+    // GUI Init
     gtk_init(&argc, &argv);
 
-    // Запускаем Чай
+    // Run Dragon Tea Messenger
     tea_init();
 
-    // Запуск основного цикла GTK
+    // Window Looping
     gtk_main();
 
+    // Free networks
     net_free();
 
     return 0;

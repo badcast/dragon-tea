@@ -19,14 +19,14 @@
 #define TEA_MAXLEN_PATH MAX_PATH
 #endif
 
-typedef long long tea_id_t;
+typedef unsigned long long tea_id_t;
 
 struct tea_id_info
 {
     tea_id_t user_id;
     long creation_date;
     long last_login;
-    char user_nickname[TEA_MAXLEN_USERNAME*2];
+    char user_nickname[TEA_MAXLEN_USERNAME * 2];
 };
 
 struct tea_message_id
@@ -35,8 +35,8 @@ struct tea_message_id
     long time_saved;
     long time_received;
     tea_id_t sent_user_id;
-    char sent_user_name[TEA_MAXLEN_USERNAME*2];
-    char* message_text;
+    char sent_user_name[TEA_MAXLEN_USERNAME * 2];
+    char *message_text;
 };
 
 struct tea_message_read_result
@@ -71,7 +71,10 @@ struct tea_settings
     char config_dir[TEA_MAXLEN_PATH];
     // setting file
     char setting_filename[TEA_MAXLEN_PATH];
-
+    // active server
+    int active_server;
+    // loaded from configurations
+    char servers[32][255];
     // User messages
     GArray *local_msg_db;
 };
@@ -111,8 +114,15 @@ struct tea_app_widgets
         gboolean chat_synched;
     } chat_tab;
 
+    struct
+    {
+        GtkWidget *combx_server_list;
+        GtkWidget *button_apply;
+    } settings_tab;
+
     GtkWidget *widget_main;
     GtkWidget *widget_auth;
+    GtkWidget *widget_settings;
     GtkWindow *main_window;
 
     GtkWidget *notebook;

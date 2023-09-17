@@ -3,7 +3,7 @@
 
 #include "tea.h"
 
-void tea_on_authenticate(struct tea_id_info *user_info);
+void tea_on_authenticate(const struct tea_id_info *user_info);
 
 void tea_on_logouted();
 

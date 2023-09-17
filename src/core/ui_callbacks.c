@@ -225,6 +225,10 @@ void ui_on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, guint pa
         show_about_dialog();
         tea_ui_focus_tab(UI_TAB_CHAT);
     }
+    else if(gtk_notebook_get_nth_page(notebook, page_num) == widgets.widget_settings)
+    {
+        tea_ui_update_settings();
+    }
 }
 
 // Функция обработки нажатия кнопки отправить
@@ -246,7 +250,7 @@ void on_chat_send_button(GtkWidget *widget, gpointer data)
     g_timeout_add(INTERVAL_SEND, (GSourceFunc) on_chat_sending_async, text);
 }
 
-void tea_on_authenticate(struct tea_id_info *user_info)
+void tea_on_authenticate(const struct tea_id_info *user_info)
 {
     char buffer[300];
     app_settings.connected = TRUE;
