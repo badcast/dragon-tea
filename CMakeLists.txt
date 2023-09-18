@@ -39,4 +39,6 @@ if(UNIX OR LINUX)
 
   install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/localization/locale"
           DESTINATION "${CMAKE_INSTALL_PREFIX}/share")
+
+  install(FILES "${CMAKE_BINARY_DIR}/dragontea" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")
 endif()

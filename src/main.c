@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    bindtextdomain("dragon-tea", DRAGON_TEA_LOCALE_DIR);
-    textdomain("dragon-tea");
+    bindtextdomain(DRAGON_TEA_TEXTDOMAIN, DRAGON_TEA_LOCALE_DIR);
+    textdomain(DRAGON_TEA_TEXTDOMAIN);
 
     // Init networking
     net_init();

@@ -12,4 +12,6 @@
 
 #define _(String) gettext(String)
 
+#define DRAGON_TEA_TEXTDOMAIN "dragon-tea"
+
 #endif
