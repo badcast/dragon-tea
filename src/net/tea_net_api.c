@@ -2,25 +2,40 @@
 
 #include "tea.h"
 
+struct
+{
+    size_t transmitted_bytes;
+    size_t received_bytes;
+    size_t lost_bytes;
+
+    int active_requests;
+    int success_req;
+    int error_req;
+} net_stats;
+
 struct NetworkBody
 {
     size_t size;
     int net_status;
-    char *data;
+    char *raw_data;
     char *json_data;
 };
 
+GMutex nmutex;
 void net_init()
 {
+    g_mutex_init(&nmutex);
     curl_global_init(CURL_GLOBAL_ALL);
+    memset(&net_stats, 0, sizeof(net_stats));
 }
 
 void net_free()
 {
+    g_mutex_clear(&nmutex);
     curl_global_cleanup();
 }
 
-size_t net_write_data(void *ptr, size_t size, size_t nmemb, struct NetworkBody *data)
+size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct NetworkBody *data)
 {
     size_t index = data->size;
     size_t n = (size * nmemb);
@@ -28,63 +43,104 @@ size_t net_write_data(void *ptr, size_t size, size_t nmemb, struct NetworkBody *
 
     data->size += (size * nmemb);
 
-    tmp = (char *) realloc(data->data, data->size + 1); /* +1 for '\0' */
+    tmp = (char *) realloc(data->raw_data, data->size + 1); /* +1 for '\0' */
 
     if(tmp)
     {
-        data->data = tmp;
+        data->raw_data = tmp;
     }
     else
     {
-        if(data->data)
+        if(data->raw_data)
         {
-            free(data->data);
+            free(data->raw_data);
         }
         fprintf(stderr, "Failed to allocate memory.\n");
         return 0;
     }
 
-    memcpy(((char *) data->data + index), ptr, n);
-    data->data[data->size] = '\0';
+    memcpy(((char *) data->raw_data + index), ptr, n);
+    data->raw_data[data->size] = '\0';
 
     return size * nmemb;
 }
 
-int net_send(const char *url, const char *body, long len, struct NetworkBody *result)
+int curl_xferinfo(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+    size_t *p = (size_t *) clientp;
+    *p += ulnow;
+    ++p;
+    *p += dlnow;
+    return CURLE_OK;
+}
+
+int net_send(const char *url, const char *body, long len, struct NetworkBody *receiver)
 {
     CURL *curl;
-    CURLcode net;
+    CURLcode net_result;
+    size_t request_stats[2];
 
-    memset(result, 0, sizeof(struct NetworkBody));
+    memset(receiver, 0, sizeof(*receiver));
+
+    memset(request_stats, 0, sizeof(request_stats));
 
     curl = curl_easy_init();
+
     curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, result);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, net_write_data);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, receiver);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_writer);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, len);
-    #ifdef NDEBUG
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+    curl_easy_setopt(curl, CURLOPT_XFERINFODATA, request_stats);
+    curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, curl_xferinfo);
+
+#ifdef NDEBUG
     // timeout 10 seconds
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
-    #endif
+#endif
 
-    // SEND
-    net = curl_easy_perform(curl);
-    result->net_status = net;
+    g_mutex_lock(&nmutex);
+    net_stats.active_requests++;
+    g_mutex_unlock(&nmutex);
 
-    // clear curl data
+    // SEND =====>
+    net_result = curl_easy_perform(curl);
+    // clear curl data ~
     curl_easy_cleanup(curl);
 
-    for(int x = 0; x < result->size; ++x)
+    g_mutex_lock(&nmutex);
+    net_stats.transmitted_bytes += request_stats[0];
+    net_stats.received_bytes += request_stats[1];
+    net_stats.active_requests--;
+    g_mutex_unlock(&nmutex);
+
+    receiver->net_status = net_result;
+
+    // if(net_result == CURLE_OK){
+    // CURLINFO cf;
+    // curl_easy_getinfo(curl, &cf);}
+
+    // begin up to json data {}
+    for(int x = 0; x < receiver->size; ++x)
     {
-        if(result->data[x] == '{')
+        if(receiver->raw_data[x] == '{')
         {
-            result->json_data = result->data + x;
+            receiver->json_data = receiver->raw_data + x;
             break;
         }
     }
 
-    return net == CURLE_OK;
+    if(net_result == CURLE_OK)
+        ++net_stats.success_req;
+    else
+        ++net_stats.error_req;
+
+#ifndef NDEBUG
+    printf("curl error code: %s (%d)", curl_easy_strerror(net_result), net_result);
+#endif
+
+    return net_result == CURLE_OK;
 }
 
 int net_api_read_messages(
@@ -134,11 +190,11 @@ int net_api_read_messages(
     json_object_object_add(json_request, "max_messages", json_object_new_int(max_messages));
     jstr = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(result = net_send(tea_get_server_message_handler(), jstr, _size, &input) && input.data != NULL)
+    if(result = net_send(tea_get_server_message_handler(), jstr, _size, &input) && input.raw_data != NULL)
     {
-        json_result = json_tokener_parse(input.data);
+        json_result = json_tokener_parse(input.raw_data);
         // free result data
-        free(input.data);
+        free(input.raw_data);
 
         if(json_object_object_get_ex(json_result, "status", &jval) && (output->status = json_object_get_int(jval)) == TEA_STATUS_OK)
         {
@@ -222,7 +278,7 @@ int net_api_write_message(
     json_object_object_add(json_request, "message", json_object_new_string_len(message, len));
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(net = net_send(tea_get_server_message_handler(), json_serialized, _size, &input) && input.data != NULL)
+    if(net = net_send(tea_get_server_message_handler(), json_serialized, _size, &input) && input.raw_data != NULL)
     {
         json_result = json_tokener_parse(input.json_data);
 
@@ -240,7 +296,7 @@ int net_api_write_message(
             output->msg_id = json_object_get_int64(jval);
         }
         // free result data
-        free(input.data);
+        free(input.raw_data);
     }
     else
     {
@@ -266,11 +322,11 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
         json_object_object_add(json_request, "user_id", json_object_new_int64(user_id));
 
         json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
-        if(net = net_send(tea_get_server_auth(), json_serialized, _size, &input) && input.data != NULL)
+        if(net = net_send(tea_get_server_auth(), json_serialized, _size, &input) && input.raw_data != NULL)
         {
             jresult = json_tokener_parse(input.json_data);
             // free result data
-            free(input.data);
+            free(input.raw_data);
 
             if(!json_object_object_get_ex(jresult, "status", &jval))
             {
@@ -326,11 +382,11 @@ int net_api_signup(const char *nickname, tea_register_result *output)
 
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(net = net_send(tea_get_server_register(), json_serialized, _size, &input) && input.data != NULL)
+    if(net = net_send(tea_get_server_register(), json_serialized, _size, &input) && input.raw_data != NULL)
     {
         jresult = json_tokener_parse(input.json_data);
         // free result data
-        free(input.data);
+        free(input.raw_data);
 
         json_object_object_get_ex(jresult, "status", &jval);
         output->status = json_object_get_int(jval);

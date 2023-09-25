@@ -19,7 +19,35 @@ pkg_check_modules(gthread REQUIRED gthread-2.0)
 file(GLOB_RECURSE DRAGONTEA_SOURCES "${CMAKE_SOURCE_DIR}/src/*.c"
      "${CMAKE_SOURCE_DIR}/include/*.h")
 
-add_executable(dragontea ${DRAGONTEA_SOURCES})
+add_executable(dragontea)
+
+# COMPILE BUILTIN SERVERS
+set(BUILTIN_TEMPLATE_FILE "${CMAKE_BINARY_DIR}/builtin_template.c")
+set(BF_LENGTH 0)
+
+if(NOT EXISTS "${BUILTIN_TEMPLATE_FILE}")
+  file(GLOB BUILTIN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/builtin/*.url")
+  list(LENGTH BUILTIN_FILES BF_LENGTH)
+  if(BF_LENGTH GREATER 0)
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/builtin/builtin_template.c"
+         DESTINATION ${CMAKE_BINARY_DIR})
+
+    foreach(F ${BUILTIN_FILES})
+      file(READ ${F} F_CONTENT)
+      string(STRIP ${F_CONTENT} F_CONTENT)
+      file(APPEND ${BUILTIN_TEMPLATE_FILE} "\"${F_CONTENT}\",\n")
+    endforeach()
+    file(APPEND ${BUILTIN_TEMPLATE_FILE} "};")
+  endif()
+endif()
+
+if(EXISTS "${BUILTIN_TEMPLATE_FILE}")
+  list(APPEND DRAGONTEA_SOURCES ${BUILTIN_TEMPLATE_FILE})
+  target_compile_definitions(dragontea PUBLIC BUILTIN_SERVERS=ON
+                                              BUILTIN_SERVERS_N=${BF_LENGTH})
+endif()
+
+target_sources(dragontea PUBLIC ${DRAGONTEA_SOURCES})
 
 target_include_directories(
   dragontea
@@ -40,5 +68,6 @@ if(UNIX OR LINUX)
   install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/localization/locale"
           DESTINATION "${CMAKE_INSTALL_PREFIX}/share")
 
-  install(FILES "${CMAKE_BINARY_DIR}/dragontea" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")
+  install(FILES "${CMAKE_BINARY_DIR}/dragontea"
+          DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")
 endif()

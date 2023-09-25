@@ -49,9 +49,9 @@ Dragon Tea. Free Messenger
 
 #### Step 4. Set the exec permission. 
 
-    chmod +x ./build-dragon-tea/msg-app
+    chmod +x ./build-dragon-tea/dragontea
 
 
 #### Step 5. Launch and Enjoy! 
 
-    ./build-dragon-tea/msg-app
+    ./build-dragon-tea/dragontea

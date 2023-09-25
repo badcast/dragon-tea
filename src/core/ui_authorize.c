@@ -1,7 +1,11 @@
 #include "tea.h"
 
-static const char builtin_servers[3][64] = {
-    "https://dragontea.lightmister.repl.co/", "https://dragontea.000webhostapp.com/", "http://dragontea.getenjoyment.net/"};
+#ifndef BUILTIN_SERVERS
+#define BUILTIN_SERVERS_N 1
+static const char builtin_servers[BUILTIN_SERVERS_N][64] = {"https://dragontea.lightmister.repl.co/"};
+#else
+extern const char builtin_servers[BUILTIN_SERVERS_N][64];
+#endif
 
 static const char nicknames[102][17] = {
     "LuckyUnicorn",    "SadEagle",      "LuckyTiger",      "ShinyRabbit",   "BraveDog",       "CoolDolphin",   "JollyEagle",

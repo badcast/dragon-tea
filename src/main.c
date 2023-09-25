@@ -16,9 +16,6 @@ int main(int argc, char *argv[])
     bindtextdomain(DRAGON_TEA_TEXTDOMAIN, DRAGON_TEA_LOCALE_DIR);
     textdomain(DRAGON_TEA_TEXTDOMAIN);
 
-    // Init networking
-    net_init();
-
     // GUI Init
     gtk_init(&argc, &argv);
 

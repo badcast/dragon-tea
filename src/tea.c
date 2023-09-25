@@ -15,6 +15,9 @@ const char *get_conf_dir();
 
 void tea_init()
 {
+    // Init networking
+    net_init();
+
     // load settings
     tea_load();
 
