@@ -4,7 +4,7 @@ require_once __DIR__ . '/api/sender.php';
 const MESSAGE_INDEXER_ENABLE = true;
 const MESSAGE_DIRS = __DIR__ . "/messages";
 const MESSAGE_FILE_EXT = ".tea";
-const MESSAGE_FILE_CACHE_EXT = ".cache";
+const MESSAGE_FILE_CACHE_EXT = "_cache";
 const MESSAGE_MAX_COUNT = 2048;
 const PACK_FORMAT = "Q";
 const WAITOUT_LOCK_MICROS = 10000;

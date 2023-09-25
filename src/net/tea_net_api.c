@@ -113,6 +113,12 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
     net_stats.transmitted_bytes += request_stats[0];
     net_stats.received_bytes += request_stats[1];
     net_stats.active_requests--;
+
+    if(net_result == CURLE_OK)
+        ++net_stats.success_req;
+    else
+        ++net_stats.error_req;
+
     g_mutex_unlock(&nmutex);
 
     receiver->net_status = net_result;
@@ -131,10 +137,6 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
         }
     }
 
-    if(net_result == CURLE_OK)
-        ++net_stats.success_req;
-    else
-        ++net_stats.error_req;
 
 #ifndef NDEBUG
     printf("curl error code: %s (%d)", curl_easy_strerror(net_result), net_result);
