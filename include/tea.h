@@ -39,9 +39,10 @@ typedef DWORD uid_t;
 #endif
 
 #define INTERVAL_SEND 100
-#define INTERVAL_CHAT_SYNC 500
+#define INTERVAL_CHAT_SYNC 1000
 #define CHANCE_TO_LOGOUT 4
 
+extern struct tea_net_stats net_stats;
 extern struct tea_settings app_settings;
 extern struct tea_app_widgets widgets;
 

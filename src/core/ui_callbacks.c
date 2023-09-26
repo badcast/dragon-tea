@@ -41,7 +41,7 @@ gpointer async_reply(gpointer)
     }
 
     // Читаем сообщение других пользователей и поддерживаем коммуникацию
-    int net = net_api_read_messages(&app_settings.id_info, -1, last_local_msg_id, 16, &last_read_result);
+    int net = net_api_read_messages(&app_settings.id_info, -1, last_local_msg_id, 32, &last_read_result);
 
     thread_reply_msg = NULL;
 

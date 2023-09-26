@@ -1,18 +1,7 @@
 <?php
-const STATUS_OK = 0;
-const STATUS_ID_NO_EXIST = 1;
-const STATUS_INVALID_REQUEST_DATA = 2;
-const STATUS_INVALID_AUTH_METHOD = 3;
-const STATUS_INVALID_NICKNAME = 4;
-const STATUS_INVALID_REGISTER = 5;
-const STATUS_ADMIN_ACCOUNT_REACHABLE = 6;
 
-const STATUS_PRIVATE_MESSAGE_NOT_SUPPORTED = 128;
+require_once __DIR__ . '/../server_config.php';
 
-const STATUS_INTERNAL_SERVER_ERROR = 500;
-
-const STR_MAX_NICKNAME = 16;
-const STR_MAX_TEXT = 255;
 
 function check_valid_nickname($nickname)
 {

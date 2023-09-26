@@ -54,6 +54,17 @@ struct tea_message_send_result
     tea_id_t msg_id;
 };
 
+struct tea_net_stats
+{
+    size_t transmitted_bytes;
+    size_t received_bytes;
+    size_t lost_bytes;
+
+    int active_requests;
+    int success_req;
+    int error_req;
+};
+
 typedef struct
 {
     int authorized;
@@ -106,6 +117,7 @@ struct tea_app_widgets
         GtkWidget *scrolled_window_chat;
         GtkWidget *button_send;
         GtkWidget *label_status;
+        GtkWidget *label_traffics;
         GtkWidget *entry_message_set;
         GtkWidget *top_box;
         GtkWidget *top_button_logout;

@@ -2,16 +2,7 @@
 
 #include "tea.h"
 
-struct
-{
-    size_t transmitted_bytes;
-    size_t received_bytes;
-    size_t lost_bytes;
-
-    int active_requests;
-    int success_req;
-    int error_req;
-} net_stats;
+struct tea_net_stats net_stats;
 
 struct NetworkBody
 {
@@ -136,7 +127,6 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
             break;
         }
     }
-
 
 #ifndef NDEBUG
     printf("curl error code: %s (%d)", curl_easy_strerror(net_result), net_result);

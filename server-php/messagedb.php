@@ -1,15 +1,6 @@
 <?php
 require_once __DIR__ . '/api/sender.php';
 
-const MESSAGE_INDEXER_ENABLE = true;
-const MESSAGE_DIRS = __DIR__ . "/messages";
-const MESSAGE_FILE_EXT = ".tea";
-const MESSAGE_FILE_CACHE_EXT = "_cache";
-const MESSAGE_MAX_COUNT = 2048;
-const PACK_FORMAT = "Q";
-const WAITOUT_LOCK_MICROS = 10000;
-const WAITOUT_TIME_CHANCES = 10;
-
 if (!isset($_SESSION["message_db_inited"])) {
     $_SESSION["message_db_inited"] = true;
 
@@ -49,7 +40,6 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
         if (!file_exists($msg_file) || !MESSAGE_INDEXER_ENABLE) {
             //Remove cache_file then, message_file not exists or message_indexer turned off
             unlink($msg_cache_file);
-            break;
         }
 
         if ($max_messages < 0 || $max_messages > MESSAGE_MAX_COUNT)
