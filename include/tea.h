@@ -38,9 +38,21 @@ typedef DWORD uid_t;
 #define DRAGON_TEA_LOCALE_DIR "locale"
 #endif
 
+#ifndef MESSAGES_PER_REQUEST
+#define MESSAGES_PER_REQUEST 32
+#endif
+
+#ifndef INTERVAL_SEND
 #define INTERVAL_SEND 100
+#endif
+
+#ifndef INTERVAL_CHAT_SYNC
 #define INTERVAL_CHAT_SYNC 1000
+#endif
+
+#ifndef CHANCE_TO_LOGOUT
 #define CHANCE_TO_LOGOUT 4
+#endif
 
 extern struct tea_net_stats net_stats;
 extern struct tea_settings app_settings;

@@ -4,7 +4,7 @@
 
 struct tea_net_stats net_stats;
 
-struct NetworkBody
+struct body_t
 {
     size_t size;
     int net_status;
@@ -26,7 +26,7 @@ void net_free()
     curl_global_cleanup();
 }
 
-size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct NetworkBody *data)
+size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct body_t *data)
 {
     size_t index = data->size;
     size_t n = (size * nmemb);
@@ -65,7 +65,7 @@ int curl_xferinfo(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_
     return CURLE_OK;
 }
 
-int net_send(const char *url, const char *body, long len, struct NetworkBody *receiver)
+int net_send(const char *url, const char *body, long len, struct body_t *receiver)
 {
     CURL *curl;
     CURLcode net_result;
@@ -97,6 +97,7 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
 
     // SEND =====>
     net_result = curl_easy_perform(curl);
+
     // clear curl data ~
     curl_easy_cleanup(curl);
 
@@ -106,9 +107,31 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
     net_stats.active_requests--;
 
     if(net_result == CURLE_OK)
+    {
         ++net_stats.success_req;
+        for(int x = 0; x < receiver->size; ++x)
+        {
+            if(receiver->raw_data[x] == '{')
+            {
+                receiver->json_data = receiver->raw_data + x;
+                break;
+            }
+        }
+    }
     else
+    {
         ++net_stats.error_req;
+
+        if(receiver->raw_data)
+        {
+            free(receiver->raw_data);
+            receiver->raw_data = NULL;
+        }
+
+#ifndef NDEBUG
+        printf("curl error code: %s (%d)\n", curl_easy_strerror(net_result), net_result);
+#endif
+    }
 
     g_mutex_unlock(&nmutex);
 
@@ -119,18 +142,6 @@ int net_send(const char *url, const char *body, long len, struct NetworkBody *re
     // curl_easy_getinfo(curl, &cf);}
 
     // begin up to json data {}
-    for(int x = 0; x < receiver->size; ++x)
-    {
-        if(receiver->raw_data[x] == '{')
-        {
-            receiver->json_data = receiver->raw_data + x;
-            break;
-        }
-    }
-
-#ifndef NDEBUG
-    printf("curl error code: %s (%d)", curl_easy_strerror(net_result), net_result);
-#endif
 
     return net_result == CURLE_OK;
 }
@@ -142,12 +153,11 @@ int net_api_read_messages(
     int max_messages,
     struct tea_message_read_result *output)
 {
+    const char *jstr;
     int result;
     size_t _size;
+    struct body_t input;
     json_object *json_request, *json_result, *jresult_obj, *jmessages, *jval;
-
-    const char *jstr;
-    struct NetworkBody input;
     /*
     Request:
         type: The Type is Read - for use = reader
@@ -182,11 +192,9 @@ int net_api_read_messages(
     json_object_object_add(json_request, "max_messages", json_object_new_int(max_messages));
     jstr = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(result = net_send(tea_get_server_message_handler(), jstr, _size, &input) && input.raw_data != NULL)
+    if((result = net_send(tea_get_server_message_handler(), jstr, _size, &input)) && input.raw_data)
     {
-        json_result = json_tokener_parse(input.raw_data);
-        // free result data
-        free(input.raw_data);
+        json_result = json_tokener_parse(input.json_data);
 
         if(json_object_object_get_ex(json_result, "status", &jval) && (output->status = json_object_get_int(jval)) == TEA_STATUS_OK)
         {
@@ -204,10 +212,10 @@ int net_api_read_messages(
                 // enumerate messages
                 json_object *jmsg;
                 struct tea_message_id *msg;
-                for(size_t x = 0; x < _size; ++x)
+                for(; _size-- > 0;)
                 {
-                    jmsg = json_object_array_get_idx(jmessages, x);
-                    msg = &g_array_index(output->messages, struct tea_message_id, x);
+                    jmsg = json_object_array_get_idx(jmessages, _size);
+                    msg = &g_array_index(output->messages, struct tea_message_id, _size);
 
                     json_object_object_get_ex(jmsg, "msg_id", &jval);
                     msg->msg_id = json_object_get_int64(jval);
@@ -227,10 +235,12 @@ int net_api_read_messages(
 
                     json_object_object_get_ex(jmsg, "message", &jval);
                     jstr = json_object_get_string(jval);
-                    msg->message_text = strdup(jstr);
+                    msg->message_text = strndup(jstr, json_object_get_string_len(jval));
                 }
             }
         }
+
+        json_object_put(json_result);
     }
     else
     {
@@ -238,6 +248,12 @@ int net_api_read_messages(
     }
 
     json_object_put(json_request);
+
+    // free result data
+    if(input.raw_data)
+    {
+        free(input.raw_data);
+    }
 
     return result;
 }
@@ -250,7 +266,7 @@ int net_api_write_message(
     json_object *json_request, *json_result, *jresult_obj, *jval;
 
     const char *json_serialized;
-    struct NetworkBody input;
+    struct body_t input;
     /*
     Request:
         type: The Type is Write - for use = writer
@@ -270,7 +286,7 @@ int net_api_write_message(
     json_object_object_add(json_request, "message", json_object_new_string_len(message, len));
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(net = net_send(tea_get_server_message_handler(), json_serialized, _size, &input) && input.raw_data != NULL)
+    if((net = net_send(tea_get_server_message_handler(), json_serialized, _size, &input)) && input.raw_data)
     {
         json_result = json_tokener_parse(input.json_data);
 
@@ -287,8 +303,8 @@ int net_api_write_message(
             json_object_object_get_ex(jresult_obj, "msg_id", &jval);
             output->msg_id = json_object_get_int64(jval);
         }
-        // free result data
-        free(input.raw_data);
+
+        json_object_put(json_result);
     }
     else
     {
@@ -296,6 +312,12 @@ int net_api_write_message(
     }
 
     json_object_put(json_request);
+
+    // free result data
+    if(input.raw_data)
+    {
+        free(input.raw_data);
+    }
 
     return net;
 }
@@ -306,7 +328,7 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
     size_t _size;
     json_object *json_request, *jresult, *jval;
     const char *json_serialized;
-    struct NetworkBody input;
+    struct body_t input;
 
     while(1)
     {
@@ -314,11 +336,9 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
         json_object_object_add(json_request, "user_id", json_object_new_int64(user_id));
 
         json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
-        if(net = net_send(tea_get_server_auth(), json_serialized, _size, &input) && input.raw_data != NULL)
+        if((net = net_send(tea_get_server_auth(), json_serialized, _size, &input)) && input.raw_data)
         {
             jresult = json_tokener_parse(input.json_data);
-            // free result data
-            free(input.raw_data);
 
             if(!json_object_object_get_ex(jresult, "status", &jval))
             {
@@ -358,6 +378,13 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
     }
     // free json resource
     json_object_put(json_request);
+
+    // free result data
+    if(input.raw_data)
+    {
+        free(input.raw_data);
+    }
+
     return net;
 }
 
@@ -367,14 +394,14 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     size_t _size;
     json_object *json_request, *jresult, *jval;
     const char *json_serialized;
-    struct NetworkBody input;
+    struct body_t input;
 
     json_request = json_object_new_object();
     json_object_object_add(json_request, "user_nickname", json_object_new_string(nickname));
 
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if(net = net_send(tea_get_server_register(), json_serialized, _size, &input) && input.raw_data != NULL)
+    if((net = net_send(tea_get_server_register(), json_serialized, _size, &input)) && input.raw_data)
     {
         jresult = json_tokener_parse(input.json_data);
         // free result data
@@ -412,5 +439,13 @@ int net_api_signup(const char *nickname, tea_register_result *output)
 
     // free json resource
     json_object_put(json_request);
+
+    // free result data
+    if(input.raw_data)
+    {
+        free(input.raw_data);
+        input.raw_data = NULL;
+    }
+
     return net;
 }

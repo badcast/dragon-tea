@@ -29,6 +29,14 @@ Dragon Tea. Free Messenger
 | pkg-config            |                        |                                                                                              |
 
 
+## How to customization server?
+-----
+
+```Server (backend):``` The file located at [server_config](./server-php/server_config.php) contains the server configuration settings.
+
+```Client (frontend):``` The file located at ```$HOME/.config/DragonTea/tea-config.json``` contains the client configuration settings
+
+
 ## How to build? Build in 5 steps!
 -----
 

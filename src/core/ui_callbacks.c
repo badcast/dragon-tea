@@ -2,12 +2,12 @@
 
 struct tea_app_widgets widgets;
 
-GThread *thread_sending = NULL;
+GThread *thread_send_msg = NULL;
 GThread *thread_reply_msg = NULL;
 
 guint check_chance_logouting = CHANCE_TO_LOGOUT;
 
-struct tea_message_send_result last_sended_result;
+struct tea_message_send_result last_send_result;
 struct tea_message_read_result last_read_result;
 
 gpointer async_send(const char *text)
@@ -17,16 +17,16 @@ gpointer async_send(const char *text)
 
     int len = strlen(text);
     // send message to
-    int net = net_api_write_message(&app_settings.id_info, -1, text, len, &last_sended_result);
+    int net = net_api_write_message(&app_settings.id_info, -1, text, len, &last_send_result);
     // set work complete
-    thread_sending = NULL;
+    thread_send_msg = NULL;
 
     return NULL;
 }
 
 gpointer async_reply(gpointer)
 {
-    // thread
+    int net;
 
     // Последнее сообщение на локальной машине (когда на сервере она устарело)
     int last_local_msg_id;
@@ -41,7 +41,7 @@ gpointer async_reply(gpointer)
     }
 
     // Читаем сообщение других пользователей и поддерживаем коммуникацию
-    int net = net_api_read_messages(&app_settings.id_info, -1, last_local_msg_id, 32, &last_read_result);
+    net = net_api_read_messages(&app_settings.id_info, -1, last_local_msg_id, MESSAGES_PER_REQUEST, &last_read_result);
 
     thread_reply_msg = NULL;
 
@@ -50,10 +50,10 @@ gpointer async_reply(gpointer)
 
 gboolean on_chat_sending_async(const gchar *text)
 {
-    int worked = thread_sending == NULL;
+    int worked = thread_send_msg == NULL;
     if(worked)
     {
-        if(last_sended_result.msg_id && last_sended_result.status == TEA_STATUS_OK)
+        if(last_send_result.msg_id && last_send_result.status == TEA_STATUS_OK)
         {
 
             /*
@@ -74,8 +74,8 @@ gboolean on_chat_sending_async(const gchar *text)
             char buffer[255];
             const char format[] = "%H:%M";
             gchar *sended_time, *received_time;
-            GDateTime *datet = g_date_time_new_from_unix_local(last_sended_result.time_saved);
-            GDateTime *date2 = g_date_time_new_from_unix_local(last_sended_result.time_received);
+            GDateTime *datet = g_date_time_new_from_unix_local(last_send_result.time_saved);
+            GDateTime *date2 = g_date_time_new_from_unix_local(last_send_result.time_received);
             sended_time = g_date_time_format(datet, format);
             received_time = g_date_time_format(date2, format);
             snprintf(buffer, sizeof(buffer), _("The message has been sent. Time of sending %s, received %s"), sended_time, received_time);
@@ -127,6 +127,7 @@ gboolean on_chat_message_handler_async(gpointer)
             // Успех при чтений данных
             case TEA_STATUS_OK:
                 last_chance_state = check_chance_logouting;
+
                 // Reset logouting chances
                 check_chance_logouting = CHANCE_TO_LOGOUT;
 
@@ -239,14 +240,14 @@ void on_chat_send_button(GtkWidget *widget, gpointer data)
     const gchar *text = gtk_entry_get_text(entry);
     int len = gtk_entry_get_text_length(entry);
 
-    if(len < 1 && thread_sending != NULL)
+    if(len < 1 && thread_send_msg != NULL)
         return;
 
     // disable Chat widget
     gtk_widget_set_sensitive(widgets.widget_main, FALSE);
     tea_ui_chat_status_text(_("Sending..."));
 
-    thread_sending = g_thread_new(NULL, (GThreadFunc) async_send, (gpointer) text);
+    thread_send_msg = g_thread_new(NULL, (GThreadFunc) async_send, (gpointer) text);
 
     g_timeout_add(INTERVAL_SEND, (GSourceFunc) on_chat_sending_async, (gpointer) text);
 }
@@ -255,6 +256,8 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
 {
     char buffer[300];
     app_settings.connected = TRUE;
+
+    tea_ui_chat_clear();
 
     tea_ui_focus_tab(UI_TAB_CHAT);
 
@@ -303,6 +306,9 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
 
 void tea_on_logouted()
 {
+    if(!app_settings.connected)
+        return;
+
     app_settings.connected = FALSE;
 
     // remove message handler
@@ -325,18 +331,19 @@ void tea_on_logouted()
     // saved old data, reset at
     if(last_read_result.messages)
     {
-        // Clear local messages
         for(int x = 0; x < last_read_result.messages->len; ++x)
         {
             free(g_array_index(last_read_result.messages, struct tea_message_id, x).message_text);
         }
+        g_array_free(last_read_result.messages, TRUE);
         memset(&last_read_result, 0, sizeof(last_read_result));
     }
 
     // Clear local messages
-    for(int x = 0; x < app_settings.local_msg_db->len; ++x)
+    for(size_t x = 0; x < app_settings.local_msg_db->len; ++x)
     {
         free(g_array_index(app_settings.local_msg_db, struct tea_message_id, x).message_text);
     }
-    g_array_set_size(app_settings.local_msg_db, 0);
+    g_array_free(app_settings.local_msg_db, TRUE);
+    app_settings.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
 }

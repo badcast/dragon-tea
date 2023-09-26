@@ -326,7 +326,7 @@ int tea_get_server_id(const char *serverURI)
     return id;
 }
 
-int tea_get_builtin_server_list(char list[3][64])
+int tea_get_builtin_server_list(char list[BUILTIN_SERVERS_N][64])
 {
     memcpy(list, builtin_servers, sizeof(builtin_servers));
     return sizeof(builtin_servers) / sizeof(builtin_servers[0]);

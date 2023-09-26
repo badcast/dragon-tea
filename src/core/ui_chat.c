@@ -19,11 +19,11 @@ char *expower_bytesISO(char *str, int len, uintmax_t bytes)
 
     /*
     ASSIGN: bytes < 1024 = bytes
-           bytes < 1024^2 = KiB
-           bytes < 1024^3 = MiB
-           bytes < 1024^4 = GiB
-           bytes < 1024^5 = TiB
-           ~ BigData
+            bytes < 1024^2 = KiB
+            bytes < 1024^3 = MiB
+            bytes < 1024^4 = GiB
+            bytes < 1024^5 = TiB
+          ~ BigData
     */
     int power = 0;
 
@@ -42,9 +42,9 @@ gboolean on_refresh_traffic(gpointer)
     char buffer[78], bufA[24];
     buffer[0] = bufA[0] = 0;
 
-    strncat(buffer, expower_bytesISO(bufA, sizeof(bufA), net_stats.transmitted_bytes-last_sent), sizeof(buffer));
+    strncat(buffer, expower_bytesISO(bufA, sizeof(bufA), net_stats.transmitted_bytes - last_sent), sizeof(buffer));
     strncat(buffer, "/s / ", sizeof(buffer));
-    strncat(buffer, expower_bytesISO(bufA, sizeof(bufA), net_stats.received_bytes-last_recv), sizeof(buffer));
+    strncat(buffer, expower_bytesISO(bufA, sizeof(bufA), net_stats.received_bytes - last_recv), sizeof(buffer));
     strncat(buffer, "/s", sizeof(buffer));
 
     strncat(buffer, " | ", sizeof(buffer));
@@ -59,7 +59,6 @@ gboolean on_refresh_traffic(gpointer)
     return 1;
 }
 
-GtkTextTag *red_tag;
 GtkWidget *create_chat_widget()
 {
     // Создание верхнего уровня окна
@@ -98,12 +97,7 @@ GtkWidget *create_chat_widget()
     gtk_widget_set_margin_bottom(text_view, 10);
 
     // init tags
-    GtkTextBuffer *textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
-    red_tag = gtk_text_buffer_create_tag(textbuffer, "red_foreground", "foreground", "red", NULL);
-
     gtk_container_add(GTK_CONTAINER(scrolled_text), text_view);
-    // Запрещаем GtkTextView изменять размеры
-    gtk_widget_set_size_request(text_view, 200, 100);
 
     gtk_box_pack_start(GTK_BOX(vertical_box), scrolled_text, TRUE, TRUE, 0);
 
@@ -128,7 +122,7 @@ GtkWidget *create_chat_widget()
     GtkWidget *label = widgets.chat_tab.label_status = gtk_label_new(NULL);
     gtk_box_pack_start(GTK_BOX(status_box), label, TRUE, TRUE, 0);
     label = widgets.chat_tab.label_traffics = gtk_label_new(NULL);
-    gtk_box_pack_end(GTK_BOX(status_box), label, FALSE, TRUE, 25);
+    gtk_box_pack_end(GTK_BOX(status_box), label, FALSE, TRUE, 5);
     gtk_box_pack_end(GTK_BOX(status_box), gtk_image_new_from_icon_name("mail-send-receive", GTK_ICON_SIZE_SMALL_TOOLBAR), FALSE, TRUE, 0);
 
     g_timeout_add(1000, on_refresh_traffic, NULL);

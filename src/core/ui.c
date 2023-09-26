@@ -43,14 +43,15 @@ void tea_ui_init()
 void tea_ui_update_settings()
 {
     int selServer = 0;
-    for(int x = 0; x < sizeof(app_settings.servers[0]); ++x)
+    for(int x = 0; x < 32; ++x)
     {
         if(strlen(app_settings.servers[x]) == 0)
             break;
 
-        if(selServer == 0 && tea_get_server_id(app_settings.servers[x]) == app_settings.active_server)
+        if(tea_get_server_id(app_settings.servers[x]) == app_settings.active_server)
         {
             selServer = x;
+            break;
         }
     }
     gtk_combo_box_set_active(GTK_COMBO_BOX(widgets.settings_tab.combx_server_list), selServer);
@@ -66,10 +67,12 @@ void tea_ui_chat_enable(int value)
     tea_ui_chat_status_text("");
     tea_ui_chat_set_text_top("");
     gtk_entry_set_text(GTK_ENTRY(widgets.chat_tab.entry_message_set), "");
-    if(value)
-        tea_ui_chat_clear();
-    else
+
+    tea_ui_chat_clear();
+
+    if(!value)
         tea_ui_chat_set_text(_("You state is offline"));
+
     // interactable
     tea_ui_chat_interactable(value);
 }
@@ -81,20 +84,15 @@ void tea_ui_chat_interactable(int value)
     gtk_widget_grab_focus(widgets.chat_tab.entry_message_set);
 }
 
-void tea_ui_chat_status_text(const char *status_text)
-{
-    gtk_label_set_text(GTK_LABEL(widgets.chat_tab.label_status), status_text);
-}
-
-void tea_ui_chat_clear()
-{
-    tea_ui_chat_set_text("");
-}
-
 void tea_ui_chat_sync()
 {
     widgets.chat_tab.chat_synched = FALSE;
     on_chat_message_handler_async(NULL);
+}
+
+void tea_ui_chat_status_text(const char *status_text)
+{
+    gtk_label_set_text(GTK_LABEL(widgets.chat_tab.label_status), status_text);
 }
 
 void tea_ui_chat_set_text_top(const char *text)
@@ -106,6 +104,11 @@ void tea_ui_chat_set_text(const char *text)
 {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widgets.chat_tab.textview_chat));
     gtk_text_buffer_set_text(buffer, text, -1);
+}
+
+void tea_ui_chat_clear()
+{
+    tea_ui_chat_set_text("");
 }
 
 void tea_ui_chat_vscroll_max()
@@ -127,7 +130,14 @@ void tea_ui_chat_push_block(const struct tea_message_id *message)
      *  FORMAT VIEW for Message Block
      *   bad@(21:16): Hello
      */
-    static const char format_message_block[] = "\n\n%s@[%s]: %s\n";
+
+    if(message == NULL)
+    {
+        printf("Message is null\n");
+        return;
+    }
+
+    static const char format_message_block[] = "\n\n%s@(%s): %s\n";
     GDateTime *_gdatetime = g_date_time_new_from_unix_local(message->time_received);
     gchar *date_time = g_date_time_format(_gdatetime, "%H:%M");
 
@@ -152,6 +162,5 @@ void tea_ui_chat_push_text_raw(const char *text, int len)
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widgets.chat_tab.textview_chat));
     GtkTextIter iter;
     gtk_text_buffer_get_end_iter(buffer, &iter);
-    // gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, text, len, "red_foreground");
     gtk_text_buffer_insert(buffer, &iter, text, len);
 }
