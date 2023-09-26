@@ -210,7 +210,7 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
     //  reset servers to built in an error
     if((validate & 8))
     {
-        char builtin_servers[3][64];
+        char builtin_servers[BUILTIN_SERVERS_N][64];
         int list_num = tea_get_builtin_server_list(builtin_servers);
         for(; list_num-- > 0;)
         {

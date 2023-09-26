@@ -235,7 +235,7 @@ int net_api_read_messages(
 
                     json_object_object_get_ex(jmsg, "message", &jval);
                     jstr = json_object_get_string(jval);
-                    msg->message_text = strndup(jstr, json_object_get_string_len(jval));
+                    msg->message_text = strdup(jstr);
                 }
             }
         }
@@ -404,8 +404,6 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     if((net = net_send(tea_get_server_register(), json_serialized, _size, &input)) && input.raw_data)
     {
         jresult = json_tokener_parse(input.json_data);
-        // free result data
-        free(input.raw_data);
 
         json_object_object_get_ex(jresult, "status", &jval);
         output->status = json_object_get_int(jval);

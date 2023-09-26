@@ -47,7 +47,7 @@ typedef DWORD uid_t;
 #endif
 
 #ifndef INTERVAL_CHAT_SYNC
-#define INTERVAL_CHAT_SYNC 1000
+#define INTERVAL_CHAT_SYNC 1450
 #endif
 
 #ifndef CHANCE_TO_LOGOUT
