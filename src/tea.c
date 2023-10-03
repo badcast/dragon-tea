@@ -56,7 +56,7 @@ void tea_login(const struct tea_id_info *login_info)
 
 int tea_try_login()
 {
-    int result = app_settings.id_info.user_id != -1 && strcmp("", app_settings.id_info.user_nickname) != 0;
+    int result = app_settings.id_info.user_id != -1 && strlen(app_settings.id_info.user_nickname) > 0;
     if(result)
     {
         tea_ui_auth_set_id(app_settings.id_info.user_id);
