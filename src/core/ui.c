@@ -26,6 +26,15 @@ void tea_ui_init()
         GTK_NOTEBOOK(notebook), gtk_image_new_from_icon_name("help-about", GTK_ICON_SIZE_LARGE_TOOLBAR), gtk_label_new(_("About")));
     g_signal_connect(notebook, "switch-page", G_CALLBACK(ui_on_notebook_switch_page), NULL);
 
+    // set margins
+    for(int x = 0; x < gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)); ++x)
+    {
+        gtk_widget_set_margin_start(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
+        gtk_widget_set_margin_bottom(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
+        gtk_widget_set_margin_top(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
+        gtk_widget_set_margin_end(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
+    }
+
     // Show window
     gtk_widget_show_all(main_window);
 

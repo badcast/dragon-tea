@@ -81,25 +81,23 @@ GtkWidget *create_chat_widget()
         0);
     g_signal_connect(widgets.chat_tab.top_button_logout, "clicked", G_CALLBACK(on_button_logout), NULL);
 
-    gtk_box_pack_start(GTK_BOX(top_horz_box), widgets.chat_tab.top_label_user_state = gtk_label_new("Hello"), FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(top_horz_box), widgets.chat_tab.top_label_user_state = gtk_label_new(NULL), FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(place_widget), top_horz_box, FALSE, TRUE, 0);
 
     // Создание текстового поля (GtkTextView) и установка его в вертикальный контейнер
     GtkWidget *scrolled_text = widgets.chat_tab.scrolled_window_chat = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_text), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_text), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_text), GTK_SHADOW_IN);
+    gtk_scrolled_window_set_kinetic_scrolling(GTK_SCROLLED_WINDOW(scrolled_text), TRUE);
 
     GtkWidget *text_view = widgets.chat_tab.textview_chat = gtk_text_view_new();
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text_view), GTK_WRAP_CHAR);
     gtk_text_view_set_editable(GTK_TEXT_VIEW(text_view), FALSE);
-    gtk_widget_set_margin_top(text_view, 10);
-    gtk_widget_set_margin_start(text_view, 10);
-    gtk_widget_set_margin_end(text_view, 10);
-    gtk_widget_set_margin_bottom(text_view, 10);
 
     // init tags
     gtk_container_add(GTK_CONTAINER(scrolled_text), text_view);
 
-    gtk_box_pack_start(GTK_BOX(vertical_box), scrolled_text, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vertical_box), scrolled_text, TRUE, TRUE, 10);
 
     // Создание поля ввода текста (GtkEntry)
     GtkWidget *entry = widgets.chat_tab.entry_message_set = gtk_entry_new();
