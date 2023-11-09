@@ -1,6 +1,6 @@
 # Russian translations for PACKAGE package
 # Английские переводы для пакета PACKAGE.
-# Copyright (C) 2023 badcast
+# SPDX-FileCopyrightText: 2023 badcast
 # This file is distributed under the same license as the PACKAGE package.
 # SPDX-FileCopyrightText: 2023 Bad Cast <lmecomposer@gmail.com>
 #
@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
-"POT-Creation-Date: 2023-09-18 00:52+0600\n"
-"PO-Revision-Date: 2023-09-18 00:58+0600\n"
-"Last-Translator: Bad Cast <lmecomposer@gmail.com>\n"
+"POT-Creation-Date: 2023-11-11 00:42+0600\n"
+"PO-Revision-Date: 2023-11-11 00:44+0600\n"
+"Last-Translator: badcast <lmecomposer@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -18,9 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
 "=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 23.08.1\n"
+"X-Generator: Lokalize 23.08.3\n"
 
-#: ../src/tea.c:270
+#: ../src/tea.c:270 ../src/tea.c:273
 msgid "Error"
 msgstr "Ошибка"
 
@@ -44,11 +44,11 @@ msgstr "Предпочитаемый сервер: "
 msgid "Apply changes"
 msgstr "Применить изменения"
 
-#: ../src/core/ui_authorize.c:84
+#: ../src/core/ui_authorize.c:84 ../src/core/ui_authorize.c:88
 msgid "User is not exists."
 msgstr "Данный пользователь не существует."
 
-#: ../src/core/ui_authorize.c:93
+#: ../src/core/ui_authorize.c:93 ../src/core/ui_authorize.c:97
 #, c-format
 msgid ""
 "Authentication is not confirmed:\n"
@@ -59,7 +59,7 @@ msgstr ""
 "Код ошибки: %d\n"
 "Сообщение ошибки: %s"
 
-#: ../src/core/ui_authorize.c:123
+#: ../src/core/ui_authorize.c:123 ../src/core/ui_authorize.c:127
 #, c-format
 msgid ""
 "Error registration:\n"
@@ -70,23 +70,25 @@ msgstr ""
 "Код ошибки: %d\n"
 "Сообщение ошибки: %s"
 
-#: ../src/core/ui_authorize.c:167
+#: ../src/core/ui_authorize.c:167 ../src/core/ui_authorize.c:171
 msgid "The nickname should not be empty."
 msgstr "Ник не может быть пустым."
 
-#: ../src/core/ui_authorize.c:191
+#: ../src/core/ui_authorize.c:191 ../src/core/ui_authorize.c:195
 msgid "You set is invalid ID"
 msgstr "Вы указали не валидный ID"
 
 #: ../src/core/ui_authorize.c:225 ../src/core/ui_authorize.c:262
+#: ../src/core/ui_authorize.c:229 ../src/core/ui_authorize.c:266
 msgid "Sign in"
 msgstr "Войти"
 
 #: ../src/core/ui_authorize.c:226 ../src/core/ui_authorize.c:306
+#: ../src/core/ui_authorize.c:230 ../src/core/ui_authorize.c:310
 msgid "Sign up"
 msgstr "Зарегистрироваться"
 
-#: ../src/core/ui_authorize.c:235
+#: ../src/core/ui_authorize.c:235 ../src/core/ui_authorize.c:239
 msgid ""
 "Log in using your UserID\n"
 "note: Numbers only, and it must be unique."
@@ -94,15 +96,15 @@ msgstr ""
 "Выполните вход через свой UserID\n"
 "Примечание: Только числа, и он должен быть уникальным."
 
-#: ../src/core/ui_authorize.c:246
+#: ../src/core/ui_authorize.c:246 ../src/core/ui_authorize.c:250
 msgid "Signing..."
 msgstr "Входим..."
 
-#: ../src/core/ui_authorize.c:254
+#: ../src/core/ui_authorize.c:254 ../src/core/ui_authorize.c:258
 msgid "Set UserID..."
 msgstr "Введите UserID..."
 
-#: ../src/core/ui_authorize.c:274
+#: ../src/core/ui_authorize.c:274 ../src/core/ui_authorize.c:278
 msgid ""
 "Enter your nickname.\n"
 "Force the use of the Latin alphabet,\n"
@@ -112,11 +114,11 @@ msgstr ""
 "Принудительно используйте латинский алфавит,\n"
 "длина ника не более 16 и не менее 3."
 
-#: ../src/core/ui_authorize.c:285
+#: ../src/core/ui_authorize.c:285 ../src/core/ui_authorize.c:289
 msgid "Sign up..."
 msgstr "Регистрация..."
 
-#: ../src/core/ui_authorize.c:293
+#: ../src/core/ui_authorize.c:293 ../src/core/ui_authorize.c:297
 msgid "Enter nickname..."
 msgstr "Введите никнейм..."
 
@@ -136,7 +138,7 @@ msgstr "Конфигурация"
 msgid "About"
 msgstr "О программе"
 
-#: ../src/core/ui.c:72
+#: ../src/core/ui.c:72 ../src/core/ui.c:83
 msgid "You state is offline"
 msgstr "Не выполнен вход на сервер"
 
@@ -154,36 +156,36 @@ msgstr "Ошибка отправки."
 msgid "Synchronization of %ld messages"
 msgstr "Синхронизация %ld сообщений"
 
-#: ../src/core/ui_callbacks.c:136
+#: ../src/core/ui_callbacks.c:136 ../src/core/ui_callbacks.c:137
 msgid "Your network has been restored. "
 msgstr "Ваша сеть восстановлена. "
 
-#: ../src/core/ui_callbacks.c:140
+#: ../src/core/ui_callbacks.c:140 ../src/core/ui_callbacks.c:141
 msgid "You're online."
 msgstr "Вы в сети."
 
-#: ../src/core/ui_callbacks.c:172
+#: ../src/core/ui_callbacks.c:172 ../src/core/ui_callbacks.c:173
 msgid "Your account has been deleted."
 msgstr "Ваш аккаунт был удален."
 
-#: ../src/core/ui_callbacks.c:180
+#: ../src/core/ui_callbacks.c:180 ../src/core/ui_callbacks.c:181
 #, c-format
 msgid "Network error. Your connection has been reset (%d remains)"
 msgstr "Сетевая ошибка. Ваше соединение было сброшено (%d осталось)"
 
-#: ../src/core/ui_callbacks.c:187
+#: ../src/core/ui_callbacks.c:187 ../src/core/ui_callbacks.c:188
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
-#: ../src/core/ui_callbacks.c:247
+#: ../src/core/ui_callbacks.c:247 ../src/core/ui_callbacks.c:248
 msgid "Sending..."
 msgstr "Отправка..."
 
-#: ../src/core/ui_callbacks.c:263
+#: ../src/core/ui_callbacks.c:263 ../src/core/ui_callbacks.c:266
 msgid "Login completed."
 msgstr "Вход выполнен."
 
-#: ../src/core/ui_callbacks.c:277
+#: ../src/core/ui_callbacks.c:277 ../src/core/ui_callbacks.c:280
 #, c-format
 msgid ""
 "------\n"
@@ -203,4 +205,13 @@ msgstr ""
 "Время регистраций: %s\n"
 "Время последнего входа: %s\n"
 "------\n"
+
+#: ../src/main.c:14
+#, c-format
+msgid ""
+"The program is running as root. These privileges can harm the system, please "
+"be aware of this. Closing."
+msgstr ""
+"Программа запущена от имени пользователя root. Эти привилегии могут нанести"
+" вред системе, пожалуйста, имейте это в виду. Закрытие."
 
