@@ -23,6 +23,7 @@ function send_json($data)
 {
     header("HTTP/1.1 200 OK");
     header("Content-Type: application/json");
+    header("Access-Control-Allow-Origin: *");
     echo json_encode($data);
 }
 
