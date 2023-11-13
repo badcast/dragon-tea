@@ -1,0 +1,78 @@
+body {
+    background: lightgray;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Стиль input в стиле Windows XP */
+input {
+    padding: 8px;
+    font-size: 12px;
+    border: 1px solid #939393;
+    color: #000;
+    background-color: #d8d8d8;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:hover,
+input:focus {
+    background-color: #c0c0c0;
+    color: #000;
+    box-shadow: 1px 1px 1px #a0a0a0;
+}
+
+/* Стиль кнопки в стиле Windows XP */
+button {
+    display: inline-block;
+    padding: 8px 15px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid #939393;
+    color: #000;
+    background-color: #d8d8d8;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    background-color: #c0c0c0;
+    color: #000;
+}
+
+button:active {
+    background-color: #a0a0a0;
+    color: #000;
+}
+
+button[disabled] {
+    background-color: darkgray;
+    cursor: not-allowed;
+}
+
+.form_sigin {
+    margin: auto;
+    width: 400px;
+    height: 250px;
+    background: #dbdbdb;
+    padding: 10px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+}
+
+/* Стиль ссылок в стиле Windows XP */
+a {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #000;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+a:hover {
+    color: #0066cc;
+    border-bottom: 1px solid #0066cc;
+}
