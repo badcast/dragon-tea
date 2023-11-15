@@ -1,0 +1,14 @@
+.form_sigin {
+    border: 1px solid black;
+    margin: auto;
+    background: #dbdbdb;
+    padding: 10px;
+    position: absolute;
+    width: 400px;
+    height: 300px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+}

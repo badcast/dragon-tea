@@ -5,21 +5,39 @@
     <title>Dragon Tea - Web Client</title>
     <script src="./tea_api.js"></script>
     <script src="./tea_ui.js"></script>
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="./styles/design.css">
+    <link rel="stylesheet" type="text/css" href="./styles/form.css">
 </head>
 
 <body>
-    <div class="form_sigin">
-        <p>Добро пожалаловать на сервер Драконего чая!</p>
-        <input id="inputSignin" type="text" placeholder="User ID" value="">
-        <button onclick="tea_ui_signin()">Вход</button>
-        <p>
-            <button>RU</button>
-            <button disabled>EN</button>
-        </p>
+    <div id="_wforms">
+        <div class="form_sigin">
+            <p>Добро пожалаловать на сервер Драконего чая!</p>
+            <input id="inputSignin" type="text" placeholder="User ID" value=""/>
+            <button style="left: 0;" onclick="document.getElementById('inputSignin').value=''">x</button>
+            <p></p>
+            <button onclick="tea_ui_signin()">Вход</button>
+            <div style="font-size: 12px;">
+                <p class="sticky_label">(!) для входа требуется только UserID которое выдано лично вам.</p>
+                <p>Данная Веб странница под лицензией <a target="_blank"
+                        href="https://wikipedia.org/wiki/GNU_General_Public_License#GPL_v3">GPLv3</a></p>
+                <p><a target="_blank" href="https://github.com/badcast/dragon-tea">Исходный код</a> <a target="_blank"
+                        href="https://github.com/badcast/dragon-tea/tree/main/server-php">сервера</a> и <a
+                        target="_blank" href="https://github.com/badcast/dragon-tea/tree/main/webclient">web-клиента</a>
+                </p>
+                <p>Так-же имееться программное обеспечение под <br /><a target="_blank"
+                        href="https://github.com/badcast/dragon-tea/releases">Linux и Windows</a></p>
+                <p>
+                    <button>RU</button>
+                    <button disabled>EN</button>
+                </p>
+            </div>
+        </div>
 
-        <p>Данная Веб странница под лицензией <a target="_blank" href="https://wikipedia.org/wiki/GNU_General_Public_License#GPL_v3">GPLv3</a></p>
-        <p><a target="_blank" href="https://github.com/badcast/dragon-tea">Исходный код</a> <a target="_blank" href="https://github.com/badcast/dragon-tea/tree/main/server-php">сервера</a> и <a target="_blank" href="https://github.com/badcast/dragon-tea/tree/main/webclient">web-клиента</a> </p>
+        <div style="display: none;" class="form_sigin">
+            <p>Ваше сообщение</p>
+            <button>OK</button>
+        </div>
     </div>
 </body>
 

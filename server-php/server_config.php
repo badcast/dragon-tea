@@ -32,9 +32,11 @@ const STATUS_INVALID_REQUEST_DATA = 2;
 const STATUS_INVALID_AUTH_METHOD = 3;
 // Invalid nickname, exists characters
 const STATUS_INVALID_NICKNAME = 4;
+// Invalid register on server
 const STATUS_INVALID_REGISTER = 5;
+// Admin account is no reachable
 const STATUS_ADMIN_ACCOUNT_REACHABLE = 6;
-
+// Private message is not support by this server
 const STATUS_PRIVATE_MESSAGE_NOT_SUPPORTED = 128;
-
+// Internal Server Error (bad code)
 const STATUS_INTERNAL_SERVER_ERROR = 500;

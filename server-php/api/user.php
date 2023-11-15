@@ -124,7 +124,7 @@ function push_user($user_nickname)
 {
     global $USERS,$CHANGED_USERS;
 
-    $time = time(); // get creation date
+    $time = time(); // get creation time
     $newID = -1;
     do {
         //0 .. 127 - reserved

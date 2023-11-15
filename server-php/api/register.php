@@ -29,6 +29,7 @@ if ($data === null || !is_string($data->user_nickname)) {
     send_auth_fail(STATUS_INVALID_REQUEST_DATA);
     exit;
 } else {
+
     if (!check_valid_nickname($data->user_nickname)) {
         send_auth_fail(STATUS_INVALID_NICKNAME);
         exit;
