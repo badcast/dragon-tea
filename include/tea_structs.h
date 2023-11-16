@@ -65,6 +65,19 @@ struct tea_net_stats
     int error_req;
 };
 
+struct tea_server_info
+{
+    struct
+    {
+        char major;
+        char minor;
+        char patch;
+    } server_version;
+
+    char maintainer[32];
+    char license[32];
+};
+
 typedef struct
 {
     int authorized;

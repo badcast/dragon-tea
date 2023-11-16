@@ -3,8 +3,17 @@
 #include "tea.h"
 
 struct tea_net_stats net_stats;
+struct tea_server_info current_server_info;
 
-struct body_t
+struct
+{
+    char SAUTH[255];
+    char SREGISTER[255];
+    char SMHANDLER[255];
+    char SINFO[255];
+} slocal_vars;
+
+struct net_responce_t
 {
     size_t size;
     int net_status;
@@ -26,7 +35,7 @@ void net_free()
     curl_global_cleanup();
 }
 
-size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct body_t *data)
+size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct net_responce_t *data)
 {
     size_t index = data->size;
     size_t n = (size * nmemb);
@@ -65,7 +74,7 @@ int curl_xferinfo(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_
     return CURLE_OK;
 }
 
-int net_send(const char *url, const char *body, long len, struct body_t *receiver)
+int net_send(const char *url, const char *body, size_t len, struct net_responce_t *receiver)
 {
     CURL *curl;
     CURLcode net_result;
@@ -80,8 +89,11 @@ int net_send(const char *url, const char *body, long len, struct body_t *receive
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, receiver);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_writer);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, len);
+    if(body != NULL && len)
+    {
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, len);
+    }
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
     curl_easy_setopt(curl, CURLOPT_XFERINFODATA, request_stats);
     curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, curl_xferinfo);
@@ -156,7 +168,7 @@ int net_api_read_messages(
     const char *jstr;
     int result;
     size_t _size;
-    struct body_t input;
+    struct net_responce_t input;
     json_object *json_request, *json_result, *jresult_obj, *jmessages, *jval;
     /*
     Request:
@@ -192,7 +204,7 @@ int net_api_read_messages(
     json_object_object_add(json_request, "max_messages", json_object_new_int(max_messages));
     jstr = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if((result = net_send(tea_get_server_message_handler(), jstr, _size, &input)) && input.raw_data)
+    if((result = net_send(tea_url_server_message_handler(), jstr, _size, &input)) && input.raw_data)
     {
         json_result = json_tokener_parse(input.json_data);
 
@@ -266,7 +278,7 @@ int net_api_write_message(
     json_object *json_request, *json_result, *jresult_obj, *jval;
 
     const char *json_serialized;
-    struct body_t input;
+    struct net_responce_t input;
     /*
     Request:
         type: The Type is Write - for use = writer
@@ -286,7 +298,7 @@ int net_api_write_message(
     json_object_object_add(json_request, "message", json_object_new_string_len(message, len));
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if((net = net_send(tea_get_server_message_handler(), json_serialized, _size, &input)) && input.raw_data)
+    if((net = net_send(tea_url_server_message_handler(), json_serialized, _size, &input)) && input.raw_data)
     {
         json_result = json_tokener_parse(input.json_data);
 
@@ -328,7 +340,7 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
     size_t _size;
     json_object *json_request, *jresult, *jval;
     const char *json_serialized;
-    struct body_t input;
+    struct net_responce_t input;
 
     while(1)
     {
@@ -336,7 +348,7 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
         json_object_object_add(json_request, "user_id", json_object_new_int64(user_id));
 
         json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
-        if((net = net_send(tea_get_server_auth(), json_serialized, _size, &input)) && input.raw_data)
+        if((net = net_send(tea_url_server_auth(), json_serialized, _size, &input)) && input.raw_data)
         {
             jresult = json_tokener_parse(input.json_data);
 
@@ -394,14 +406,14 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     size_t _size;
     json_object *json_request, *jresult, *jval;
     const char *json_serialized;
-    struct body_t input;
+    struct net_responce_t input;
 
     json_request = json_object_new_object();
     json_object_object_add(json_request, "user_nickname", json_object_new_string(nickname));
 
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if((net = net_send(tea_get_server_register(), json_serialized, _size, &input)) && input.raw_data)
+    if((net = net_send(tea_url_server_register(), json_serialized, _size, &input)) && input.raw_data)
     {
         jresult = json_tokener_parse(input.json_data);
 
@@ -446,4 +458,111 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     }
 
     return net;
+}
+
+int net_api_server_info(struct tea_server_info *serverInfo)
+{
+    int net;
+    struct net_responce_t responce;
+
+    net = net_send(tea_url_server_info(), NULL, 0, &responce);
+    // OK
+    if(net)
+    {
+        sscanf(
+            responce.raw_data,
+            "%d.%d.%d",
+            &serverInfo->server_version.major,
+            &serverInfo->server_version.minor,
+            &serverInfo->server_version.patch);
+
+        /*
+         * 1.0.0 - no supported get first/last message id
+         * 1.0.1 - supported get first/last message id
+         */
+
+        // calculate supported version
+        if(serverInfo->server_version.major == 1)
+        {
+            // MAJOR = 1
+        }
+
+        if(serverInfo->server_version.minor == 0)
+        {
+            // MINOR = 0
+        }
+
+        if(serverInfo->server_version.patch == 1)
+        {
+            // PATCH = 1
+        }
+    }
+
+    if(responce.raw_data)
+    {
+        free(responce.raw_data);
+    }
+
+    return net;
+}
+
+const char *tea_url_server()
+{
+    int s = -1;
+    for(int x = 0; x < sizeof(app_settings.servers) / sizeof(app_settings.servers[0]); ++x)
+    {
+        if(strlen(app_settings.servers[x]) == 0)
+            break;
+        if(app_settings.active_server == tea_get_server_id(app_settings.servers[x]))
+        {
+            s = x;
+            break;
+        }
+    }
+
+    if(s == -1)
+    {
+        return NULL;
+    }
+
+    return app_settings.servers[s];
+}
+
+const char *tea_url_server_auth()
+{
+    const char *server = tea_url_server();
+    if(!server)
+        return server;
+    snprintf(slocal_vars.SAUTH, sizeof(slocal_vars.SAUTH), "%sapi/auth.php", server);
+    return slocal_vars.SAUTH;
+}
+
+const char *tea_url_server_register()
+{
+
+    const char *server = tea_url_server();
+    if(!server)
+        return server;
+    snprintf(slocal_vars.SREGISTER, sizeof(slocal_vars.SREGISTER), "%sapi/register.php", server);
+    return slocal_vars.SREGISTER;
+}
+
+const char *tea_url_server_message_handler()
+{
+
+    const char *server = tea_url_server();
+    if(!server)
+        return server;
+    snprintf(slocal_vars.SMHANDLER, sizeof(slocal_vars.SMHANDLER), "%sapi/messageHandler.php", server);
+    return slocal_vars.SMHANDLER;
+}
+
+const char *tea_url_server_info()
+{
+    const char *server = tea_url_server();
+
+    if(!server)
+        return server;
+    snprintf(slocal_vars.SINFO, sizeof(slocal_vars.SINFO), "%sapi/TEA_SERVER_VERSION", server);
+    return slocal_vars.SINFO;
 }

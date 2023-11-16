@@ -285,7 +285,7 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
           "Registration time: %s\n"
           "Last login time: %s\n"
           "------\n"),
-        tea_get_server_uri(),
+        tea_url_server(),
         user_info->user_id,
         user_info->user_nickname,
         tmdate_regged,

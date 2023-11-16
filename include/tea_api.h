@@ -24,10 +24,11 @@ enum TeaErrorStatus
     TEA_STATUS_NETWORK_ERROR = 1000
 };
 
-const char *tea_get_server_uri();
-const char *tea_get_server_auth();
-const char *tea_get_server_register();
-const char *tea_get_server_message_handler();
+const char *tea_url_server();
+const char *tea_url_server_auth();
+const char *tea_url_server_register();
+const char *tea_url_server_message_handler();
+const char *tea_url_server_info();
 
 
 #endif

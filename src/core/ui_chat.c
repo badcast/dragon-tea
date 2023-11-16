@@ -56,7 +56,8 @@ gboolean on_refresh_traffic(gpointer)
     last_recv = net_stats.received_bytes;
 
     gtk_label_set_text(GTK_LABEL(widgets.chat_tab.label_traffics), buffer);
-    return 1;
+
+    return TRUE;
 }
 
 GtkWidget *create_chat_widget()

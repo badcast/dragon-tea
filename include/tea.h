@@ -111,6 +111,8 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output);
 
 int net_api_signup(const char *nickname, tea_register_result *output);
 
+int net_api_server_info(struct tea_server_info *serverInfo);
+
 void tea_ui_init();
 
 void tea_ui_focus_tab(enum UiTabs tabIndex);
