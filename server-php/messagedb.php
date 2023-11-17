@@ -12,12 +12,36 @@ if (!isset($_SESSION["message_db_inited"])) {
 
 function message_first_id($uid_reader, $uid_target)
 {
-    //TODO: Get First Message ID
+    //TODO: Get First Message ID 
 }
 
 function message_last_id($uid_reader, $uid_target)
 {
     //TODO: Get Last Message ID
+    $msg_file = MESSAGE_DIRS . "/" . $uid_target->user_id . MESSAGE_FILE_EXT;
+    $msg_id = -1; 
+
+    for(;;){
+        if(MESSAGE_INDEXER_ENABLE)
+        {
+            $msg_cache_file = $msg_file . MESSAGE_FILE_CACHE_EXT;
+           
+            if(!file_exists($msg_cache_file) ||  !($fd = fopen($msg_cache_file, "rb")))
+            {
+                break;
+            }
+            
+            // read from cached 
+            fseek($fd, PHP_INT_SIZE, SEEK_END); 
+            $flen = ftell($fd); 
+
+
+            break; 
+        }
+        break; 
+    }
+    
+    return $msg_id;
 }
 
 function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -1)

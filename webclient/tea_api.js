@@ -34,7 +34,7 @@ function tea_str_error(errcode) {
   return "";
 }
 
-var net_stats = 
+var net_stats =
 {
   requestVerified: 0,
   requestError: 0,

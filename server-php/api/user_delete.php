@@ -32,15 +32,17 @@ if ($data === null || !is_int($data->user_id)) {
 
     //User ID
     $user_del_status = pop_user($data->user_id);
-    if ($user_del_status === null) {
-        send(STATUS_ADMIN_ACCOUNT_REACHABLE, false);
-        exit;
-    }
 
     if ($user_del_status === false) {
         send(STATUS_ID_NO_EXIST, false);
         exit;
     }
+    else
+    if ($user_del_status === null) {
+        send(STATUS_ADMIN_ACCOUNT_REACHABLE, false);
+        exit;
+    }
+
     //user found, and send information
     send(STATUS_OK, true);
 }

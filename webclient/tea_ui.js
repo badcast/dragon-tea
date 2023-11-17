@@ -18,11 +18,11 @@ async function tea_ui_signin() {
     await tea_request(req);
 }
 
-function tea_ui_start(){
+function tea_ui_start() {
     alert("asdsadasd");
 }
 
-document.body.onload = function ( env ) { tea_ui_start(); };
+document.body.onload = function (env) { tea_ui_start(); };
 
 void tea_ui_show(formId)
 {
