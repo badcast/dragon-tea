@@ -127,13 +127,16 @@ int net_send(const char *url, const char *body, size_t len, struct net_responce_
 
     if(net_result == CURLE_OK)
     {
-        for(int x = 0; x < receiver->size; ++x)
+        char *p = receiver->raw_data;
+        char *pe = p + receiver->size;
+        for(; p < pe;)
         {
-            if(receiver->raw_data[x] == '{')
+            if(*p == '{')
             {
-                receiver->json_data = receiver->raw_data + x;
+                receiver->json_data = p;
                 break;
             }
+            ++p;
         }
     }
     else
