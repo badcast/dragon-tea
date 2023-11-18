@@ -320,7 +320,7 @@ int tea_get_server_id(const char *serverURI)
 {
     int id = 1;
 
-    while(*serverURI && (id *= 1 | (int) *(serverURI++)))
+    while(*serverURI && (id *= (1 | (int) *(serverURI++))))
         ;
 
     return id;

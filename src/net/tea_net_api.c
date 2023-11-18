@@ -119,8 +119,14 @@ int net_send(const char *url, const char *body, size_t len, struct net_responce_
     net_stats.active_requests--;
 
     if(net_result == CURLE_OK)
-    {
         ++net_stats.success_req;
+    else
+        ++net_stats.error_req;
+
+    g_mutex_unlock(&nmutex);
+
+    if(net_result == CURLE_OK)
+    {
         for(int x = 0; x < receiver->size; ++x)
         {
             if(receiver->raw_data[x] == '{')
@@ -132,8 +138,6 @@ int net_send(const char *url, const char *body, size_t len, struct net_responce_
     }
     else
     {
-        ++net_stats.error_req;
-
         if(receiver->raw_data)
         {
             free(receiver->raw_data);
@@ -144,8 +148,6 @@ int net_send(const char *url, const char *body, size_t len, struct net_responce_
         printf("curl error code: %s (%d)\n", curl_easy_strerror(net_result), net_result);
 #endif
     }
-
-    g_mutex_unlock(&nmutex);
 
     receiver->net_status = net_result;
 

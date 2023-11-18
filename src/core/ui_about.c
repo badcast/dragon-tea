@@ -14,7 +14,6 @@ void show_about_dialog()
     gtk_about_dialog_set_authors(about_dialog, (gchar**)authors);
     gtk_about_dialog_set_license_type(about_dialog, GTK_LICENSE_GPL_3_0);
     gtk_about_dialog_set_logo_icon_name(about_dialog, "mail-message-new-symbolic");
-
     // Отображение диалогового окна "О программе"
     gtk_widget_show_all(GTK_WIDGET(about_dialog));
 
