@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     textdomain(DRAGON_TEA_TEXTDOMAIN);
 
 // Check runned on Root
-#if __unix__ || __linux__
+#ifdef TEA_OS_LINUX
     if(getuid() == 0)
     {
         printf(_("The program is running as root. These privileges can harm the system, please be aware of this. Closing."));

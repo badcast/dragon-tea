@@ -1,9 +1,9 @@
 #include "tea.h"
 
-#if __linux__
+#ifdef TEA_OS_LINUX
 #include <sys/types.h>
 #include <sys/stat.h>
-#elif WIN32
+#elif TEA_OS_WINDOWS
 #include <direct.h>
 #endif
 
@@ -76,7 +76,7 @@ const char *get_conf_dir()
     if(strlen(app_settings.config_dir) == 0)
     {
 
-#ifdef __linux__
+#ifdef TEA_OS_LINUX
         home_dir = getenv("HOME");
         if(home_dir == NULL)
         {
@@ -89,7 +89,7 @@ const char *get_conf_dir()
         {
             printf("%s", strerror(errno));
         }
-#elif WIN32
+#elif TEA_OS_WINDOWS
         home_dir = getenv("APPDATA");
         strcat(app_settings.config_dir, home_dir);
         strcat(app_settings.config_dir, "\\DragonTea");

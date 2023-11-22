@@ -7,11 +7,13 @@
 #ifndef TEA_HEADER_H
 #define TEA_HEADER_H
 
-#if WIN32
+#ifdef __linux__
+#define TEA_OS_LINUX
+#include <unistd.h>
+#elif WIN32
+#define TEA_OS_WINDOWS
 #include <windows.h>
 typedef DWORD uid_t;
-#elif __linux__
-#include <unistd.h>
 #endif
 
 #include <string.h>
@@ -67,6 +69,7 @@ GtkWidget *create_auth_widget();
 GtkWidget *create_chat_widget();
 GtkWidget *create_settings_widget();
 void show_about_dialog();
+void show_log_dialog();
 
 // TODO: Get server version
 int tea_server_version();

@@ -2,20 +2,34 @@
 
 void tea_ui_init()
 {
-    // Инициализация окна
+    // Set Default Icon for ALL Owner Window (Dialog)
+    GtkIconTheme *itheme = gtk_icon_theme_get_default();
+    GtkIconInfo *iinfo = gtk_icon_theme_lookup_icon(itheme, "mail-message-new-symbolic", 32, 0);
+
+    if(iinfo)
+    {
+        GdkPixbuf *icon_buf = gtk_icon_info_load_icon(iinfo, NULL);
+        gtk_window_set_default_icon(icon_buf);
+        g_object_unref(iinfo);
+        g_object_unref(icon_buf);
+    }
+
+    show_log_dialog();
+
+    // Init main window
     GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), _("Dragon Tea"));
     gtk_window_set_default_size(GTK_WINDOW(main_window), 500, 400);
     gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
     gtk_window_set_resizable(GTK_WINDOW(main_window), FALSE);
-    gtk_window_set_icon_name(GTK_WINDOW(main_window), "mail-message-new-symbolic");
+
     widgets.main_window = GTK_WINDOW(main_window);
     g_signal_connect(main_window, "destroy", G_CALLBACK(ui_on_close_window), NULL);
 
     GtkWidget *notebook = widgets.notebook = gtk_notebook_new();
     gtk_container_add(GTK_CONTAINER(main_window), notebook);
 
-    // Инициализация виджетов
+    // Init widgets
     widgets.widget_auth = create_auth_widget();
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widgets.widget_auth, gtk_label_new(_("Authentication")));
     widgets.widget_main = create_chat_widget();
@@ -26,13 +40,13 @@ void tea_ui_init()
         GTK_NOTEBOOK(notebook), gtk_image_new_from_icon_name("help-about", GTK_ICON_SIZE_LARGE_TOOLBAR), gtk_label_new(_("About")));
     g_signal_connect(notebook, "switch-page", G_CALLBACK(ui_on_notebook_switch_page), NULL);
 
-    // set margins
+    // Set margins
     for(int x = 0; x < gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)); ++x)
     {
-        gtk_widget_set_margin_start(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
-        gtk_widget_set_margin_bottom(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
-        gtk_widget_set_margin_top(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
-        gtk_widget_set_margin_end(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook),x)), 10);
+        gtk_widget_set_margin_start(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), x)), 10);
+        gtk_widget_set_margin_bottom(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), x)), 10);
+        gtk_widget_set_margin_top(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), x)), 10);
+        gtk_widget_set_margin_end(GTK_WIDGET(gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), x)), 10);
     }
 
     // Show window
@@ -44,9 +58,9 @@ void tea_ui_init()
     // disable chat as default
     tea_ui_chat_enable(FALSE);
 
-    // Попытка автоматический войти, если настройки успешно загружены
-    tea_ui_focus_tab(UI_TAB_AUTH);
+    // Probe auto sign in if the exists
     tea_try_login();
+    tea_ui_focus_tab(UI_TAB_AUTH);
 }
 
 void tea_ui_update_settings()

@@ -13,9 +13,9 @@
 #define TEA_MAXLEN_USERNAME 16
 
 // Set Max Filesystem Path
-#ifdef __linux__
+#ifdef TEA_OS_LINUX
 #define TEA_MAXLEN_PATH PATH_MAX
-#elif WIN32
+#elif TEA_OS_WINDOWS
 #define TEA_MAXLEN_PATH MAX_PATH
 #endif
 

@@ -43,7 +43,8 @@ size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct net_responce_t *
 
     data->size += (size * nmemb);
 
-    tmp = (char *) realloc(data->raw_data, data->size + 1); /* +1 for '\0' */
+    /* Last 1 byte for NULL terminator */
+    tmp = (char *) realloc(data->raw_data, data->size + 1);
 
     if(tmp)
     {
@@ -62,7 +63,7 @@ size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct net_responce_t *
     memcpy(((char *) data->raw_data + index), ptr, n);
     data->raw_data[data->size] = '\0';
 
-    return size * nmemb;
+    return n;
 }
 
 int curl_xferinfo(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
