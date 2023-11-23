@@ -23,5 +23,15 @@ $server_config->diskTotalSpace = disk_total_space(__DIR__);
 $server_config->diskFreeSpace = disk_free_space(__DIR__);
 $server_config->welcome = file_get_contents("WELCOME.txt");
 
+// LIFETIME
+$_sess = $server_config->session = new stdClass(); 
+$_sess->name = ini_get("session.name"); 
+$_sess->lifetime = ini_get("session.gc_maxlifetime");
+
+// MEMORY
+$_mem = $server_config->memory = new stdClass(); 
+$_mem->mem_usage = memory_get_usage();
+$_mem->mem_peak_usage = memory_get_peak_usage();
+
 //user found, and send information
 send(STATUS_OK, $server_config);

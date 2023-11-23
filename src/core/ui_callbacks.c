@@ -1,5 +1,9 @@
 #include "ui_callbacks.h"
 
+#ifdef TEA_OS_LINUX
+#include <malloc.h>
+#endif
+
 struct tea_app_widgets widgets;
 
 GThread *thread_send_msg = NULL;
@@ -346,4 +350,9 @@ void tea_on_logouted()
     }
     g_array_free(app_settings.local_msg_db, TRUE);
     app_settings.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
+
+#ifdef TEA_OS_LINUX
+    // Release RESIDENT SET SIZE (RSS) and put to System
+    malloc_trim(0);
+#endif
 }
