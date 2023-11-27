@@ -1,6 +1,6 @@
 #include "tea.h"
 
-const gchar *const authors[2] = {"badcast", NULL};
+const gchar * authors[2] = {"badcast", NULL};
 
 void show_about_dialog()
 {

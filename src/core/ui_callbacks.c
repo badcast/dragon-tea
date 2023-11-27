@@ -101,7 +101,7 @@ gboolean on_chat_sending_async(const gchar *text)
         {
             const char *msg = _("Error send.");
             tea_ui_chat_status_text(msg);
-            error(msg);
+            ui_error(msg);
         }
         tea_ui_chat_interactable(TRUE);
     }
@@ -203,7 +203,7 @@ gboolean on_chat_message_handler_async(gpointer)
                 sleep(1);
 
                 if(error_string)
-                    error(error_string);
+                    ui_error(error_string);
 
                 break;
         }

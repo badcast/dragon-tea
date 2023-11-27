@@ -88,7 +88,7 @@ gboolean on_sigin_user(gpointer userData)
                     error_msg = _("User is not exists.");
                     break;
                 default:
-                    error_msg = error_string(widgets.signin_tab.tea_signed_result.status);
+                    error_msg = tea_error_string(widgets.signin_tab.tea_signed_result.status);
                     break;
             }
             snprintf(
@@ -97,7 +97,7 @@ gboolean on_sigin_user(gpointer userData)
                 _("Authentication is not confirmed:\nError code: %d\nError message: %s"),
                 widgets.signin_tab.tea_signed_result.status,
                 error_msg);
-            error(buf);
+            ui_error(buf);
         }
         else
         {
@@ -126,8 +126,8 @@ gboolean on_signup_user(gpointer userData)
                 sizeof(buf),
                 _("Error registration:\nError codew: %d\nMessage error: %s"),
                 widgets.signup_tab.tea_reg_result.status,
-                error_string(widgets.signup_tab.tea_reg_result.status));
-            error(buf);
+                tea_error_string(widgets.signup_tab.tea_reg_result.status));
+            ui_error(buf);
         }
         else
         {
@@ -168,7 +168,7 @@ void on_signup_click(GtkWidget *widget, gpointer userData)
 
     if(user_nickname == NULL || strlen(user_nickname) == 0)
     {
-        error(_("The nickname should not be empty."));
+        ui_error(_("The nickname should not be empty."));
         return;
     }
 
@@ -192,7 +192,7 @@ void on_signin_click(GtkWidget *widget, gpointer userData)
     user_id = atoll(gtk_entry_get_text(GTK_ENTRY(widgets.signin_tab.entry_userid)));
     if(user_id < 128)
     {
-        error(_("You set is invalid ID"));
+        ui_error(_("You set is invalid ID"));
         return;
     }
 

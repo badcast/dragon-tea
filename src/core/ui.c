@@ -168,7 +168,7 @@ void tea_ui_chat_push_block(const struct tea_message_id *message)
 
     char *text_buffer = (char *) malloc(require_size + 1);
     if(text_buffer == NULL)
-        error_fail("Out of memory!");
+        ui_error_fail("Out of memory!");
 
     snprintf(text_buffer, require_size, format_message_block, message->sent_user_name, date_time, message->message_text);
 

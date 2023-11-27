@@ -7,7 +7,8 @@
 #ifndef TEA_STRUCTS_H
 #define TEA_STRUCTS_H
 
-#include <glib/garray.h>
+#include <glib.h>
+#include <gtk/gtk.h>
 
 #define TEA_MAXLEN_MESSAGE 255
 #define TEA_MAXLEN_USERNAME 16
@@ -101,6 +102,8 @@ struct tea_settings
     char servers[32][255];
     // User messages
     GArray *local_msg_db;
+    // Log I/O
+    GtkTextBuffer *log_buffer;
 };
 
 struct tea_app_widgets

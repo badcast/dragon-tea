@@ -33,6 +33,36 @@ void tea_load();
 
 void tea_save();
 
+const char *tea_error_string(int error_code)
+{
+#define MACRO_PUT_CASE(X)  \
+case X:                \
+        result_value = #X; \
+        break;
+    const char *result_value = NULL;
+    switch(error_code)
+    {
+        MACRO_PUT_CASE(TEA_STATUS_OK);
+        MACRO_PUT_CASE(TEA_STATUS_ID_NO_EXIST);
+        MACRO_PUT_CASE(TEA_STATUS_INVALID_REQUEST_DATA);
+        MACRO_PUT_CASE(TEA_STATUS_INVALID_AUTH_METHOD);
+        MACRO_PUT_CASE(TEA_STATUS_INVALID_NICKNAME);
+        MACRO_PUT_CASE(TEA_STATUS_INVALID_REGISTER);
+        MACRO_PUT_CASE(TEA_STATUS_ADMIN_ACCOUNT_REACHABLE);
+
+        MACRO_PUT_CASE(TEA_STATUS_PRIVATE_MESSAGE_NOT_SUPPORTED);
+
+        MACRO_PUT_CASE(TEA_STATUS_INTERNAL_SERVER_ERROR);
+
+        MACRO_PUT_CASE(TEA_STATUS_NETWORK_ERROR);
+    default:
+        result_value = "Unknown";
+        break;
+    }
+    return result_value;
+#undef MACRO_PUT_CASE
+}
+
 const char *tea_version()
 {
     return DRAGON_TEA_VERSION;
@@ -108,6 +138,9 @@ void tea_load()
     strncat(app_settings.setting_filename, "/tea-config.json", sizeof(app_settings.setting_filename) - 1);
     app_settings.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
     tea_load_conf(&app_settings, app_settings.setting_filename);
+
+    // Init logs
+    app_settings.log_buffer = gtk_text_buffer_new(NULL);
 }
 
 void tea_save()
@@ -267,8 +300,10 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     }
 }
 
-void error(const char *str)
+void ui_error(const char *str)
 {
+    tea_log(str);
+
     GtkWidget *dialog = gtk_message_dialog_new(
         widgets.main_window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Error"));
     gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "%s", str);
@@ -276,38 +311,8 @@ void error(const char *str)
     gtk_widget_destroy(dialog);
 }
 
-void error_fail(const char *str)
+void ui_error_fail(const char *str)
 {
-    error(str);
+    ui_error(str);
     exit(EXIT_FAILURE);
-}
-
-const char *error_string(int error_code)
-{
-#define MACRO_PUT_CASE(X)  \
-    case X:                \
-        result_value = #X; \
-        break;
-    const char *result_value = NULL;
-    switch(error_code)
-    {
-        MACRO_PUT_CASE(TEA_STATUS_OK);
-        MACRO_PUT_CASE(TEA_STATUS_ID_NO_EXIST);
-        MACRO_PUT_CASE(TEA_STATUS_INVALID_REQUEST_DATA);
-        MACRO_PUT_CASE(TEA_STATUS_INVALID_AUTH_METHOD);
-        MACRO_PUT_CASE(TEA_STATUS_INVALID_NICKNAME);
-        MACRO_PUT_CASE(TEA_STATUS_INVALID_REGISTER);
-        MACRO_PUT_CASE(TEA_STATUS_ADMIN_ACCOUNT_REACHABLE);
-
-        MACRO_PUT_CASE(TEA_STATUS_PRIVATE_MESSAGE_NOT_SUPPORTED);
-
-        MACRO_PUT_CASE(TEA_STATUS_INTERNAL_SERVER_ERROR);
-
-        MACRO_PUT_CASE(TEA_STATUS_NETWORK_ERROR);
-        default:
-            result_value = "Unknown";
-            break;
-    }
-    return result_value;
-#undef MACRO_PUT_CASE
 }

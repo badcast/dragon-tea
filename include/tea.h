@@ -90,11 +90,11 @@ void tea_load();
 
 void tea_save();
 
-void error(const char *str);
+void ui_error(const char *str);
 
-void error_fail(const char *str);
+void ui_error_fail(const char *str);
 
-const char *error_string(int error_code);
+const char *tea_error_string(int error_code);
 
 void net_init();
 
@@ -115,6 +115,10 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output);
 int net_api_signup(const char *nickname, tea_register_result *output);
 
 int net_api_server_info(struct tea_server_info *serverInfo);
+
+void tea_log(const char *message);
+
+void tea_clear_log();
 
 void tea_ui_init();
 
