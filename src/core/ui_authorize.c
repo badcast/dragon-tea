@@ -124,7 +124,7 @@ gboolean on_signup_user(gpointer userData)
             snprintf(
                 buf,
                 sizeof(buf),
-                _("Error registration:\nError codew: %d\nMessage error: %s"),
+                _("Error registration:\nError code: %d\nMessage error: %s"),
                 widgets.signup_tab.tea_reg_result.status,
                 tea_error_string(widgets.signup_tab.tea_reg_result.status));
             ui_error(buf);

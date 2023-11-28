@@ -176,7 +176,7 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
         fseek(config_file, 0, SEEK_END);
         len = ftell(config_file);
 
-        // size config file >= 5M
+        // size config file >= 5MB
         if(len >= 500000)
         {
             // config file is big (maybe corrupted)
