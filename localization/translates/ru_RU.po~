@@ -1,6 +1,6 @@
 # Russian translations for PACKAGE package
 # Английские переводы для пакета PACKAGE.
-# Copyright (C) 2023 badcast
+# SPDX-FileCopyrightText: 2023 badcast
 # This file is distributed under the same license as the PACKAGE package.
 # SPDX-FileCopyrightText: 2023 Bad Cast <lmecomposer@gmail.com>
 #
@@ -8,17 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
-"POT-Creation-Date: 2023-11-09 16:37+0600\n"
-"PO-Revision-Date: 2023-09-18 00:58+0600\n"
-"Last-Translator: Bad Cast <lmecomposer@gmail.com>\n"
+"POT-Creation-Date: 2023-11-11 00:42+0600\n"
+"PO-Revision-Date: 2023-11-11 00:44+0600\n"
+"Last-Translator: badcast <lmecomposer@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 23.08.1\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 23.08.3\n"
 
 #: ../src/tea.c:270 ../src/tea.c:273
 msgid "Error"
@@ -205,3 +205,13 @@ msgstr ""
 "Время регистраций: %s\n"
 "Время последнего входа: %s\n"
 "------\n"
+
+#: ../src/main.c:14
+#, c-format
+msgid ""
+"The program is running as root. These privileges can harm the system, please "
+"be aware of this. Closing."
+msgstr ""
+"Программа запущена от имени пользователя root. Эти привилегии могут нанести"
+" вред системе, пожалуйста, имейте это в виду. Закрытие."
+
