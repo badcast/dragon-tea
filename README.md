@@ -32,7 +32,7 @@ Dragon Tea. Free Messenger
 ## How to customization server?
 -----
 
-```Server (backend):``` The file located at [server_config](./server-php/server_config.php) contains the server configuration settings.
+```Server (backend):``` The file located at [server_config](./server-backend/php/server_config.php) contains the server configuration settings.
 
 ```Client (frontend):``` The file located at ```$HOME/.config/DragonTea/tea-config.json``` contains the client configuration settings
 
