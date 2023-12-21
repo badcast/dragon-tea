@@ -1,4 +1,5 @@
-server-php/users/*
-server-php/messages/*
+server-backend/php/users
+server-backend/php/messages
 .vscode
 CMakeLists.txt.user
+CMakeLists.txt.user*
