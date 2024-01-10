@@ -3,11 +3,6 @@ file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" DRAGON_TEA_VERSION)
 
 string(STRIP "${DRAGON_TEA_VERSION}" DRAGON_TEA_VERSION)
 
-project(
-  DragonTea
-  VERSION ${DRAGON_TEA_VERSION}
-  LANGUAGES C)
-
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gtk3ui REQUIRED gtk+-3.0)
 pkg_check_modules(libcurl REQUIRED libcurl)

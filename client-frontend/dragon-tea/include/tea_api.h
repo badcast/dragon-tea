@@ -25,10 +25,11 @@ enum TeaErrorStatus
 };
 
 const char *tea_url_server();
-const char *tea_url_server_auth();
-const char *tea_url_server_register();
-const char *tea_url_server_message_handler();
-const char *tea_url_server_info();
 
+int tea_switch_server(int newServerID);
+
+int tea_fetch_server();
+
+void tea_read_urls(struct tea_server_urls *wrData);
 
 #endif

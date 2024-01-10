@@ -16,8 +16,6 @@ void tea_ui_init()
         g_object_unref(icon_buf);
     }
 
-    show_log_dialog();
-
     // Init main window
     GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), _("Dragon Tea"));
@@ -77,6 +75,8 @@ void tea_ui_init()
     // Probe auto sign in if the exists
     tea_try_login();
     tea_ui_focus_tab(UI_TAB_AUTH);
+
+    show_log_dialog();
 }
 
 void tea_ui_update_settings()

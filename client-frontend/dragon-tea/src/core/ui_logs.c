@@ -29,9 +29,13 @@ void tea_ui_clear_buffer(GtkWidget *, gpointer)
 
 void show_log_dialog()
 {
+    gint x, y, w;
+    gtk_window_get_position(widgets.main_window, &x, &y);
+    gtk_window_get_size(widgets.main_window, &w, NULL);
+
     GtkWindow *log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(log_window, 300, 400);
-
+    gtk_window_move(log_window, x + w, y);
     GtkBox *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     GtkWidget *scrolled_text = gtk_scrolled_window_new(NULL, NULL);

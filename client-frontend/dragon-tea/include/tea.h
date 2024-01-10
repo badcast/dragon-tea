@@ -57,6 +57,7 @@ typedef DWORD uid_t;
 #endif
 
 extern struct tea_net_stats net_stats;
+extern struct tea_server_info cur_server;
 extern struct tea_settings app_settings;
 extern struct tea_app_widgets widgets;
 
@@ -113,8 +114,6 @@ int net_api_write_message(
 int net_api_signin(tea_id_t user_id, tea_login_result *output);
 
 int net_api_signup(const char *nickname, tea_register_result *output);
-
-int net_api_server_info(struct tea_server_info *serverInfo);
 
 void tea_log(const char *message);
 

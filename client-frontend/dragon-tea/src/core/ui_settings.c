@@ -5,7 +5,10 @@ void apply_changes()
     tea_logout();
 
     int selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widgets.settings_tab.combx_server_list));
-    app_settings.active_server = tea_get_server_id(app_settings.servers[selected]);
+
+    // Switch server
+    tea_switch_server(tea_get_server_id(app_settings.servers[selected]));
+
     tea_ui_focus_tab(UI_TAB_AUTH);
     tea_try_login();
 }

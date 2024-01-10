@@ -36,7 +36,7 @@ void tea_save();
 const char *tea_error_string(int error_code)
 {
 #define MACRO_PUT_CASE(X)  \
-case X:                \
+    case X:                \
         result_value = #X; \
         break;
     const char *result_value = NULL;
@@ -55,9 +55,9 @@ case X:                \
         MACRO_PUT_CASE(TEA_STATUS_INTERNAL_SERVER_ERROR);
 
         MACRO_PUT_CASE(TEA_STATUS_NETWORK_ERROR);
-    default:
-        result_value = "Unknown";
-        break;
+        default:
+            result_value = "Unknown";
+            break;
     }
     return result_value;
 #undef MACRO_PUT_CASE
@@ -141,6 +141,9 @@ void tea_load()
 
     // Init logs
     app_settings.log_buffer = gtk_text_buffer_new(NULL);
+
+    // switching server
+    tea_switch_server(app_settings.active_server);
 }
 
 void tea_save()
@@ -315,4 +318,12 @@ void ui_error_fail(const char *str)
 {
     ui_error(str);
     exit(EXIT_FAILURE);
+}
+
+int tea_server_version()
+{
+    if(strlen(cur_server.urls.url) == 0)
+        return -1;
+
+    return (int) (cur_server.server_version.major | cur_server.server_version.minor << 8 | cur_server.server_version.patch << 16);
 }

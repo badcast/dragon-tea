@@ -66,6 +66,24 @@ struct tea_net_stats
     int error_req;
 };
 
+struct tea_server_urls
+{
+    char url[255];
+    char url_auth[255];
+    char url_reg[255];
+    char url_msg_handler[255];
+    char url_info[255];
+};
+
+// Server features
+enum
+{
+    // Server can get information
+    SV_VERFI = 1,
+    // Server can get First or Last MsgID
+    SV_MSGFL = 2,
+};
+
 struct tea_server_info
 {
     struct
@@ -76,7 +94,11 @@ struct tea_server_info
     } server_version;
 
     char maintainer[32];
-    char license[32];
+    char license[16];
+
+    int features;
+
+    struct tea_server_urls urls;
 };
 
 typedef struct
