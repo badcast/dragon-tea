@@ -44,6 +44,10 @@ function message_last_id($uid_reader, $uid_target)
     return $msg_id;
 }
 
+function cache_fsck(){
+    // TODO: Make fsck for recovery cache_file
+}
+
 function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -1)
 {
 
@@ -62,8 +66,10 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
     while ($max_messages != 0) {
 
         if (!file_exists($msg_file) || !MESSAGE_INDEXER_ENABLE) {
-            //Remove cache_file then, message_file not exists or message_indexer turned off
+
+            //Remove "cache_file" then, message_file not exists or message_indexer turned off
             unlink($msg_cache_file);
+            break;
         }
 
         if ($max_messages < 0 || $max_messages > MESSAGE_MAX_COUNT)
@@ -107,12 +113,16 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                                 $fmsg_pos = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1]; // int read 
                                 //read message position + flength
                                 $fmsg_len = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1]; // int read 
-
-                                //Установить курсор прочитанное из cache_file 
+                                
+                                error_log("fmsg_pos=".$fmsg_pos, 4); // Show debug info for terminal (STDERR=4)
+                                error_log("fmsg_len=".$fmsg_len, 4); // Show debug info for terminal (STDERR=4)
+                                
+                                //Установить курсор прочитанное из cache_file
                                 fseek($fd_mesg, $fmsg_pos, SEEK_SET);
 
                                 // Чтение одной строки до '\n'
                                 $jdata = fread($fd_mesg, $fmsg_len - $fmsg_pos);
+
                                 if ($jdata === false || ($json_dec = json_decode($jdata)) === null) {
                                     break; // fail 
                                 }
@@ -258,7 +268,7 @@ function message_write($uid_writer, $uid_reply, $message_text)
             } else {
                 rewind($fd); // set to begin 
                 //calc message_ids custimly O(N) - operation 
-                //TODO: Optimize here with: message_last_id() 
+                //TODO: Optimize here with: message_last_id() it's supported in Server Version >= 1.1.0
                 while (($line = fgets($fd)) !== false) {
                     ++$result->msg_id;
                 }

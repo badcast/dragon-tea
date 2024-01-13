@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../server_config.php';
 
-
 function check_valid_nickname($nickname)
 {
     // Проверяем длину имени пользователя
@@ -19,6 +18,7 @@ function check_valid_nickname($nickname)
 
     return true;
 }
+
 function send_json($data)
 {
     header("HTTP/1.1 200 OK");

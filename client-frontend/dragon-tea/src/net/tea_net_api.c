@@ -519,7 +519,8 @@ int tea_fetch_server()
                     &cur_server.license);
 
                 /*
-                 * 1.0.0 - no supported get first/last message id
+                 * 1.0.0: - no supported get first/last message id
+                 *
                  * 1.1.0: - supported get first/last message id
                  *        - supported get server info
                  */

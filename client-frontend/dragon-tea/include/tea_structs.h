@@ -25,16 +25,16 @@ typedef unsigned long long tea_id_t;
 struct tea_id_info
 {
     tea_id_t user_id;
-    long creation_date;
-    long last_login;
+    int64_t creation_date;
+    int64_t last_login;
     char user_nickname[TEA_MAXLEN_USERNAME * 2];
 };
 
 struct tea_message_id
 {
     tea_id_t msg_id;
-    long time_saved;
-    long time_received;
+    int64_t time_saved;
+    int64_t time_received;
     tea_id_t sent_user_id;
     char sent_user_name[TEA_MAXLEN_USERNAME * 2];
     char *message_text;
@@ -50,8 +50,8 @@ struct tea_message_read_result
 struct tea_message_send_result
 {
     int status;
-    long time_received;
-    long time_saved;
+    int64_t time_received;
+    int64_t time_saved;
     tea_id_t msg_id;
 };
 
