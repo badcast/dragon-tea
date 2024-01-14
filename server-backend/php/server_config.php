@@ -9,8 +9,8 @@ const MESSAGE_FILE_EXT = ".tea";
 const MESSAGE_FILE_CACHE_EXT = "_cache";
 // Max message per request
 const MESSAGE_MAX_COUNT = 2048;
-// Lock on I/O
-const WAITOUT_LOCK_MICROS = 10000;
+// Lock on I/O, default is 10ms 
+const WAITOUT_LOCK_MICROS = 10000; 
 // Lock chances after delay micros
 const WAITOUT_TIME_CHANCES = 10;
 // Max nicknamae length

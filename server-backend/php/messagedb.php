@@ -12,39 +12,41 @@ if (!isset($_SESSION["message_db_inited"])) {
 
 function message_first_id($uid_reader, $uid_target)
 {
+    // Определяет первый msgId из целового чата 
     //TODO: Get First Message ID 
 }
 
 function message_last_id($uid_reader, $uid_target)
 {
+    // Определяет последний msgId из целового чата 
+
     //TODO: Get Last Message ID
     $msg_file = MESSAGE_DIRS . "/" . $uid_target->user_id . MESSAGE_FILE_EXT;
-    $msg_id = -1; 
+    $msg_id = -1;
 
-    for(;;){
-        if(MESSAGE_INDEXER_ENABLE)
-        {
+    for (;;) {
+        if (MESSAGE_INDEXER_ENABLE) {
             $msg_cache_file = $msg_file . MESSAGE_FILE_CACHE_EXT;
-           
-            if(!file_exists($msg_cache_file) ||  !($fd = fopen($msg_cache_file, "rb")))
-            {
+
+            if (!file_exists($msg_cache_file) ||  !($fd = fopen($msg_cache_file, "rb"))) {
                 break;
             }
-            
+
             // read from cached 
-            fseek($fd, PHP_INT_SIZE, SEEK_END); 
-            $flen = ftell($fd); 
+            fseek($fd, PHP_INT_SIZE, SEEK_END);
+            $flen = ftell($fd);
 
 
-            break; 
+            break;
         }
-        break; 
+        break;
     }
-    
+
     return $msg_id;
 }
 
-function cache_fsck(){
+function cache_fsck()
+{
     // TODO: Make fsck for recovery cache_file
 }
 
@@ -67,9 +69,8 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
 
         if (!file_exists($msg_file) || !MESSAGE_INDEXER_ENABLE) {
 
-            //Remove "cache_file" then, message_file not exists or message_indexer turned off
+            //Remove "msg_cache_file" then, message_file not exists or message_indexer turned off
             unlink($msg_cache_file);
-            break;
         }
 
         if ($max_messages < 0 || $max_messages > MESSAGE_MAX_COUNT)
@@ -88,7 +89,7 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                     $filelen = ftell($fd_mesg);
                     fseek($fd_index, -PHP_INT_SIZE, SEEK_END);
                     $flenw = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1];
-                    
+
                     // Check filelength with last msg_id_len
                     if ($filelen === $flenw) {
                         //set to begin
@@ -98,6 +99,21 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                         $jmsg_id_max = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1]; // int read 
                         // Message Offset ID
                         $jmsg_id_start = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1]; // int read 
+
+                        // check of damage 
+                        if ($jmsg_id_start > $jmsg_id_max) {
+                            // it's damaged cache file 
+
+                            // Del handles 
+                            fclose($fd_index);
+                            fclose($fd_mesg);
+
+                            // Remove damaged file 
+                            unlink($msg_cache_file);
+
+                            goto __CACHE_DAMAGED_RECREATE;
+                        }
+
                         // Relative Message Max ID
                         $relative_id_max = $jmsg_id_start + $jmsg_id_max; // relative ID
 
@@ -105,18 +121,27 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
                         if ($msg_id_start < $relative_id_max) {
                             // Установка позиций к начальному msg_id 
                             fseek($fd_index, PHP_INT_SIZE * 2 * $msg_id_start, SEEK_CUR);
-
-                            for ($iter_id = $msg_id_start; $result->length < $max_messages && $iter_id < $relative_id_max; ++$iter_id) {
+                            $localResult = clone $result;
+                            for ($iter_id = $msg_id_start; $localResult->length < $max_messages && $iter_id < $relative_id_max; ++$iter_id) {
                                 //Прочитать данные из cache_file 
 
                                 //read message position 
                                 $fmsg_pos = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1]; // int read 
                                 //read message position + flength
                                 $fmsg_len = unpack(PACK_FORMAT, fread($fd_index, PHP_INT_SIZE))[1]; // int read 
-                                
-                                error_log("fmsg_pos=".$fmsg_pos, 4); // Show debug info for terminal (STDERR=4)
-                                error_log("fmsg_len=".$fmsg_len, 4); // Show debug info for terminal (STDERR=4)
-                                
+
+                                // it's maybe damaged ? 
+                                if ($fmsg_pos == null ||  $fmsg_len == null) {
+                                    // Del handles 
+                                    fclose($fd_index);
+                                    fclose($fd_mesg);
+
+                                    // Remove damaged file 
+                                    unlink($msg_cache_file);
+
+                                    goto __CACHE_DAMAGED_RECREATE;
+                                }
+
                                 //Установить курсор прочитанное из cache_file
                                 fseek($fd_mesg, $fmsg_pos, SEEK_SET);
 
@@ -129,12 +154,12 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
 
                                 $json_dec->msg_id = $iter_id + 1;
 
-                                $result->messages[] = $json_dec;
-                                $result->length++;
+                                $localResult->messages[] = $json_dec;
+                                $localResult->length++;
                             }
+                            $result = $localResult;
                         }
-                    }
-                    else {
+                    } else {
                         fclose($fd_index);
                         unlink($msg_cache_file);
                     }
@@ -144,54 +169,68 @@ function message_read($uid_reader, $uid_target, $msg_id_start, $max_messages = -
             }
             //Cache no exist, then create and load
         } else {
-            $fd_cache = fopen($msg_cache_file, "wb+");
+            __CACHE_DAMAGED_RECREATE:
+            // Данная часть кода обеспечивает индексирование данных во время чтения, при этом должны быть учтены след. условия. 
+            // - Если включен параметр "MESSAGE_INDEXER_ENABLE", то обязательно использовать индексатор
+            // - Обеспечивать чтение, даже при отключенном параметре "MESSAGE_INDEXER_ENABLE"
 
-            if ($fd_cache) {
-                $lock_while = WAITOUT_TIME_CHANCES;
+            if (MESSAGE_INDEXER_ENABLE) {
+                $fd_cache = fopen($msg_cache_file, "wb+");
+                if ($fd_cache) {
+                    $lock_while = WAITOUT_TIME_CHANCES;
 
-                //while file not locked, wait for complete other I/O
-                while (flock($fd_cache, LOCK_SH) == false && --$lock_while != 0) usleep(WAITOUT_LOCK_MICROS);
+                    //while file not locked, wait for complete other I/O
+                    while (flock($fd_cache, LOCK_SH) == false && --$lock_while != 0) usleep(WAITOUT_LOCK_MICROS);
 
-                if ($lock_while != 0) {
-                    //Lock complete
-
-                    $fdm = fopen($msg_file, "r");
-                    if ($fdm) {
-                        //Header 
-                        $fmsg_id = 0;
-                        $ftotal_len = 0;
-                        fseek($fd_cache, PHP_INT_SIZE * 2);
-                        while (($line = fgets($fdm)) !== false) {
-                            $fmsg_id++;
-
-                            if ($msg_id_start < $fmsg_id && $result->length <= $max_messages) {
-                                $msg = json_decode($line);
-                                $msg->msg_id = $fmsg_id;
-                                $result->messages[] = $msg;
-                                $result->length++;
-                            }
-
-                            //write message position 
-                            fwrite($fd_cache, pack(PACK_FORMAT, $ftotal_len));
-                            //write message position + flength
-                            fwrite($fd_cache, pack(PACK_FORMAT, ($ftotal_len += mb_strlen($line))));
-                        }
-                        fclose($fdm);
-
-                        //Set to header position 
-                        fseek($fd_cache, 0, SEEK_SET);
-
-                        //Update header 
-
-                        //write lines 
-                        fwrite($fd_cache, pack(PACK_FORMAT, $fmsg_id));
-                        //write offset message id
-                        fwrite($fd_cache, pack(PACK_FORMAT, 0));
+                    if ($lock_while < 0) {
+                        fclose($fd_cache);
+                        break;
                     }
-
-                    flock($fd_cache, LOCK_UN);
                 }
-                fclose($fd_cache);
+            }
+
+            $fdm = fopen($msg_file, "r");
+            if ($fdm) {
+                //Header 
+                $fmsg_id = 0;
+                $ftotal_len = 0;
+
+                if (MESSAGE_INDEXER_ENABLE)
+                    fseek($fd_cache, PHP_INT_SIZE * 2);
+
+                while (($line = fgets($fdm)) !== false) {
+                    $fmsg_id++;
+
+                    if ($msg_id_start < $fmsg_id && $result->length <= $max_messages) {
+                        $msg = json_decode($line);
+                        $msg->msg_id = $fmsg_id;
+                        $result->messages[] = $msg;
+                        $result->length++;
+                    }
+                    if (MESSAGE_INDEXER_ENABLE) {
+                        //write message position 
+                        fwrite($fd_cache, pack(PACK_FORMAT, $ftotal_len));
+                        //write message position + flength
+                        fwrite($fd_cache, pack(PACK_FORMAT, ($ftotal_len += mb_strlen($line))));
+                    }
+                }
+
+                // Close msg_file 
+                fclose($fdm);
+
+                if (MESSAGE_INDEXER_ENABLE) {
+                    //Update header 
+                    //Set to header position 
+                    fseek($fd_cache, 0, SEEK_SET);
+
+                    //write lines 
+                    fwrite($fd_cache, pack(PACK_FORMAT, $fmsg_id));
+                    //write offset message id
+                    fwrite($fd_cache, pack(PACK_FORMAT, 0));
+                }
+            }
+            if (MESSAGE_INDEXER_ENABLE) {
+                flock($fd_cache, LOCK_UN);
             }
         }
         break;
