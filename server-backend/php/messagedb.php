@@ -308,7 +308,7 @@ function message_write($uid_writer, $uid_reply, $message_text)
                 rewind($fd); // set to begin 
                 //calc message_ids custimly O(N) - operation 
                 //TODO: Optimize here with: message_last_id() it's supported in Server Version >= 1.1.0
-                while (($line = fgets($fd)) !== false) {
+                while (($__line = fgets($fd)) !== false) {
                     ++$result->msg_id;
                 }
             }
