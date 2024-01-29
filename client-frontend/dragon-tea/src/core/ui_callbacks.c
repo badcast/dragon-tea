@@ -21,7 +21,7 @@ gpointer async_send(const char *text)
 
     int len = strlen(text);
     // send message to
-    int net = net_api_write_message(&app_settings.id_info, -1, text, len, &last_send_result);
+    net_api_write_message(&app_settings.id_info, -1, text, len, &last_send_result);
     // set work complete
     thread_send_msg = NULL;
 
@@ -30,8 +30,6 @@ gpointer async_send(const char *text)
 
 gpointer async_reply(gpointer)
 {
-    int net;
-
     // Последнее сообщение на локальной машине (когда на сервере она устарело)
     int last_local_msg_id;
 
@@ -45,7 +43,7 @@ gpointer async_reply(gpointer)
     }
 
     // Читаем сообщение других пользователей и поддерживаем коммуникацию
-    net = net_api_read_messages(&app_settings.id_info, -1, last_local_msg_id, MESSAGES_PER_REQUEST, &last_read_result);
+    net_api_read_messages(&app_settings.id_info, -1, last_local_msg_id, MESSAGES_PER_REQUEST, &last_read_result);
 
     thread_reply_msg = NULL;
 
@@ -258,7 +256,7 @@ void on_chat_send_button(GtkWidget *widget, gpointer data)
 
 void tea_on_authenticate(const struct tea_id_info *user_info)
 {
-    char buffer[300];
+    char buffer[300], buf2[32];
     app_settings.connected = TRUE;
 
     tea_ui_chat_clear();
@@ -279,17 +277,22 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
     g_free(gtime);
 
     snprintf(
+        buf2, sizeof(buf2), "%d.%d.%d", cur_server.server_version.major, cur_server.server_version.minor, cur_server.server_version.patch);
+
+    snprintf(
         buffer,
         sizeof(buffer),
         _("------\n"
           "Welcome to the Dragon Tea Server!\n"
           "Server: %s\n"
+          "Server version: %s\n"
           "Your ID: %lld\n"
           "Your Nickname: %s\n"
           "Registration time: %s\n"
           "Last login time: %s\n"
           "------\n"),
         tea_url_server(),
+        buf2,
         user_info->user_id,
         user_info->user_nickname,
         tmdate_regged,

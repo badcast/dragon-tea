@@ -571,7 +571,18 @@ void tea_read_urls(struct tea_server_urls *wrData)
         return;
     }
 
-    strncpy(wrData->url, server, sizeof(wrData->url));
+    int len = MIN(strlen(server), sizeof(wrData->url));
+    strncpy(wrData->url, server, len);
+
+    if(len >= (sizeof(wrData->url)-1))
+    {
+        tea_log("Warn: Server string length biggested, maximum length 255");
+    }
+    else if(wrData->url[len - 1] != '/')
+    {
+        strncat(wrData->url, "/", MIN(len-1,1));
+        tea_log("Server is no containы \"/\", inserted as default");
+    }
 
     snprintf(wrData->url_auth, sizeof(wrData->url_auth), "%sapi/auth.php", server);
     snprintf(wrData->url_reg, sizeof(wrData->url_reg), "%sapi/register.php", server);
