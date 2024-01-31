@@ -45,6 +45,8 @@ require_once __DIR__ . '/sender.php';
 
 //TODO: Next use Private Message (for target user)
 
+const COMMAND_ENTRY = ["reader", "writer", "pos"];
+
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     send(STATUS_INVALID_AUTH_METHOD);
     exit;
@@ -68,10 +70,12 @@ if (
 } else {
 
     $FLAG = -1;
-    if (strcmp($request->type, "reader") == 0 && is_int($request->msg_id)  && $request->msg_id > -1) {
+    if (strcmp($request->type, COMMAND_ENTRY[0]) == 0 && is_int($request->msg_id)  && $request->msg_id > -1) {
         $FLAG = 0;
-    } else if (strcmp($request->type, "writer") == 0 && is_string($request->message) && mb_strlen($request->message) <= STR_MAX_TEXT) {
+    } else if (strcmp($request->type, COMMAND_ENTRY[1]) == 0 && is_string($request->message) && mb_strlen($request->message) <= STR_MAX_TEXT) {
         $FLAG = 1;
+    } else if (strcmp($request->type, COMMAND_ENTRY[2]) == 0 && is_int($request->msg_id)) {
+        $FLAG = 2;
     } else {
         send(STATUS_INVALID_REQUEST_DATA);
         exit;
@@ -114,6 +118,15 @@ if (
             // On Write
         case 1:
             $result = message_write($uid,  $target_id, $request->message);
+            break;
+            // On Message get pointer 
+        case 2:
+            if ($request->msg_id === 0)
+                $_msgid = message_first_id($uid, $target_id);
+            else if ($request->msg_id === 1)
+                $_msgid = message_last_id($uid, $target_id);
+            else
+                $_msgid = -1;
             break;
     }
 
