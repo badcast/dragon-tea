@@ -57,6 +57,8 @@ $json_data = file_get_contents('php://input');
 
 // Парсим JSON-строку
 $request = json_decode($json_data);
+$request->user_id = patch_convert_id($request->user_id);
+$request->target_user_id = patch_convert_id($request->target_user_id);
 
 // Проверяем, удалось ли распарсить JSON
 if (

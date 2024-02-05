@@ -1,4 +1,5 @@
 function tea_str_error(errcode) {
+  // Backend status reserved 
   const STATUS_OK = 0;
   const STATUS_ID_NO_EXIST = 1;
   const STATUS_INVALID_REQUEST_DATA = 2;
@@ -6,10 +7,10 @@ function tea_str_error(errcode) {
   const STATUS_INVALID_NICKNAME = 4;
   const STATUS_INVALID_REGISTER = 5;
   const STATUS_ADMIN_ACCOUNT_REACHABLE = 6;
-
   const STATUS_PRIVATE_MESSAGE_NOT_SUPPORTED = 128;
-
   const STATUS_INTERNAL_SERVER_ERROR = 500;
+  // Frontend status reserved 
+  const STATUS_NETWORK_ERROR = 1000;
 
   switch (errcode) {
     case STATUS_OK:
@@ -30,11 +31,13 @@ function tea_str_error(errcode) {
       return "private message not supported";
     case STATUS_INTERNAL_SERVER_ERROR:
       return "internal server error";
+    case STATUS_NETWORK_ERROR:
+      return "network error";
   }
   return "";
 }
 
-var net_stats =
+var netStats =
 {
   requestVerified: 0,
   requestError: 0,
@@ -57,6 +60,8 @@ var userProfile =
   }
 };
 
+var lastStatus = null;
+
 async function tea_request(requestData) {
   const _netapi = {
     signin: "/api/auth.php",
@@ -71,61 +76,61 @@ async function tea_request(requestData) {
   let bodyStr = JSON.stringify(requestData);
   console.log(bodyStr);
 
-  // Опции для запроса
+  // Request Options 
   const requestOptions = {
     method: 'POST',
     mode: 'cors',
     body: bodyStr
   };
 
-  // Выполняем запрос
-  let status = await fetch(url, requestOptions).then(response => response.text()) // Распарсить ответ как JSON
-    .then(data => {
-      let status = false;
+  // Request
+  let status = await fetch(url, requestOptions).then(response => response.text())
+    .then(responce => {
+      let networkStatus = false;
       let errStr = null;
-      net_stats.requestVerified++;
+      netStats.requestVerified++;
       while (1) {
-        if (data == "") {
+        if (responce == "") {
           errStr = "Internal server error. Responce is empty.";
           break;
         }
 
         // Get index of the JSON data
-        let fIndex = data.indexOf("{");
+        let fIndex = responce.indexOf("{");
         if ((serverInfo.hasDamager = fIndex != 0)) {
           if (fIndex === -1) {
             errStr = "Server is force damager";
             break;
           }
           // remove damaged 
-          data = data.slice(fIndex, data.length);
+          responce = responce.slice(fIndex, responce.length);
         }
 
         // Convert string data to json object 
-        data = JSON.parse(data);
+        responce = JSON.parse(responce);
 
-        if (data.status != 0) {
-          errStr = tea_str_error(data.status);
+        if (responce.status != 0) {
+          errStr = tea_str_error(responce.status);
           break;
         }
 
-        if (data.authorized) {
-          status = true;
+        if (responce.authorized) {
+          networkStatus = true;
         }
         break;
       }
 
-      if (status) {
-
+      if (networkStatus) {
+        console.log("Network status: " + networkStatus);
       }
 
-      return { error: errStr, ok: status }
+      return { error: errStr, ok: networkStatus, code: responce.status }
     })
     .catch(error => {
       // Обработка ошибок
       console.error(error);
-      net_stats.requestError++;
-      return { error: error, ok: false };
+      netStats.requestError++;
+      return { error: error, ok: false, code: STATUS_CLIENT_CATCH };
     });
 
   if (status.ok) {
@@ -134,5 +139,8 @@ async function tea_request(requestData) {
   else {
     console.error(status.error);
   }
+
+  lastResponce = status;
+
   return status;
 }

@@ -3,20 +3,23 @@
 
 <head>
     <title>Dragon Tea - Web Client</title>
-    <script src="./tea_api.js"></script>
-    <script src="./tea_ui.js"></script>
+    <script src="./js/tea_base.js"></script>
+    <script src="./js/tea_api.js"></script>
+    <script src="./js/tea_ui.js"></script>
     <link rel="stylesheet" type="text/css" href="./styles/design.css">
     <link rel="stylesheet" type="text/css" href="./styles/form.css">
 </head>
 
-<body>
+<body onload="tea_ui_start();">
     <div id="_wforms">
         <div class="form_sigin">
             <p>Добро пожаловать на сервер Драконего чая!</p>
             <input id="inputSignin" type="text" placeholder="User ID" value=""/>
             <button style="left: 0;" onclick="document.getElementById('inputSignin').value=''">x</button>
             <p></p>
-            <button onclick="tea_ui_signin()">Вход</button>
+            <span class="sticky_label2" id="signStatusBox">Не выполнен вход.</span>
+            <p></p>
+            <button onclick="tea_ui_signin(this)">Вход</button>
             <div style="font-size: 12px;">
                 <p class="sticky_label">(!) для входа требуется только UserID которое выдано лично вам.</p>
                 <p>Данная Веб странница под лицензией <a target="_blank"

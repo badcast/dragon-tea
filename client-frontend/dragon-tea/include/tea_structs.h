@@ -68,11 +68,11 @@ struct tea_net_stats
 
 struct tea_server_urls
 {
-    char url[255];
-    char url_auth[255];
-    char url_reg[255];
-    char url_msg_handler[255];
-    char url_info[255];
+    char url_base[64];
+    char url_auth[64];
+    char url_reg[64];
+    char url_msg_handler[64];
+    char url_info[64];
 };
 
 // Server features

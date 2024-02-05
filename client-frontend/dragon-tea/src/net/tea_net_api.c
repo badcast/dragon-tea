@@ -491,6 +491,7 @@ int tea_switch_server(int newServerID)
     // init new server ID
     tea_read_urls(&cur_server.urls);
     tea_fetch_server();
+
     return 0;
 }
 
@@ -558,6 +559,9 @@ int tea_fetch_server()
     else
         result = 0;
 
+    if(!result)
+        tea_log("Server fetch status is failed");
+
     return result;
 }
 
@@ -571,17 +575,17 @@ void tea_read_urls(struct tea_server_urls *wrData)
         return;
     }
 
-    int len = MIN(strlen(server), sizeof(wrData->url));
-    strncpy(wrData->url, server, len);
+    int len = MIN(strlen(server), sizeof(wrData->url_base));
+    strncpy(wrData->url_base, server, len);
 
-    if(len >= (sizeof(wrData->url)-1))
+    if(len >= (sizeof(wrData->url_base) - 1))
     {
         tea_log("Warn: Server string length biggested, maximum length 255");
     }
-    else if(wrData->url[len - 1] != '/')
+    else if(wrData->url_base[len - 1] != '/')
     {
-        strncat(wrData->url, "/", MIN(len-1,1));
-        tea_log("Server is no containы \"/\", inserted as default");
+        strncat(wrData->url_base, "/", MIN(len - 1, 1));
+        tea_log("Server is no contains \"/\", inserted as default");
     }
 
     snprintf(wrData->url_auth, sizeof(wrData->url_auth), "%sapi/auth.php", server);

@@ -21,6 +21,7 @@ $json_data = file_get_contents('php://input');
 
 // Парсим JSON-строку
 $data = json_decode($json_data);
+$request->user_id = patch_convert_id($request->user_id);
 
 // Проверяем, удалось ли распарсить JSON
 if ($data === null || !is_int($data->user_id)) {

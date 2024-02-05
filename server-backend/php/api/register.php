@@ -22,6 +22,7 @@ $json_data = file_get_contents('php://input');
 
 // Парсим JSON-строку
 $data = json_decode($json_data);
+$data->user_id = patch_convert_id($data->user_id);
 
 // Проверяем, удалось ли распарсить JSON
 if ($data === null || !is_string($data->user_nickname)) {

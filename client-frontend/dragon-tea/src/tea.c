@@ -322,7 +322,7 @@ void ui_error_fail(const char *str)
 
 int tea_server_version()
 {
-    if(strlen(cur_server.urls.url) == 0)
+    if(strlen(cur_server.urls.url_base) == 0)
         return -1;
 
     return (int) (cur_server.server_version.major | cur_server.server_version.minor << 8 | cur_server.server_version.patch << 16);
