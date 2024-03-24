@@ -16,29 +16,35 @@ function setSignFormStatus(message) {
     inputMsg.innerText = message;
 }
 
-async function tea_ui_signin(self) {
+async function teaUISignIn(self) {
     let userId = document.getElementById("inputSignin").value;
 
     setSignFormStatus("Входим...");
 
-    // Check and validate of the ID
+    // Check and validate of the ID (all chars is number)
     if (/^\d+$/.test(userId) == false) {
         setSignFormStatus("Инвалидное поле");
         return false;
     }
 
+    // Disable active button element 
     self.disabled = true;
 
     let req = { user_id: userId };
     let responce = await tea_request(req);
 
-    await waitOut(200);
+    // Wait for initializing 
+    await waitOut(100);
 
-    if (responce.ok)
+    if (responce.ok) {
+
         setSignFormStatus("Вход выполнен");
+        
+    }
     else
         setSignFormStatus(responce.error);
 
+    // And undo disabled active button element
     self.disabled = false;
 }
 

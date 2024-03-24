@@ -8,6 +8,7 @@ pkg_check_modules(gtk3ui REQUIRED gtk+-3.0)
 pkg_check_modules(libcurl REQUIRED libcurl)
 pkg_check_modules(json REQUIRED json-c)
 pkg_check_modules(gthread REQUIRED gthread-2.0)
+pkg_check_modules(libnotify REQUIRED libnotify)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -48,10 +49,12 @@ target_sources(dragontea PUBLIC ${DRAGONTEA_SOURCES})
 target_include_directories(
   dragontea
   PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/" ${gtk3ui_INCLUDE_DIRS}
-         ${gthread_INCLUDE_DIRS} ${libcurl_INCLUDE_DIRS} ${json_INCLUDE_DIRS})
+         ${gthread_INCLUDE_DIRS} ${libcurl_INCLUDE_DIRS} ${json_INCLUDE_DIRS}
+         ${libnotify_INCLUDE_DIRS})
 
-target_link_libraries(dragontea ${gtk3ui_LIBRARIES} ${libcurl_LIBRARIES}
-                      ${json_LIBRARIES} ${gthread_LIBRARIES})
+target_link_libraries(
+  dragontea ${gtk3ui_LIBRARIES} ${libcurl_LIBRARIES} ${json_LIBRARIES}
+  ${gthread_LIBRARIES} ${libnotify_LIBRARIES})
 
 target_compile_definitions(dragontea
                            PUBLIC DRAGON_TEA_VERSION="${DRAGON_TEA_VERSION}")

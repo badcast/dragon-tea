@@ -122,6 +122,10 @@ struct tea_settings
     int active_server;
     // loaded from configurations
     char servers[32][255];
+    // show log window
+    int show_logs;
+    // remove old notification
+    int old_notify_remove;
     // User messages
     GArray *local_msg_db;
     // Log I/O
@@ -162,11 +166,14 @@ struct tea_app_widgets
         GtkWidget *top_label_user_state;
         guint timeout_periodic_sync;
         gboolean chat_synched;
+        gboolean firstTime;
     } chat_tab;
 
     struct
     {
         GtkWidget *combx_server_list;
+        GtkWidget *toggle_log;
+        GtkWidget *toggle_notify;
         GtkWidget *button_apply;
     } settings_tab;
 
@@ -174,6 +181,8 @@ struct tea_app_widgets
     GtkWidget *widget_auth;
     GtkWidget *widget_settings;
     GtkWindow *main_window;
+
+    GtkWindow *log_window;
 
     GtkWidget *notebook;
 };

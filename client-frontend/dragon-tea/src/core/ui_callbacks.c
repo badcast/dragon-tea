@@ -21,7 +21,7 @@ gpointer async_send(const char *text)
 
     int len = strlen(text);
     // send message to
-    net_api_write_message(&app_settings.id_info, -1, text, len, &last_send_result);
+    net_api_write_message(&env.id_info, -1, text, len, &last_send_result);
     // set work complete
     thread_send_msg = NULL;
 
@@ -33,17 +33,17 @@ gpointer async_reply(gpointer)
     // Последнее сообщение на локальной машине (когда на сервере она устарело)
     int last_local_msg_id;
 
-    if(app_settings.local_msg_db->len == 0)
+    if(env.local_msg_db->len == 0)
     {
         last_local_msg_id = 0;
     }
     else
     {
-        last_local_msg_id = (&g_array_index(app_settings.local_msg_db, struct tea_message_id, app_settings.local_msg_db->len - 1))->msg_id;
+        last_local_msg_id = (&g_array_index(env.local_msg_db, struct tea_message_id, env.local_msg_db->len - 1))->msg_id;
     }
 
     // Читаем сообщение других пользователей и поддерживаем коммуникацию
-    net_api_read_messages(&app_settings.id_info, -1, last_local_msg_id, MESSAGES_PER_REQUEST, &last_read_result);
+    net_api_read_messages(&env.id_info, -1, last_local_msg_id, MESSAGES_PER_REQUEST, &last_read_result);
 
     thread_reply_msg = NULL;
 
@@ -106,6 +106,12 @@ gboolean on_chat_sending_async(const gchar *text)
     return worked == FALSE;
 }
 
+void notify_action(NotifyNotification *notification, const char *action, gpointer user_data)
+{
+    ui_error(action);
+    gtk_window_set_focus(widgets.main_window, NULL);
+}
+
 gboolean on_chat_message_handler_async(gpointer)
 {
     char buffer[128];
@@ -138,10 +144,14 @@ gboolean on_chat_message_handler_async(gpointer)
                     if(last_chance_state != CHANCE_TO_LOGOUT)
                         strcpy(buffer, _("Your network has been restored. "));
                     else
-                        buffer[0] = 0;
+                        buffer[0] = NULL;
 
                     strcat(buffer, _("You're online."));
                     tea_ui_chat_status_text(buffer);
+
+                    if(widgets.chat_tab.firstTime)
+                        widgets.chat_tab.firstTime = FALSE;
+
                     break;
                 }
 
@@ -152,14 +162,30 @@ gboolean on_chat_message_handler_async(gpointer)
                     break;
                 }
 
-                // Добавление сообщений из загруженных в локальные
-                g_array_append_vals(app_settings.local_msg_db, last_read_result.messages->data, last_read_result.messages->len);
-
+                NotifyNotification *gnotify;
+                struct tea_message_id *message;
                 // Отображение собщений
                 for(int x = 0; x < last_read_result.messages->len; ++x)
                 {
-                    tea_ui_chat_push_block(&g_array_index(last_read_result.messages, struct tea_message_id, x));
+                    message = &g_array_index(last_read_result.messages, struct tea_message_id, x);
+                    tea_ui_chat_push_block(message);
+                    if(!widgets.chat_tab.firstTime && message->sent_user_id != env.id_info.user_id &&
+                       !gtk_window_is_active(widgets.main_window))
+                    {
+                        gnotify = notify_notification_new(
+                            message->sent_user_name, message->message_text, gtk_window_get_icon_name(widgets.main_window));
+                        notify_notification_add_action(gnotify, "custom_action", _("Read message"), notify_action, NULL, NULL);
+
+                        if(!env.old_notify_remove)
+                            notify_notification_set_timeout(gnotify, 0);
+
+                        notify_notification_show(gnotify, NULL);
+                        g_object_unref(gnotify);
+                    }
+                    g_array_append_val(env.local_msg_db, *message);
                 }
+
+                // Have notify
 
                 // Освобождение старого массива
                 g_array_free(last_read_result.messages, TRUE);
@@ -211,7 +237,7 @@ gboolean on_chat_message_handler_async(gpointer)
             thread_reply_msg = g_thread_new(NULL, (GThreadFunc) async_reply, NULL);
         }
     }
-    return TRUE; // EVERYTHING
+    return tea_is_connected(); // EVERYTHING
 }
 
 void ui_on_close_window(GtkWidget *window, gpointer data)
@@ -257,7 +283,7 @@ void on_chat_send_button(GtkWidget *widget, gpointer data)
 void tea_on_authenticate(const struct tea_id_info *user_info)
 {
     char buffer[300], buf2[32];
-    app_settings.connected = TRUE;
+    env.connected = TRUE;
 
     tea_ui_chat_clear();
 
@@ -304,6 +330,7 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
 
     // reset chances
     check_chance_logouting = CHANCE_TO_LOGOUT;
+    widgets.chat_tab.firstTime = TRUE;
 
     // sync
     tea_ui_chat_sync();
@@ -311,12 +338,12 @@ void tea_on_authenticate(const struct tea_id_info *user_info)
     widgets.chat_tab.timeout_periodic_sync = g_timeout_add(INTERVAL_CHAT_SYNC, (GSourceFunc) on_chat_message_handler_async, NULL);
 }
 
-void tea_on_logouted()
+void tea_logout()
 {
-    if(!app_settings.connected)
+    if(!env.connected)
         return;
 
-    app_settings.connected = FALSE;
+    env.connected = FALSE;
 
     // remove message handler
     if(widgets.chat_tab.timeout_periodic_sync)
@@ -335,7 +362,7 @@ void tea_on_logouted()
     GThread *sender = thread_reply_msg;
     if(sender)
         g_thread_join(sender);
-    // saved old data, reset at
+    // saved old data, reset it
     if(last_read_result.messages)
     {
         for(int x = 0; x < last_read_result.messages->len; ++x)
@@ -343,16 +370,16 @@ void tea_on_logouted()
             free(g_array_index(last_read_result.messages, struct tea_message_id, x).message_text);
         }
         g_array_free(last_read_result.messages, TRUE);
-        memset(&last_read_result, 0, sizeof(last_read_result));
     }
+    memset(&last_read_result, 0, sizeof(last_read_result));
 
     // Clear local messages
-    for(size_t x = 0; x < app_settings.local_msg_db->len; ++x)
+    for(size_t x = 0; x < env.local_msg_db->len; ++x)
     {
-        free(g_array_index(app_settings.local_msg_db, struct tea_message_id, x).message_text);
+        free(g_array_index(env.local_msg_db, struct tea_message_id, x).message_text);
     }
-    g_array_free(app_settings.local_msg_db, TRUE);
-    app_settings.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
+    g_array_free(env.local_msg_db, TRUE);
+    env.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
 
 #ifdef TEA_OS_LINUX
     // Release RESIDENT SET SIZE (RSS) and put to System

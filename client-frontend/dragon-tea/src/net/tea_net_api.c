@@ -465,11 +465,11 @@ int net_api_signup(const char *nickname, tea_register_result *output)
 const char *tea_url_server()
 {
     int s = -1;
-    for(int x = 0; x < sizeof(app_settings.servers) / sizeof(app_settings.servers[0]); ++x)
+    for(int x = 0; x < sizeof(env.servers) / sizeof(env.servers[0]); ++x)
     {
-        if(strlen(app_settings.servers[x]) == 0)
+        if(strlen(env.servers[x]) == 0)
             break;
-        if(app_settings.active_server == tea_get_server_id(app_settings.servers[x]))
+        if(env.active_server == tea_get_server_id(env.servers[x]))
         {
             s = x;
             break;
@@ -481,12 +481,12 @@ const char *tea_url_server()
         return NULL;
     }
 
-    return app_settings.servers[s];
+    return env.servers[s];
 }
 
 int tea_switch_server(int newServerID)
 {
-    app_settings.active_server = newServerID;
+    env.active_server = newServerID;
 
     // init new server ID
     tea_read_urls(&cur_server.urls);
@@ -571,7 +571,7 @@ void tea_read_urls(struct tea_server_urls *wrData)
 
     if(server == NULL)
     {
-        printf("server == NULL");
+        tea_log("server == NULL");
         return;
     }
 

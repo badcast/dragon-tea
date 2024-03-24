@@ -88,7 +88,10 @@ async function tea_request(requestData) {
     .then(responce => {
       let networkStatus = false;
       let errStr = null;
+
+      // Push stats
       netStats.requestVerified++;
+
       while (1) {
         if (responce == "") {
           errStr = "Internal server error. Responce is empty.";
@@ -124,13 +127,15 @@ async function tea_request(requestData) {
         console.log("Network status: " + networkStatus);
       }
 
-      return { error: errStr, ok: networkStatus, code: responce.status }
+      return { error: errStr, ok: networkStatus, status: responce.status }
     })
     .catch(error => {
-      // Обработка ошибок
       console.error(error);
+
+      // Push stats
       netStats.requestError++;
-      return { error: error, ok: false, code: STATUS_CLIENT_CATCH };
+
+      return { error: error, ok: false, status: STATUS_CLIENT_CATCH };
     });
 
   if (status.ok) {

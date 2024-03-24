@@ -30,6 +30,4 @@ int tea_switch_server(int newServerID);
 
 int tea_fetch_server();
 
-void tea_read_urls(struct tea_server_urls *wrData);
-
 #endif

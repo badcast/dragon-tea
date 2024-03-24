@@ -27,6 +27,7 @@ typedef DWORD uid_t;
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <json-c/json.h>
+#include <libnotify/notify.h>
 
 #include "tea_structs.h"
 #include "tea_api.h"
@@ -58,10 +59,12 @@ typedef DWORD uid_t;
 
 extern struct tea_net_stats net_stats;
 extern struct tea_server_info cur_server;
-extern struct tea_settings app_settings;
+extern struct tea_settings env;
 extern struct tea_app_widgets widgets;
 
 void tea_init();
+
+void tea_free();
 
 const char *tea_version();
 
@@ -86,6 +89,8 @@ void tea_logout();
 int tea_get_server_id(const char *serverURI);
 
 int tea_get_builtin_server_list(char list[3][64]);
+
+void tea_read_urls(struct tea_server_urls *wrData);
 
 void tea_load();
 

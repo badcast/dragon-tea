@@ -76,24 +76,11 @@ void tea_ui_init()
     tea_try_login();
     tea_ui_focus_tab(UI_TAB_AUTH);
 
-    show_log_dialog();
-}
+    // libnotify init
+    notify_init("Dragon Tea Messenger");
 
-void tea_ui_update_settings()
-{
-    int selServer = 0;
-    for(int x = 0; x < 32; ++x)
-    {
-        if(strlen(app_settings.servers[x]) == 0)
-            break;
-
-        if(tea_get_server_id(app_settings.servers[x]) == app_settings.active_server)
-        {
-            selServer = x;
-            break;
-        }
-    }
-    gtk_combo_box_set_active(GTK_COMBO_BOX(widgets.settings_tab.combx_server_list), selServer);
+    if(env.show_logs)
+        show_log_dialog();
 }
 
 void tea_ui_focus_tab(enum UiTabs tabIndex)
@@ -126,7 +113,9 @@ void tea_ui_chat_interactable(int value)
 void tea_ui_chat_sync()
 {
     widgets.chat_tab.chat_synched = FALSE;
-    on_chat_message_handler_async(NULL);
+
+    if(tea_is_connected())
+        on_chat_message_handler_async(NULL);
 }
 
 void tea_ui_chat_status_text(const char *status_text)
@@ -167,7 +156,7 @@ void tea_ui_chat_push_block(const struct tea_message_id *message)
 {
     /*
      *  FORMAT VIEW for Message Block
-     *   bad@(21:16): Hello
+     *   bad@[21:16]: Hello
      */
 
     if(message == NULL)
@@ -176,12 +165,40 @@ void tea_ui_chat_push_block(const struct tea_message_id *message)
         return;
     }
 
-    static const char format_message_block[] = "\n\n%s@(%s): %s\n";
-    GDateTime *_gdatetime = g_date_time_new_from_unix_local(message->time_received);
-    gchar *date_time = g_date_time_format(_gdatetime, "%H:%M");
+    static const char format_message_block[] = "\n\n>>%s@[%s]: %s\n";
 
+    gchar *date_time;
+    GDateTime *prevgtime, *_gdatetime = g_date_time_new_from_unix_utc(message->time_received);
+
+    if(env.local_msg_db->len == 0)
+    {
+        prevgtime = _gdatetime;
+    }
+    else
+    {
+        prevgtime = g_date_time_new_from_unix_utc(
+            g_array_index(env.local_msg_db, struct tea_message_id, (env.local_msg_db->len - 1)).time_received);
+    }
+
+    // TODO: sort by date
+
+    if(prevgtime == _gdatetime ||
+       !(g_date_time_get_day_of_month(prevgtime) == g_date_time_get_day_of_month(_gdatetime) &&
+         g_date_time_get_month(prevgtime) == g_date_time_get_month(_gdatetime) &&
+         g_date_time_get_year(prevgtime) == g_date_time_get_year(_gdatetime)))
+    {
+        date_time = g_date_time_format(prevgtime, "\n\n\t::::%d.%m.%Y::::\n");
+
+        tea_ui_chat_push_text_raw(date_time, -1);
+
+        g_free(date_time);
+    }
+
+    if(prevgtime != _gdatetime)
+        g_free(prevgtime);
+
+    date_time = g_date_time_format(_gdatetime, "%H:%M");
     int require_size = snprintf(NULL, 0, format_message_block, message->sent_user_name, date_time, message->message_text);
-
     char *text_buffer = (char *) malloc(require_size + 1);
     if(text_buffer == NULL)
         ui_error_fail("Out of memory!");

@@ -5,8 +5,6 @@
 
 void tea_on_authenticate(const struct tea_id_info *user_info);
 
-void tea_on_logouted();
-
 void ui_on_close_window(GtkWidget *window, gpointer data);
 
 void ui_on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, guint page_num, gpointer user_data);

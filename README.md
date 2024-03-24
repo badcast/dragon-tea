@@ -25,6 +25,7 @@ Dragon Tea. Free Messenger
 | glib >= 2.76          | glib self depend.      | Uses for structures, controls, callbacks, async operation, array, etc.                       |
 | libcurl >= 8.0.0      | libcurl self depend.   | HTTP I/O request-responce (as default).                                                      |
 | json-c >= 0.16        | libjson-c self depend. | Uses as JSON parser.                                                                         |
+| libnotify        | libnotify self depend. | Uses for Desktop Environment notify. |
 | cmake                 |                        |                                                                                              |
 | pkg-config            |                        |                                                                                              |
 

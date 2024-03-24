@@ -9,7 +9,7 @@
 
 #include "ui_callbacks.h"
 
-struct tea_settings app_settings;
+struct tea_settings env;
 
 const char *get_conf_dir();
 
@@ -23,6 +23,12 @@ void tea_init()
 
     // init user interface
     tea_ui_init();
+}
+
+void tea_free()
+{
+    net_free();
+    notify_uninit();
 }
 
 void tea_load_conf(struct tea_settings *tea, const char *filename);
@@ -70,15 +76,14 @@ const char *tea_version()
 
 int tea_is_connected()
 {
-    return app_settings.connected;
+    return env.connected;
 }
 
 void tea_login(const struct tea_id_info *login_info)
 {
-    if(tea_is_connected())
-        tea_logout();
+    tea_logout();
 
-    memcpy(&(app_settings.id_info), login_info, sizeof(app_settings.id_info));
+    memcpy(&(env.id_info), login_info, sizeof(env.id_info));
 
     // event on authenticate
     tea_on_authenticate(login_info);
@@ -86,24 +91,19 @@ void tea_login(const struct tea_id_info *login_info)
 
 int tea_try_login()
 {
-    int result = app_settings.id_info.user_id != -1 && strlen(app_settings.id_info.user_nickname) > 0;
+    int result = env.id_info.user_id != -1 && strlen(env.id_info.user_nickname) > 0;
     if(result)
     {
-        tea_ui_auth_set_id(app_settings.id_info.user_id);
+        tea_ui_auth_set_id(env.id_info.user_id);
         tea_ui_auth_sigin();
     }
     return result;
 }
 
-void tea_logout()
-{
-    tea_on_logouted();
-}
-
 const char *get_conf_dir()
 {
     const char *home_dir;
-    if(strlen(app_settings.config_dir) == 0)
+    if(strlen(env.config_dir) == 0)
     {
 
 #ifdef TEA_OS_LINUX
@@ -113,9 +113,9 @@ const char *get_conf_dir()
             home_dir = "/tmp/temp-user-tea"; // set as default to tmp
             mkdir(home_dir, 0700);
         }
-        strncpy(app_settings.config_dir, home_dir, sizeof(app_settings.config_dir));
-        strncat(app_settings.config_dir, "/.config/DragonTea", sizeof(app_settings.config_dir));
-        if(mkdir(app_settings.config_dir, 0700) != 0 && errno != EEXIST)
+        strncpy(env.config_dir, home_dir, sizeof(env.config_dir));
+        strncat(env.config_dir, "/.config/DragonTea", sizeof(env.config_dir));
+        if(mkdir(env.config_dir, 0700) != 0 && errno != EEXIST)
         {
             printf("%s", strerror(errno));
         }
@@ -128,27 +128,27 @@ const char *get_conf_dir()
 #endif
     }
 
-    return app_settings.config_dir;
+    return env.config_dir;
 }
 
 void tea_load()
 {
     const char *conf_dir = get_conf_dir();
-    strncat(app_settings.setting_filename, conf_dir, sizeof(app_settings.setting_filename) - 1);
-    strncat(app_settings.setting_filename, "/tea-config.json", sizeof(app_settings.setting_filename) - 1);
-    app_settings.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
-    tea_load_conf(&app_settings, app_settings.setting_filename);
+    strncat(env.setting_filename, conf_dir, sizeof(env.setting_filename) - 1);
+    strncat(env.setting_filename, "/tea-config.json", sizeof(env.setting_filename) - 1);
+    env.local_msg_db = g_array_new(FALSE, FALSE, sizeof(struct tea_message_id));
+    tea_load_conf(&env, env.setting_filename);
 
     // Init logs
-    app_settings.log_buffer = gtk_text_buffer_new(NULL);
+    env.log_buffer = gtk_text_buffer_new(NULL);
 
     // switching server
-    tea_switch_server(app_settings.active_server);
+    tea_switch_server(env.active_server);
 }
 
 void tea_save()
 {
-    tea_save_conf(&app_settings, app_settings.setting_filename);
+    tea_save_conf(&env, env.setting_filename);
 }
 
 void tea_load_conf(struct tea_settings *tea, const char *filename)
@@ -157,7 +157,7 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
     int deltaFlag, validate;
     size_t len;
     FILE *config_file;
-    struct json_object *userId, *user_nickname, *active_server, *servers, *server, *parser;
+    struct json_object *userId, *user_nickname, *active_server, *servers, *show_logs, *old_notify, *server, *parser;
 
     // File not permit
     // then set application settings to default
@@ -209,6 +209,14 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
             validate |= 4;
         if(!json_object_object_get_ex(parser, "servers", &servers) || !json_object_is_type(servers, json_type_array))
             validate |= 8;
+        if(!json_object_object_get_ex(parser, "show_logs", &show_logs) || !json_object_is_type(show_logs, json_type_boolean))
+            tea->show_logs = 1; // Show as default
+        else
+            tea->show_logs = (int) json_object_get_boolean(show_logs);
+        if(!json_object_object_get_ex(parser, "remove_old_notify", &old_notify) || !json_object_is_type(old_notify, json_type_boolean))
+            tea->old_notify_remove = 1; // Remove old notify = yes as default
+        else
+            tea->old_notify_remove = (int) json_object_get_boolean(old_notify);
 
         // nickname and userId
         if((validate & 3) == 0)
@@ -273,11 +281,12 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     for(len = 0, cmp1 = 1; strlen(_from.servers[len]); ++len)
         cmp1 *= 1 | tea_get_server_id(_from.servers[len]);
 
-    for(len = 0, cmp2 = 1; strlen(app_settings.servers[len]); ++len)
-        cmp2 *= 1 | tea_get_server_id(app_settings.servers[len]);
+    for(len = 0, cmp2 = 1; strlen(env.servers[len]); ++len)
+        cmp2 *= 1 | tea_get_server_id(env.servers[len]);
 
     if(_from.id_info.user_id == save_tea->id_info.user_id && strcmp(save_tea->id_info.user_nickname, _from.id_info.user_nickname) == 0 &&
-       _from.active_server == app_settings.active_server && cmp1 == cmp2)
+       _from.active_server == env.active_server && cmp1 == cmp2 && save_tea->show_logs == _from.show_logs &&
+       save_tea->old_notify_remove == _from.old_notify_remove)
     {
         return;
     }
@@ -286,13 +295,15 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     json_object_object_add(jdata, "user_id", json_object_new_int64(save_tea->id_info.user_id));
     json_object_object_add(jdata, "user_nickname", json_object_new_string(save_tea->id_info.user_nickname));
     json_object_object_add(jdata, "active_server", json_object_new_int(save_tea->active_server));
+    json_object_object_add(jdata, "show_logs", json_object_new_boolean(save_tea->show_logs));
+    json_object_object_add(jdata, "remove_old_notify", json_object_new_boolean(save_tea->old_notify_remove));
 
     // save server list
 
     jarr = json_object_new_array_ext(len);
     for(; len-- > 0;)
     {
-        json_object_array_add(jarr, json_object_new_string(app_settings.servers[len]));
+        json_object_array_add(jarr, json_object_new_string(env.servers[len]));
     }
     json_object_object_add(jdata, "servers", jarr);
 
