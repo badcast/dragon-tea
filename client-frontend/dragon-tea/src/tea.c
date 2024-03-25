@@ -273,20 +273,20 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     int len;
 
     // save only unchanged data
-    struct tea_settings _from;
-    memset(&_from, 0, sizeof(_from));
+    struct tea_settings prevset;
+    memset(&prevset, 0, sizeof(prevset));
 
-    tea_load_conf(&_from, filename);
+    tea_load_conf(&prevset, filename);
 
-    for(len = 0, cmp1 = 1; strlen(_from.servers[len]); ++len)
-        cmp1 *= 1 | tea_get_server_id(_from.servers[len]);
+    for(len = 0, cmp1 = 1; strlen(prevset.servers[len]); ++len)
+        cmp1 *= 1 | tea_get_server_id(prevset.servers[len]);
 
     for(len = 0, cmp2 = 1; strlen(env.servers[len]); ++len)
         cmp2 *= 1 | tea_get_server_id(env.servers[len]);
 
-    if(_from.id_info.user_id == save_tea->id_info.user_id && strcmp(save_tea->id_info.user_nickname, _from.id_info.user_nickname) == 0 &&
-       _from.active_server == env.active_server && cmp1 == cmp2 && save_tea->show_logs == _from.show_logs &&
-       save_tea->old_notify_remove == _from.old_notify_remove)
+    if(prevset.id_info.user_id == save_tea->id_info.user_id && strcmp(save_tea->id_info.user_nickname, prevset.id_info.user_nickname) == 0 &&
+       prevset.active_server == env.active_server && cmp1 == cmp2 && save_tea->show_logs == prevset.show_logs &&
+       save_tea->old_notify_remove == prevset.old_notify_remove)
     {
         return;
     }

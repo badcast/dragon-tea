@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
-"POT-Creation-Date: 2024-01-30 00:21+0600\n"
-"PO-Revision-Date: 2024-01-30 00:33+0600\n"
+"POT-Creation-Date: 2024-03-25 15:07+0500\n"
+"PO-Revision-Date: 2024-03-25 15:15+0500\n"
 "Last-Translator: badcast <lmecomposer@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
@@ -18,9 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
 "=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 23.08.4\n"
+"X-Generator: Lokalize 24.02.1\n"
 
 #: ../src/tea.c:270 ../src/tea.c:273 ../src/tea.c:308 ../src/tea.c:311
+#: ../src/tea.c:322
 msgid "Error"
 msgstr "Ошибка"
 
@@ -37,10 +38,12 @@ msgid "WEB-Page"
 msgstr "Веб-страница"
 
 #: ../src/core/ui_settings.c:32 ../src/core/ui_settings.c:35
+#: ../src/core/ui_settings.c:79
 msgid "Switch server: "
 msgstr "Предпочитаемый сервер: "
 
 #: ../src/core/ui_settings.c:46 ../src/core/ui_settings.c:49
+#: ../src/core/ui_settings.c:105
 msgid "Apply changes"
 msgstr "Применить изменения"
 
@@ -139,7 +142,7 @@ msgid "About"
 msgstr "О программе"
 
 #: ../src/core/ui.c:72 ../src/core/ui.c:83 ../src/core/ui.c:97
-#: ../src/core/ui.c:113
+#: ../src/core/ui.c:113 ../src/core/ui.c:100
 msgid "You state is offline"
 msgstr "Не выполнен вход на сервер"
 
@@ -155,44 +158,51 @@ msgid "Error send."
 msgstr "Ошибка отправки."
 
 #: ../src/core/ui_callbacks.c:118 ../src/core/ui_callbacks.c:122
-#: ../src/core/ui_callbacks.c:120
+#: ../src/core/ui_callbacks.c:120 ../src/core/ui_callbacks.c:126
 #, c-format
 msgid "Synchronization of %ld messages"
 msgstr "Синхронизация %ld сообщений"
 
 #: ../src/core/ui_callbacks.c:136 ../src/core/ui_callbacks.c:137
 #: ../src/core/ui_callbacks.c:141 ../src/core/ui_callbacks.c:139
+#: ../src/core/ui_callbacks.c:145
 msgid "Your network has been restored. "
 msgstr "Ваша сеть восстановлена. "
 
 #: ../src/core/ui_callbacks.c:140 ../src/core/ui_callbacks.c:141
 #: ../src/core/ui_callbacks.c:145 ../src/core/ui_callbacks.c:143
+#: ../src/core/ui_callbacks.c:149
 msgid "You're online."
 msgstr "Вы в сети."
 
 #: ../src/core/ui_callbacks.c:172 ../src/core/ui_callbacks.c:173
 #: ../src/core/ui_callbacks.c:177 ../src/core/ui_callbacks.c:175
+#: ../src/core/ui_callbacks.c:201
 msgid "Your account has been deleted."
 msgstr "Ваш аккаунт был удален."
 
 #: ../src/core/ui_callbacks.c:180 ../src/core/ui_callbacks.c:181
 #: ../src/core/ui_callbacks.c:185 ../src/core/ui_callbacks.c:183
+#: ../src/core/ui_callbacks.c:209
 #, c-format
 msgid "Network error. Your connection has been reset (%d remains)"
 msgstr "Сетевая ошибка. Ваше соединение было сброшено (%d осталось)"
 
 #: ../src/core/ui_callbacks.c:187 ../src/core/ui_callbacks.c:188
 #: ../src/core/ui_callbacks.c:192 ../src/core/ui_callbacks.c:190
+#: ../src/core/ui_callbacks.c:216
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
 #: ../src/core/ui_callbacks.c:247 ../src/core/ui_callbacks.c:248
 #: ../src/core/ui_callbacks.c:252 ../src/core/ui_callbacks.c:250
+#: ../src/core/ui_callbacks.c:276
 msgid "Sending..."
 msgstr "Отправка..."
 
 #: ../src/core/ui_callbacks.c:263 ../src/core/ui_callbacks.c:266
 #: ../src/core/ui_callbacks.c:270 ../src/core/ui_callbacks.c:268
+#: ../src/core/ui_callbacks.c:294
 msgid "Login completed."
 msgstr "Вход выполнен."
 
@@ -218,7 +228,7 @@ msgstr ""
 "Время последнего входа: %s\n"
 "------\n"
 
-#: ../src/main.c:14
+#: ../src/main.c:14 ../src/main.c:23
 #, c-format
 msgid ""
 "The program is running as root. These privileges can harm the system, please "
@@ -238,11 +248,11 @@ msgstr ""
 "Код ошибки: %d\n"
 "Сообщение ошибки: %s"
 
-#: ../src/core/ui_logs.c:49 ../src/core/ui_logs.c:53
+#: ../src/core/ui_logs.c:49 ../src/core/ui_logs.c:53 ../src/core/ui_logs.c:56
 msgid "Clear log"
 msgstr "Очистить журнал"
 
-#: ../src/core/ui_callbacks.c:285
+#: ../src/core/ui_callbacks.c:285 ../src/core/ui_callbacks.c:311
 #, c-format
 msgid ""
 "------\n"
@@ -264,4 +274,17 @@ msgstr ""
 "Время регистраций: %s\n"
 "Время последнего входа: %s\n"
 "------\n"
+
+#: ../src/core/ui_settings.c:92
+msgid "Show log window on startup"
+msgstr "Показывать окно журнала при запуске"
+
+#: ../src/core/ui_callbacks.c:177
+msgid "Read message"
+msgstr "Прочитано"
+
+#: ../src/core/ui_settings.c:96
+msgid "Remove old notifications"
+msgstr "Удалять старые уведомления"
+
 

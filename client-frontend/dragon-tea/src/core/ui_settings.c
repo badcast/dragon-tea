@@ -21,6 +21,9 @@ void apply_changes()
         tea_try_login();
     }
     tea_ui_focus_tab(UI_TAB_AUTH);
+
+    // save
+    tea_save();
 }
 
 void toggle_button(GtkWidget *widget, gpointer data)
@@ -90,7 +93,7 @@ GtkWidget *create_settings_widget()
     g_signal_connect(G_OBJECT(currentWidget), "toggled", G_CALLBACK(toggle_button), &ref_setting.toggle_log);
     gtk_box_pack_start(GTK_BOX(widgetbox), currentWidget, TRUE, FALSE, 0);
 
-    currentWidget = widgets.settings_tab.toggle_notify = gtk_check_button_new_with_label("Remove old notifications");
+    currentWidget = widgets.settings_tab.toggle_notify = gtk_check_button_new_with_label(_("Remove old notifications"));
 
     g_signal_connect(G_OBJECT(currentWidget), "clicked", G_CALLBACK(toggle_button), &ref_setting.toggle_notify);
     gtk_box_pack_start(GTK_BOX(widgetbox), currentWidget, TRUE, FALSE, 0);

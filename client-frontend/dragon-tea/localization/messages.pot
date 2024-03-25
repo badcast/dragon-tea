@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
-"POT-Creation-Date: 2024-01-30 00:31+0600\n"
+"POT-Creation-Date: 2024-03-25 15:07+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/tea.c:270 ../src/tea.c:273 ../src/tea.c:308 ../src/tea.c:311
+#: ../src/tea.c:322
 msgid "Error"
 msgstr ""
 
@@ -34,10 +35,12 @@ msgid "WEB-Page"
 msgstr ""
 
 #: ../src/core/ui_settings.c:32 ../src/core/ui_settings.c:35
+#: ../src/core/ui_settings.c:79
 msgid "Switch server: "
 msgstr ""
 
 #: ../src/core/ui_settings.c:46 ../src/core/ui_settings.c:49
+#: ../src/core/ui_settings.c:105
 msgid "Apply changes"
 msgstr ""
 
@@ -125,7 +128,7 @@ msgid "About"
 msgstr ""
 
 #: ../src/core/ui.c:72 ../src/core/ui.c:83 ../src/core/ui.c:97
-#: ../src/core/ui.c:113
+#: ../src/core/ui.c:113 ../src/core/ui.c:100
 msgid "You state is offline"
 msgstr ""
 
@@ -141,44 +144,51 @@ msgid "Error send."
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:118 ../src/core/ui_callbacks.c:122
-#: ../src/core/ui_callbacks.c:120
+#: ../src/core/ui_callbacks.c:120 ../src/core/ui_callbacks.c:126
 #, c-format
 msgid "Synchronization of %ld messages"
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:136 ../src/core/ui_callbacks.c:137
 #: ../src/core/ui_callbacks.c:141 ../src/core/ui_callbacks.c:139
+#: ../src/core/ui_callbacks.c:145
 msgid "Your network has been restored. "
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:140 ../src/core/ui_callbacks.c:141
 #: ../src/core/ui_callbacks.c:145 ../src/core/ui_callbacks.c:143
+#: ../src/core/ui_callbacks.c:149
 msgid "You're online."
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:172 ../src/core/ui_callbacks.c:173
 #: ../src/core/ui_callbacks.c:177 ../src/core/ui_callbacks.c:175
+#: ../src/core/ui_callbacks.c:201
 msgid "Your account has been deleted."
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:180 ../src/core/ui_callbacks.c:181
 #: ../src/core/ui_callbacks.c:185 ../src/core/ui_callbacks.c:183
+#: ../src/core/ui_callbacks.c:209
 #, c-format
 msgid "Network error. Your connection has been reset (%d remains)"
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:187 ../src/core/ui_callbacks.c:188
 #: ../src/core/ui_callbacks.c:192 ../src/core/ui_callbacks.c:190
+#: ../src/core/ui_callbacks.c:216
 msgid "Unknown error"
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:247 ../src/core/ui_callbacks.c:248
 #: ../src/core/ui_callbacks.c:252 ../src/core/ui_callbacks.c:250
+#: ../src/core/ui_callbacks.c:276
 msgid "Sending..."
 msgstr ""
 
 #: ../src/core/ui_callbacks.c:263 ../src/core/ui_callbacks.c:266
 #: ../src/core/ui_callbacks.c:270 ../src/core/ui_callbacks.c:268
+#: ../src/core/ui_callbacks.c:294
 msgid "Login completed."
 msgstr ""
 
@@ -196,7 +206,7 @@ msgid ""
 "------\n"
 msgstr ""
 
-#: ../src/main.c:14
+#: ../src/main.c:14 ../src/main.c:23
 #, c-format
 msgid ""
 "The program is running as root. These privileges can harm the system, please "
@@ -211,11 +221,11 @@ msgid ""
 "Message error: %s"
 msgstr ""
 
-#: ../src/core/ui_logs.c:49 ../src/core/ui_logs.c:53
+#: ../src/core/ui_logs.c:49 ../src/core/ui_logs.c:53 ../src/core/ui_logs.c:56
 msgid "Clear log"
 msgstr ""
 
-#: ../src/core/ui_callbacks.c:285
+#: ../src/core/ui_callbacks.c:285 ../src/core/ui_callbacks.c:311
 #, c-format
 msgid ""
 "------\n"
@@ -227,4 +237,16 @@ msgid ""
 "Registration time: %s\n"
 "Last login time: %s\n"
 "------\n"
+msgstr ""
+
+#: ../src/core/ui_settings.c:92
+msgid "Show log window on startup"
+msgstr ""
+
+#: ../src/core/ui_callbacks.c:177
+msgid "Read message"
+msgstr ""
+
+#: ../src/core/ui_settings.c:96
+msgid "Remove old notifications"
 msgstr ""

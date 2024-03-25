@@ -533,8 +533,7 @@ int tea_fetch_server()
 
                     if(cur_server.server_version.minor == 1)
                     {
-                        rfeatures |= SV_VERFI;
-                        rfeatures |= SV_MSGFL;
+                        rfeatures |= SV_VERFI | SV_MSGFL;
                     }
                 }
 
@@ -554,6 +553,8 @@ int tea_fetch_server()
                 // put unused resource
                 free(nrwp.raw_data);
             }
+            else
+                result = 0;
         }
     }
     else
