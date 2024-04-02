@@ -13,10 +13,19 @@ pkg_check_modules(libnotify REQUIRED libnotify)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-file(GLOB_RECURSE DRAGONTEA_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
-     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
+file(GLOB_RECURSE DRAGONTEA_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
+file(GLOB_RECURSE DRAGONTEA_SOURCES
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/teauilib/*.c")
 
-add_executable(dragontea)
+list(APPEND DRAGONTEA_SOURCES ${DRAGONTEA_HEADERS})
+
+add_library(dragontea SHARED)
+add_executable(exec ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c ${DRAGONTEA_HEADERS})
+
+set_target_properties(dragontea PROPERTIES OUTPUT_NAME "teauilib")
+set_target_properties(exec PROPERTIES OUTPUT_NAME "dragontea")
+
+target_compile_definitions(dragontea PRIVATE TEA_COMPILLING)
 
 # COMPILE BUILTIN SERVERS
 set(BUILTIN_TEMPLATE_FILE "${CMAKE_BINARY_DIR}/builtin_template.c")
@@ -44,7 +53,7 @@ if(EXISTS "${BUILTIN_TEMPLATE_FILE}")
                                               BUILTIN_SERVERS_N=${BF_LENGTH})
 endif()
 
-target_sources(dragontea PUBLIC ${DRAGONTEA_SOURCES})
+target_sources(dragontea PRIVATE ${DRAGONTEA_SOURCES})
 
 target_include_directories(
   dragontea
@@ -52,9 +61,13 @@ target_include_directories(
          ${gthread_INCLUDE_DIRS} ${libcurl_INCLUDE_DIRS} ${json_INCLUDE_DIRS}
          ${libnotify_INCLUDE_DIRS})
 
+target_include_directories(exec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+
 target_link_libraries(
   dragontea ${gtk3ui_LIBRARIES} ${libcurl_LIBRARIES} ${json_LIBRARIES}
   ${gthread_LIBRARIES} ${libnotify_LIBRARIES})
+
+target_link_libraries(exec dragontea)
 
 target_compile_definitions(dragontea
                            PUBLIC DRAGON_TEA_VERSION="${DRAGON_TEA_VERSION}")
@@ -68,5 +81,7 @@ if(UNIX OR LINUX)
           DESTINATION "${CMAKE_INSTALL_PREFIX}/share")
 
   install(FILES "${CMAKE_BINARY_DIR}/dragontea"
-          DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")
+          DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/
+    ")
+
 endif()

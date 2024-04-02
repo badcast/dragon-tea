@@ -144,7 +144,7 @@ gboolean on_chat_message_handler_async(gpointer)
                     if(last_chance_state != CHANCE_TO_LOGOUT)
                         strcpy(buffer, _("Your network has been restored. "));
                     else
-                        buffer[0] = NULL;
+                        buffer[0] = '\0';
 
                     strcat(buffer, _("You're online."));
                     tea_ui_chat_status_text(buffer);
@@ -174,7 +174,7 @@ gboolean on_chat_message_handler_async(gpointer)
                     {
                         gnotify = notify_notification_new(
                             message->sent_user_name, message->message_text, gtk_window_get_icon_name(widgets.main_window));
-                        notify_notification_add_action(gnotify, "custom_action", _("Read message"), notify_action, NULL, NULL);
+                        notify_notification_add_action(gnotify, "custom_action", _("Read message"), (NotifyActionCallback) notify_action, NULL, NULL);
 
                         if(!env.old_notify_remove)
                             notify_notification_set_timeout(gnotify, 0);
