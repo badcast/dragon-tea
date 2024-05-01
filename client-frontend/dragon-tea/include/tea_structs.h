@@ -118,6 +118,8 @@ struct tea_settings
     char config_dir[TEA_MAXLEN_PATH];
     // setting file
     char setting_filename[TEA_MAXLEN_PATH];
+    // auto login on startup
+    int autologin;
     // active server
     int active_server;
     // loaded from configurations
@@ -172,6 +174,7 @@ struct tea_app_widgets
     struct
     {
         GtkWidget *combx_server_list;
+        GtkWidget *toggle_autologin;
         GtkWidget *toggle_log;
         GtkWidget *toggle_notify;
         GtkWidget *button_apply;

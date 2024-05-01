@@ -19,13 +19,13 @@ file(GLOB_RECURSE DRAGONTEA_SOURCES
 
 list(APPEND DRAGONTEA_SOURCES ${DRAGONTEA_HEADERS})
 
-add_library(dragontea SHARED)
+add_library(libdragontea SHARED)
 add_executable(exec ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c ${DRAGONTEA_HEADERS})
 
-set_target_properties(dragontea PROPERTIES OUTPUT_NAME "teauilib")
+set_target_properties(libdragontea  PROPERTIES OUTPUT_NAME "teauilib")
 set_target_properties(exec PROPERTIES OUTPUT_NAME "dragontea")
 
-target_compile_definitions(dragontea PRIVATE TEA_COMPILLING)
+target_compile_definitions(libdragontea PRIVATE TEA_COMPILLING)
 
 # COMPILE BUILTIN SERVERS
 set(BUILTIN_TEMPLATE_FILE "${CMAKE_BINARY_DIR}/builtin_template.c")
@@ -49,14 +49,14 @@ endif()
 
 if(EXISTS "${BUILTIN_TEMPLATE_FILE}")
   list(APPEND DRAGONTEA_SOURCES ${BUILTIN_TEMPLATE_FILE})
-  target_compile_definitions(dragontea PUBLIC BUILTIN_SERVERS=ON
+  target_compile_definitions(libdragontea   PUBLIC BUILTIN_SERVERS=ON
                                               BUILTIN_SERVERS_N=${BF_LENGTH})
 endif()
 
-target_sources(dragontea PRIVATE ${DRAGONTEA_SOURCES})
+target_sources(libdragontea  PRIVATE ${DRAGONTEA_SOURCES})
 
 target_include_directories(
-  dragontea
+  libdragontea
   PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/" ${gtk3ui_INCLUDE_DIRS}
          ${gthread_INCLUDE_DIRS} ${libcurl_INCLUDE_DIRS} ${json_INCLUDE_DIRS}
          ${libnotify_INCLUDE_DIRS})
@@ -64,17 +64,17 @@ target_include_directories(
 target_include_directories(exec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
 target_link_libraries(
-  dragontea ${gtk3ui_LIBRARIES} ${libcurl_LIBRARIES} ${json_LIBRARIES}
+  libdragontea  ${gtk3ui_LIBRARIES} ${libcurl_LIBRARIES} ${json_LIBRARIES}
   ${gthread_LIBRARIES} ${libnotify_LIBRARIES})
 
-target_link_libraries(exec dragontea)
+target_link_libraries(exec libdragontea )
 
-target_compile_definitions(dragontea
+target_compile_definitions(libdragontea
                            PUBLIC DRAGON_TEA_VERSION="${DRAGON_TEA_VERSION}")
 
 if(UNIX OR LINUX)
   set(LOCALE_DIR "${CMAKE_INSTALL_PREFIX}/share/locale")
-  target_compile_definitions(dragontea
+  target_compile_definitions(libdragontea
                              PUBLIC DRAGON_TEA_LOCALE_DIR="${LOCALE_DIR}")
 
   install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/localization/locale"

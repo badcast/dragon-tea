@@ -2,6 +2,7 @@
 
 struct
 {
+    int toggle_autologin;
     int toggle_log;
     int toggle_notify;
     int toggle_server;
@@ -11,6 +12,7 @@ void apply_changes()
 {
     env.show_logs = ref_setting.toggle_log;
     env.old_notify_remove = ref_setting.toggle_notify;
+    env.autologin = ref_setting.toggle_autologin;
     ref_setting.toggle_server =
         tea_get_server_id(env.servers[gtk_combo_box_get_active(GTK_COMBO_BOX(widgets.settings_tab.combx_server_list))]);
 
@@ -20,15 +22,16 @@ void apply_changes()
         tea_switch_server(ref_setting.toggle_server);
         tea_try_login();
     }
+
     tea_ui_focus_tab(UI_TAB_AUTH);
 
     // save
     tea_save();
 }
 
-void toggle_button(GtkWidget *widget, gpointer data)
+void toggle_button(GtkWidget *widget, gpointer pconfData)
 {
-    (*(int *) data) = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+    (*(int *) pconfData) = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
 void on_button_clk_show_log(GtkWidget *widget, gpointer data)
@@ -55,6 +58,7 @@ void tea_ui_update_settings()
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets.settings_tab.toggle_log), (ref_setting.toggle_log = env.show_logs));
     gtk_toggle_button_set_active(
         GTK_TOGGLE_BUTTON(widgets.settings_tab.toggle_notify), (ref_setting.toggle_notify = env.old_notify_remove));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets.settings_tab.toggle_autologin), (ref_setting.toggle_autologin = env.autologin));
 }
 
 GtkWidget *create_settings_widget()
@@ -89,7 +93,11 @@ GtkWidget *create_settings_widget()
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), renderer, "text", 0, NULL);
     gtk_box_pack_start(GTK_BOX(widgetbox), combobox, TRUE, FALSE, 0);
 
-    GtkWidget *currentWidget = widgets.settings_tab.toggle_log = gtk_check_button_new_with_label(_("Show log window on startup"));
+    GtkWidget *currentWidget = widgets.settings_tab.toggle_autologin = gtk_check_button_new_with_label(_("Autologin on startup"));
+    g_signal_connect(G_OBJECT(currentWidget), "toggled", G_CALLBACK(toggle_button), &ref_setting.toggle_autologin);
+    gtk_box_pack_start(GTK_BOX(widgetbox), currentWidget, TRUE, FALSE, 0);
+
+    currentWidget = widgets.settings_tab.toggle_log = gtk_check_button_new_with_label(_("Show log window on startup"));
     g_signal_connect(G_OBJECT(currentWidget), "toggled", G_CALLBACK(toggle_button), &ref_setting.toggle_log);
     gtk_box_pack_start(GTK_BOX(widgetbox), currentWidget, TRUE, FALSE, 0);
 

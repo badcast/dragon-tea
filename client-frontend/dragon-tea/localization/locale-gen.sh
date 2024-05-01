@@ -23,4 +23,4 @@ function gen_locales()
 
 find ../ ../src -type f -name "*.c" -o -name "*.h" | xargs xgettext -j --msgid-bugs-address="lmecomposer@gmail.com" --copyright-holder="badcast" --keyword=gettext --keyword=_ -o messages.pot --from-code=UTF-8 -d dragon-tea
 
-gen_locales ru_RU kz_KZ
+gen_locales ru_RU kk_KZ

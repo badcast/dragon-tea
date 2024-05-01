@@ -72,8 +72,13 @@ void tea_ui_init()
     // disable chat as default
     tea_ui_chat_enable(FALSE);
 
+    if(env.id_info.user_id)
+        tea_ui_auth_set_id(env.id_info.user_id);
+
     // Probe auto sign in if the exists
-    tea_try_login();
+    if(env.autologin)
+        tea_try_login();
+
     tea_ui_focus_tab(UI_TAB_AUTH);
 
     // libnotify init

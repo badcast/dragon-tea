@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
-"POT-Creation-Date: 2024-03-25 15:07+0500\n"
+"POT-Creation-Date: 2024-04-03 03:46+0500\n"
 "PO-Revision-Date: 2024-03-25 15:15+0500\n"
 "Last-Translator: badcast <lmecomposer@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -16,42 +16,45 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
-"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 24.02.1\n"
 
 #: ../src/tea.c:270 ../src/tea.c:273 ../src/tea.c:308 ../src/tea.c:311
-#: ../src/tea.c:322
+#: ../src/tea.c:322 ../src/teauilib/tea.c:322
 msgid "Error"
 msgstr "Ошибка"
 
 #: ../src/core/ui_about.c:9 ../src/core/ui.c:7 ../src/core/ui.c:21
+#: ../src/teauilib/core/ui_about.c:9 ../src/teauilib/core/ui.c:21
 msgid "Dragon Tea"
 msgstr "Драконий Чай"
 
-#: ../src/core/ui_about.c:11
+#: ../src/core/ui_about.c:11 ../src/teauilib/core/ui_about.c:11
 msgid "Free messenger for transmission"
 msgstr "Свободный мессенджер для обмена информациями."
 
-#: ../src/core/ui_about.c:13
+#: ../src/core/ui_about.c:13 ../src/teauilib/core/ui_about.c:13
 msgid "WEB-Page"
 msgstr "Веб-страница"
 
 #: ../src/core/ui_settings.c:32 ../src/core/ui_settings.c:35
-#: ../src/core/ui_settings.c:79
+#: ../src/core/ui_settings.c:79 ../src/teauilib/core/ui_settings.c:79
 msgid "Switch server: "
 msgstr "Предпочитаемый сервер: "
 
 #: ../src/core/ui_settings.c:46 ../src/core/ui_settings.c:49
-#: ../src/core/ui_settings.c:105
+#: ../src/core/ui_settings.c:105 ../src/teauilib/core/ui_settings.c:105
 msgid "Apply changes"
 msgstr "Применить изменения"
 
 #: ../src/core/ui_authorize.c:84 ../src/core/ui_authorize.c:88
+#: ../src/teauilib/core/ui_authorize.c:88
 msgid "User is not exists."
 msgstr "Данный пользователь не существует."
 
 #: ../src/core/ui_authorize.c:93 ../src/core/ui_authorize.c:97
+#: ../src/teauilib/core/ui_authorize.c:97
 #, c-format
 msgid ""
 "Authentication is not confirmed:\n"
@@ -74,24 +77,31 @@ msgstr ""
 "Сообщение ошибки: %s"
 
 #: ../src/core/ui_authorize.c:167 ../src/core/ui_authorize.c:171
+#: ../src/teauilib/core/ui_authorize.c:171
 msgid "The nickname should not be empty."
 msgstr "Ник не может быть пустым."
 
 #: ../src/core/ui_authorize.c:191 ../src/core/ui_authorize.c:195
+#: ../src/teauilib/core/ui_authorize.c:195
 msgid "You set is invalid ID"
 msgstr "Вы указали не валидный ID"
 
 #: ../src/core/ui_authorize.c:225 ../src/core/ui_authorize.c:262
 #: ../src/core/ui_authorize.c:229 ../src/core/ui_authorize.c:266
+#: ../src/teauilib/core/ui_authorize.c:229
+#: ../src/teauilib/core/ui_authorize.c:266
 msgid "Sign in"
 msgstr "Войти"
 
 #: ../src/core/ui_authorize.c:226 ../src/core/ui_authorize.c:306
 #: ../src/core/ui_authorize.c:230 ../src/core/ui_authorize.c:310
+#: ../src/teauilib/core/ui_authorize.c:230
+#: ../src/teauilib/core/ui_authorize.c:310
 msgid "Sign up"
 msgstr "Зарегистрироваться"
 
 #: ../src/core/ui_authorize.c:235 ../src/core/ui_authorize.c:239
+#: ../src/teauilib/core/ui_authorize.c:239
 msgid ""
 "Log in using your UserID\n"
 "note: Numbers only, and it must be unique."
@@ -100,14 +110,17 @@ msgstr ""
 "Примечание: Только числа, и он должен быть уникальным."
 
 #: ../src/core/ui_authorize.c:246 ../src/core/ui_authorize.c:250
+#: ../src/teauilib/core/ui_authorize.c:250
 msgid "Signing..."
 msgstr "Входим..."
 
 #: ../src/core/ui_authorize.c:254 ../src/core/ui_authorize.c:258
+#: ../src/teauilib/core/ui_authorize.c:258
 msgid "Set UserID..."
 msgstr "Введите UserID..."
 
 #: ../src/core/ui_authorize.c:274 ../src/core/ui_authorize.c:278
+#: ../src/teauilib/core/ui_authorize.c:278
 msgid ""
 "Enter your nickname.\n"
 "Force the use of the Latin alphabet,\n"
@@ -118,91 +131,98 @@ msgstr ""
 "длина ника не более 16 и не менее 3."
 
 #: ../src/core/ui_authorize.c:285 ../src/core/ui_authorize.c:289
+#: ../src/teauilib/core/ui_authorize.c:289
 msgid "Sign up..."
 msgstr "Регистрация..."
 
 #: ../src/core/ui_authorize.c:293 ../src/core/ui_authorize.c:297
+#: ../src/teauilib/core/ui_authorize.c:297
 msgid "Enter nickname..."
 msgstr "Введите никнейм..."
 
 #: ../src/core/ui.c:20 ../src/core/ui.c:34 ../src/core/ui.c:36
+#: ../src/teauilib/core/ui.c:36
 msgid "Authentication"
 msgstr "Аутентификация"
 
 #: ../src/core/ui.c:22 ../src/core/ui.c:36 ../src/core/ui.c:38
+#: ../src/teauilib/core/ui.c:38
 msgid "Dragon chat"
 msgstr "Драконий чат"
 
 #: ../src/core/ui.c:24 ../src/core/ui.c:38 ../src/core/ui.c:40
+#: ../src/teauilib/core/ui.c:40
 msgid "Configuration"
 msgstr "Конфигурация"
 
 #: ../src/core/ui.c:26 ../src/core/ui.c:40 ../src/core/ui.c:42
+#: ../src/teauilib/core/ui.c:42
 msgid "About"
 msgstr "О программе"
 
 #: ../src/core/ui.c:72 ../src/core/ui.c:83 ../src/core/ui.c:97
-#: ../src/core/ui.c:113 ../src/core/ui.c:100
+#: ../src/core/ui.c:113 ../src/core/ui.c:100 ../src/teauilib/core/ui.c:100
 msgid "You state is offline"
 msgstr "Не выполнен вход на сервер"
 
 #: ../src/core/ui_callbacks.c:81 ../src/core/ui_callbacks.c:85
-#: ../src/core/ui_callbacks.c:83
+#: ../src/core/ui_callbacks.c:83 ../src/teauilib/core/ui_callbacks.c:83
 #, c-format
 msgid "The message has been sent. Time of sending %s, received %s"
 msgstr "Сообщение отправлено. Время отправки %s, получено %s"
 
 #: ../src/core/ui_callbacks.c:98 ../src/core/ui_callbacks.c:102
-#: ../src/core/ui_callbacks.c:100
+#: ../src/core/ui_callbacks.c:100 ../src/teauilib/core/ui_callbacks.c:100
 msgid "Error send."
 msgstr "Ошибка отправки."
 
 #: ../src/core/ui_callbacks.c:118 ../src/core/ui_callbacks.c:122
 #: ../src/core/ui_callbacks.c:120 ../src/core/ui_callbacks.c:126
+#: ../src/teauilib/core/ui_callbacks.c:126
 #, c-format
 msgid "Synchronization of %ld messages"
 msgstr "Синхронизация %ld сообщений"
 
 #: ../src/core/ui_callbacks.c:136 ../src/core/ui_callbacks.c:137
 #: ../src/core/ui_callbacks.c:141 ../src/core/ui_callbacks.c:139
-#: ../src/core/ui_callbacks.c:145
+#: ../src/core/ui_callbacks.c:145 ../src/teauilib/core/ui_callbacks.c:145
 msgid "Your network has been restored. "
 msgstr "Ваша сеть восстановлена. "
 
 #: ../src/core/ui_callbacks.c:140 ../src/core/ui_callbacks.c:141
 #: ../src/core/ui_callbacks.c:145 ../src/core/ui_callbacks.c:143
-#: ../src/core/ui_callbacks.c:149
+#: ../src/core/ui_callbacks.c:149 ../src/teauilib/core/ui_callbacks.c:149
 msgid "You're online."
 msgstr "Вы в сети."
 
 #: ../src/core/ui_callbacks.c:172 ../src/core/ui_callbacks.c:173
 #: ../src/core/ui_callbacks.c:177 ../src/core/ui_callbacks.c:175
-#: ../src/core/ui_callbacks.c:201
+#: ../src/core/ui_callbacks.c:201 ../src/teauilib/core/ui_callbacks.c:201
 msgid "Your account has been deleted."
 msgstr "Ваш аккаунт был удален."
 
 #: ../src/core/ui_callbacks.c:180 ../src/core/ui_callbacks.c:181
 #: ../src/core/ui_callbacks.c:185 ../src/core/ui_callbacks.c:183
-#: ../src/core/ui_callbacks.c:209
+#: ../src/core/ui_callbacks.c:209 ../src/teauilib/core/ui_callbacks.c:209
 #, c-format
 msgid "Network error. Your connection has been reset (%d remains)"
 msgstr "Сетевая ошибка. Ваше соединение было сброшено (%d осталось)"
 
 #: ../src/core/ui_callbacks.c:187 ../src/core/ui_callbacks.c:188
 #: ../src/core/ui_callbacks.c:192 ../src/core/ui_callbacks.c:190
-#: ../src/core/ui_callbacks.c:216
+#: ../src/core/ui_callbacks.c:216 ../src/teauilib/core/ui_callbacks.c:216
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
 #: ../src/core/ui_callbacks.c:247 ../src/core/ui_callbacks.c:248
 #: ../src/core/ui_callbacks.c:252 ../src/core/ui_callbacks.c:250
-#: ../src/core/ui_callbacks.c:276
+#: ../src/core/ui_callbacks.c:276 ../src/teauilib/core/ui_callbacks.c:276
 msgid "Sending..."
 msgstr "Отправка..."
 
 #: ../src/core/ui_callbacks.c:263 ../src/core/ui_callbacks.c:266
 #: ../src/core/ui_callbacks.c:270 ../src/core/ui_callbacks.c:268
-#: ../src/core/ui_callbacks.c:294
+#: ../src/core/ui_callbacks.c:294 ../src/teauilib/core/ui_callbacks.c:294
 msgid "Login completed."
 msgstr "Вход выполнен."
 
@@ -228,7 +248,7 @@ msgstr ""
 "Время последнего входа: %s\n"
 "------\n"
 
-#: ../src/main.c:14 ../src/main.c:23
+#: ../src/main.c:14 ../src/main.c:23 ../src/teauilib/teauilib.c:25
 #, c-format
 msgid ""
 "The program is running as root. These privileges can harm the system, please "
@@ -237,7 +257,7 @@ msgstr ""
 "Программа запущена от имени пользователя root. Эти привилегии могут нанести "
 "вред системе, пожалуйста, имейте это в виду. Закрытие."
 
-#: ../src/core/ui_authorize.c:127
+#: ../src/core/ui_authorize.c:127 ../src/teauilib/core/ui_authorize.c:127
 #, fuzzy, c-format
 msgid ""
 "Error registration:\n"
@@ -249,10 +269,12 @@ msgstr ""
 "Сообщение ошибки: %s"
 
 #: ../src/core/ui_logs.c:49 ../src/core/ui_logs.c:53 ../src/core/ui_logs.c:56
+#: ../src/teauilib/core/ui_logs.c:56
 msgid "Clear log"
 msgstr "Очистить журнал"
 
 #: ../src/core/ui_callbacks.c:285 ../src/core/ui_callbacks.c:311
+#: ../src/teauilib/core/ui_callbacks.c:311
 #, c-format
 msgid ""
 "------\n"
@@ -275,16 +297,14 @@ msgstr ""
 "Время последнего входа: %s\n"
 "------\n"
 
-#: ../src/core/ui_settings.c:92
+#: ../src/core/ui_settings.c:92 ../src/teauilib/core/ui_settings.c:92
 msgid "Show log window on startup"
 msgstr "Показывать окно журнала при запуске"
 
-#: ../src/core/ui_callbacks.c:177
+#: ../src/core/ui_callbacks.c:177 ../src/teauilib/core/ui_callbacks.c:177
 msgid "Read message"
 msgstr "Прочитано"
 
-#: ../src/core/ui_settings.c:96
+#: ../src/core/ui_settings.c:96 ../src/teauilib/core/ui_settings.c:96
 msgid "Remove old notifications"
 msgstr "Удалять старые уведомления"
-
-

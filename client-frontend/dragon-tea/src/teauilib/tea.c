@@ -157,7 +157,7 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
     int deltaFlag, validate;
     size_t len;
     FILE *config_file;
-    struct json_object *userId, *user_nickname, *active_server, *servers, *show_logs, *old_notify, *server, *parser;
+    struct json_object *userId, *user_nickname, *active_server, *servers, *show_logs, *old_notify, *autoLogin, *server, *parser;
 
     // File not permit
     // then set application settings to default
@@ -209,10 +209,17 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
             validate |= 4;
         if(!json_object_object_get_ex(parser, "servers", &servers) || !json_object_is_type(servers, json_type_array))
             validate |= 8;
+
         if(!json_object_object_get_ex(parser, "show_logs", &show_logs) || !json_object_is_type(show_logs, json_type_boolean))
             tea->show_logs = 1; // Show as default
         else
             tea->show_logs = (int) json_object_get_boolean(show_logs);
+
+        if(!json_object_object_get_ex(parser, "autologin", &autoLogin) || !json_object_is_type(autoLogin, json_type_boolean))
+            tea->autologin = 1;
+        else
+            tea->autologin = (int) json_object_get_boolean(autoLogin);
+
         if(!json_object_object_get_ex(parser, "remove_old_notify", &old_notify) || !json_object_is_type(old_notify, json_type_boolean))
             tea->old_notify_remove = 1; // Remove old notify = yes as default
         else
@@ -268,7 +275,7 @@ void tea_load_conf(struct tea_settings *tea, const char *filename)
 
 void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
 {
-    json_object *jdata, *jarr;
+    json_object *confJson, *jarr;
     size_t cmp1, cmp2;
     int len;
 
@@ -284,34 +291,38 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     for(len = 0, cmp2 = 1; strlen(env.servers[len]); ++len)
         cmp2 *= 1 | tea_get_server_id(env.servers[len]);
 
-    if(prevset.id_info.user_id == save_tea->id_info.user_id && strcmp(save_tea->id_info.user_nickname, prevset.id_info.user_nickname) == 0 &&
-       prevset.active_server == env.active_server && cmp1 == cmp2 && save_tea->show_logs == prevset.show_logs &&
-       save_tea->old_notify_remove == prevset.old_notify_remove)
+    if(prevset.id_info.user_id == save_tea->id_info.user_id &&
+       strcmp(save_tea->id_info.user_nickname, prevset.id_info.user_nickname) == 0 && prevset.active_server == env.active_server &&
+       cmp1 == cmp2 && save_tea->show_logs == prevset.show_logs && save_tea->old_notify_remove == prevset.old_notify_remove &&
+       save_tea->autologin == prevset.autologin)
     {
         return;
     }
 
-    jdata = json_object_new_object();
-    json_object_object_add(jdata, "user_id", json_object_new_int64(save_tea->id_info.user_id));
-    json_object_object_add(jdata, "user_nickname", json_object_new_string(save_tea->id_info.user_nickname));
-    json_object_object_add(jdata, "active_server", json_object_new_int(save_tea->active_server));
-    json_object_object_add(jdata, "show_logs", json_object_new_boolean(save_tea->show_logs));
-    json_object_object_add(jdata, "remove_old_notify", json_object_new_boolean(save_tea->old_notify_remove));
+    confJson = json_object_new_object();
+    json_object_object_add(confJson, "user_id", json_object_new_int64(save_tea->id_info.user_id));
+    json_object_object_add(confJson, "user_nickname", json_object_new_string(save_tea->id_info.user_nickname));
+    json_object_object_add(confJson, "active_server", json_object_new_int(save_tea->active_server));
+    json_object_object_add(confJson, "show_logs", json_object_new_boolean(save_tea->show_logs));
+    json_object_object_add(confJson, "remove_old_notify", json_object_new_boolean(save_tea->old_notify_remove));
+    json_object_object_add(confJson, "autologin", json_object_new_boolean(save_tea->autologin));
 
     // save server list
-
     jarr = json_object_new_array_ext(len);
     for(; len-- > 0;)
     {
         json_object_array_add(jarr, json_object_new_string(env.servers[len]));
     }
-    json_object_object_add(jdata, "servers", jarr);
+    json_object_object_add(confJson, "servers", jarr);
 
     // save as
-    if(json_object_to_file_ext(filename, jdata, JSON_C_TO_STRING_PRETTY) != 0)
+    if(json_object_to_file_ext(filename, confJson, JSON_C_TO_STRING_PRETTY) != 0)
     {
         printf("error saving settings to \"%s\". %s", filename, json_util_get_last_err());
     }
+
+    json_object_put(confJson);
+
 }
 
 void ui_error(const char *str)
