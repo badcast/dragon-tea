@@ -3,3 +3,4 @@ server-backend/php/messages
 .vscode
 CMakeLists.txt.user
 CMakeLists.txt.user*
+*~

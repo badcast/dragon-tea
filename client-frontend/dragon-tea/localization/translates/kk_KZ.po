@@ -1,56 +1,59 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR badcast
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# SPDX-FileCopyrightText: 2023, 2024 badcast
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SPDX-FileCopyrightText: 2023 Bad Cast <lmecomposer@gmail.com>
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
 "POT-Creation-Date: 2024-05-06 22:33+0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2024-05-06 22:33+0500\n"
+"Last-Translator: badcast <lmecomposer@gmail.com>\n"
+"Language-Team: Russian <kde-russian@lists.kde.ru>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 24.02.2\n"
 
 #: ../src/tea.c:270 ../src/tea.c:273 ../src/tea.c:308 ../src/tea.c:311
 #: ../src/tea.c:322 ../src/teauilib/tea.c:322 ../src/teauilib/tea.c:333
 msgid "Error"
-msgstr ""
+msgstr "Қате"
 
 #: ../src/core/ui_about.c:9 ../src/core/ui.c:7 ../src/core/ui.c:21
 #: ../src/teauilib/core/ui_about.c:9 ../src/teauilib/core/ui.c:21
 msgid "Dragon Tea"
-msgstr ""
+msgstr "Қарымұш Шай"
 
 #: ../src/core/ui_about.c:11 ../src/teauilib/core/ui_about.c:11
 msgid "Free messenger for transmission"
-msgstr ""
+msgstr "Ақпарат алмасу үшін тегін мессенджер."
 
 #: ../src/core/ui_about.c:13 ../src/teauilib/core/ui_about.c:13
 msgid "WEB-Page"
-msgstr ""
+msgstr "Веб-парақ"
 
 #: ../src/core/ui_settings.c:32 ../src/core/ui_settings.c:35
 #: ../src/core/ui_settings.c:79 ../src/teauilib/core/ui_settings.c:79
 #: ../src/teauilib/core/ui_settings.c:83
 msgid "Switch server: "
-msgstr ""
+msgstr "Таңдалатын сервер: "
 
 #: ../src/core/ui_settings.c:46 ../src/core/ui_settings.c:49
 #: ../src/core/ui_settings.c:105 ../src/teauilib/core/ui_settings.c:105
 #: ../src/teauilib/core/ui_settings.c:113
 msgid "Apply changes"
-msgstr ""
+msgstr "Өзгерістерді қолдану"
 
 #: ../src/core/ui_authorize.c:84 ../src/core/ui_authorize.c:88
 #: ../src/teauilib/core/ui_authorize.c:88
 msgid "User is not exists."
-msgstr ""
+msgstr "Мұндай пайдаланушы жоқ."
 
 #: ../src/core/ui_authorize.c:93 ../src/core/ui_authorize.c:97
 #: ../src/teauilib/core/ui_authorize.c:97
@@ -60,6 +63,9 @@ msgid ""
 "Error code: %d\n"
 "Error message: %s"
 msgstr ""
+"Аутентификация сәйкес келмеді:\n"
+"Қате коды: %d\n"
+"Қате хабарлама: %s"
 
 #: ../src/core/ui_authorize.c:123 ../src/core/ui_authorize.c:127
 #, c-format
@@ -67,31 +73,31 @@ msgid ""
 "Error registration:\n"
 "Error codew: %d\n"
 "Message error: %s"
-msgstr ""
+msgstr "Қате тіркелу: Қате коды: %d Қате хабарлама: %s"
 
 #: ../src/core/ui_authorize.c:167 ../src/core/ui_authorize.c:171
 #: ../src/teauilib/core/ui_authorize.c:171
 msgid "The nickname should not be empty."
-msgstr ""
+msgstr "Никнейм бос болмауы керек."
 
 #: ../src/core/ui_authorize.c:191 ../src/core/ui_authorize.c:195
 #: ../src/teauilib/core/ui_authorize.c:195
 msgid "You set is invalid ID"
-msgstr ""
+msgstr "Сіз жарамсыз ID бердіңіз."
 
 #: ../src/core/ui_authorize.c:225 ../src/core/ui_authorize.c:262
 #: ../src/core/ui_authorize.c:229 ../src/core/ui_authorize.c:266
 #: ../src/teauilib/core/ui_authorize.c:229
 #: ../src/teauilib/core/ui_authorize.c:266
 msgid "Sign in"
-msgstr ""
+msgstr "Кіру"
 
 #: ../src/core/ui_authorize.c:226 ../src/core/ui_authorize.c:306
 #: ../src/core/ui_authorize.c:230 ../src/core/ui_authorize.c:310
 #: ../src/teauilib/core/ui_authorize.c:230
 #: ../src/teauilib/core/ui_authorize.c:310
 msgid "Sign up"
-msgstr ""
+msgstr "Тіркелу"
 
 #: ../src/core/ui_authorize.c:235 ../src/core/ui_authorize.c:239
 #: ../src/teauilib/core/ui_authorize.c:239
@@ -99,16 +105,18 @@ msgid ""
 "Log in using your UserID\n"
 "note: Numbers only, and it must be unique."
 msgstr ""
+"Өзініздің UserID арқылы кіріңіз:\n"
+"Ескерту: Тек сандар, және ол тексерулік болуы керек."
 
 #: ../src/core/ui_authorize.c:246 ../src/core/ui_authorize.c:250
 #: ../src/teauilib/core/ui_authorize.c:250
 msgid "Signing..."
-msgstr ""
+msgstr "Кірілуде..."
 
 #: ../src/core/ui_authorize.c:254 ../src/core/ui_authorize.c:258
 #: ../src/teauilib/core/ui_authorize.c:258
 msgid "Set UserID..."
-msgstr ""
+msgstr "User ID енгізіңіз..."
 
 #: ../src/core/ui_authorize.c:274 ../src/core/ui_authorize.c:278
 #: ../src/teauilib/core/ui_authorize.c:278
@@ -117,103 +125,106 @@ msgid ""
 "Force the use of the Latin alphabet,\n"
 "the length of the nickname is not more than 16 and not less than 3."
 msgstr ""
+"Никнейміңізді енгізіңіз.\n"
+"Көшірме: Тек Латын алфавитінде,\n"
+"никнеймдің ұзақтығы 16-тан аз және 3-тен көп болмауы керек."
 
 #: ../src/core/ui_authorize.c:285 ../src/core/ui_authorize.c:289
 #: ../src/teauilib/core/ui_authorize.c:289
 msgid "Sign up..."
-msgstr ""
+msgstr "Тіркелу..."
 
 #: ../src/core/ui_authorize.c:293 ../src/core/ui_authorize.c:297
 #: ../src/teauilib/core/ui_authorize.c:297
 msgid "Enter nickname..."
-msgstr ""
+msgstr "Никнеймді енгізіңіз..."
 
 #: ../src/core/ui.c:20 ../src/core/ui.c:34 ../src/core/ui.c:36
 #: ../src/teauilib/core/ui.c:36
 msgid "Authentication"
-msgstr ""
+msgstr "Аутентификация"
 
 #: ../src/core/ui.c:22 ../src/core/ui.c:36 ../src/core/ui.c:38
 #: ../src/teauilib/core/ui.c:38
 msgid "Dragon chat"
-msgstr ""
+msgstr "Драконий чат"
 
 #: ../src/core/ui.c:24 ../src/core/ui.c:38 ../src/core/ui.c:40
 #: ../src/teauilib/core/ui.c:40
 msgid "Configuration"
-msgstr ""
+msgstr "Конфигурация"
 
 #: ../src/core/ui.c:26 ../src/core/ui.c:40 ../src/core/ui.c:42
 #: ../src/teauilib/core/ui.c:42
 msgid "About"
-msgstr ""
+msgstr "Бағдарлама туралы"
 
 #: ../src/core/ui.c:72 ../src/core/ui.c:83 ../src/core/ui.c:97
 #: ../src/core/ui.c:113 ../src/core/ui.c:100 ../src/teauilib/core/ui.c:100
 #: ../src/teauilib/core/ui.c:105
 msgid "You state is offline"
-msgstr ""
+msgstr "Сіз офлайн режимдесіз"
 
 #: ../src/core/ui_callbacks.c:81 ../src/core/ui_callbacks.c:85
 #: ../src/core/ui_callbacks.c:83 ../src/teauilib/core/ui_callbacks.c:83
 #, c-format
 msgid "The message has been sent. Time of sending %s, received %s"
-msgstr ""
+msgstr "Хабарлама жіберілді. Жіберу уақыты %s, алынған %s"
 
 #: ../src/core/ui_callbacks.c:98 ../src/core/ui_callbacks.c:102
 #: ../src/core/ui_callbacks.c:100 ../src/teauilib/core/ui_callbacks.c:100
 msgid "Error send."
-msgstr ""
+msgstr "Жіберу қатесі."
 
 #: ../src/core/ui_callbacks.c:118 ../src/core/ui_callbacks.c:122
 #: ../src/core/ui_callbacks.c:120 ../src/core/ui_callbacks.c:126
 #: ../src/teauilib/core/ui_callbacks.c:126
 #, c-format
 msgid "Synchronization of %ld messages"
-msgstr ""
+msgstr "%ld хабарламаны синхрондау"
 
 #: ../src/core/ui_callbacks.c:136 ../src/core/ui_callbacks.c:137
 #: ../src/core/ui_callbacks.c:141 ../src/core/ui_callbacks.c:139
 #: ../src/core/ui_callbacks.c:145 ../src/teauilib/core/ui_callbacks.c:145
 msgid "Your network has been restored. "
-msgstr ""
+msgstr "Сіздің желісі жаңартылды."
 
 #: ../src/core/ui_callbacks.c:140 ../src/core/ui_callbacks.c:141
 #: ../src/core/ui_callbacks.c:145 ../src/core/ui_callbacks.c:143
 #: ../src/core/ui_callbacks.c:149 ../src/teauilib/core/ui_callbacks.c:149
 msgid "You're online."
-msgstr ""
+msgstr "Сіз желіде."
 
 #: ../src/core/ui_callbacks.c:172 ../src/core/ui_callbacks.c:173
 #: ../src/core/ui_callbacks.c:177 ../src/core/ui_callbacks.c:175
 #: ../src/core/ui_callbacks.c:201 ../src/teauilib/core/ui_callbacks.c:201
 msgid "Your account has been deleted."
-msgstr ""
+msgstr "Сіздің аккаунтыңыз өшірілді."
 
 #: ../src/core/ui_callbacks.c:180 ../src/core/ui_callbacks.c:181
 #: ../src/core/ui_callbacks.c:185 ../src/core/ui_callbacks.c:183
 #: ../src/core/ui_callbacks.c:209 ../src/teauilib/core/ui_callbacks.c:209
 #, c-format
 msgid "Network error. Your connection has been reset (%d remains)"
-msgstr ""
+msgstr "Желі қатесі. Сіздің байланыстырылуыңыз тоқтатылды (%d қалды)"
 
 #: ../src/core/ui_callbacks.c:187 ../src/core/ui_callbacks.c:188
 #: ../src/core/ui_callbacks.c:192 ../src/core/ui_callbacks.c:190
 #: ../src/core/ui_callbacks.c:216 ../src/teauilib/core/ui_callbacks.c:216
 msgid "Unknown error"
-msgstr ""
+msgstr "Белгісіз қате"
 
 #: ../src/core/ui_callbacks.c:247 ../src/core/ui_callbacks.c:248
 #: ../src/core/ui_callbacks.c:252 ../src/core/ui_callbacks.c:250
 #: ../src/core/ui_callbacks.c:276 ../src/teauilib/core/ui_callbacks.c:276
 msgid "Sending..."
-msgstr ""
+msgstr "Жіберу..."
 
 #: ../src/core/ui_callbacks.c:263 ../src/core/ui_callbacks.c:266
 #: ../src/core/ui_callbacks.c:270 ../src/core/ui_callbacks.c:268
 #: ../src/core/ui_callbacks.c:294 ../src/teauilib/core/ui_callbacks.c:294
 msgid "Login completed."
-msgstr ""
+msgstr "Кіру аталды."
 
 #: ../src/core/ui_callbacks.c:277 ../src/core/ui_callbacks.c:280
 #: ../src/core/ui_callbacks.c:284
@@ -228,6 +239,14 @@ msgid ""
 "Last login time: %s\n"
 "------\n"
 msgstr ""
+"------\n"
+"Дракон Шайы серверіне қош келдіңіз!\n"
+"Сервер: %s\n"
+"Сіздің ID: %lld\n"
+"Сіздің Никнейміңіз: %s\n"
+"Тіркелу уақыты: %s\n"
+"Соңғы кірген уақыты: %s\n"
+"------\n"
 
 #: ../src/main.c:14 ../src/main.c:23 ../src/teauilib/teauilib.c:25
 #, c-format
@@ -235,6 +254,8 @@ msgid ""
 "The program is running as root. These privileges can harm the system, please "
 "be aware of this. Closing."
 msgstr ""
+"Программа root пайдаланушы атынан іске қосылды. Бұл привилегиялар жүйеге "
+"зиян келтіру мүмкін, сізде оны байланыс ұшырмасыздарын еске алыңыз. Жабу."
 
 #: ../src/core/ui_authorize.c:127 ../src/teauilib/core/ui_authorize.c:127
 #, c-format
@@ -243,11 +264,14 @@ msgid ""
 "Error code: %d\n"
 "Message error: %s"
 msgstr ""
+"Тіркелу қатесі:\n"
+"Қате коды: %d\n"
+"Қате хабарлама: %s"
 
 #: ../src/core/ui_logs.c:49 ../src/core/ui_logs.c:53 ../src/core/ui_logs.c:56
 #: ../src/teauilib/core/ui_logs.c:56
 msgid "Clear log"
-msgstr ""
+msgstr "Журналды тазалау"
 
 #: ../src/core/ui_callbacks.c:285 ../src/core/ui_callbacks.c:311
 #: ../src/teauilib/core/ui_callbacks.c:311
@@ -263,21 +287,31 @@ msgid ""
 "Last login time: %s\n"
 "------\n"
 msgstr ""
+"------\n"
+"Дракон Шайы серверіне қош келдіңіз!\n"
+"Сервер: %s\n"
+"Сервера версиясы: %s\n"
+"Сіздің ID: %lld\n"
+"Сіздің Никнейміңіз: %s\n"
+"Тіркелу уақыты: %s\n"
+"Соңғы кірген уақыты: %s\n"
+"------\n"
 
 #: ../src/core/ui_settings.c:92 ../src/teauilib/core/ui_settings.c:92
 #: ../src/teauilib/core/ui_settings.c:100
 msgid "Show log window on startup"
-msgstr ""
+msgstr "Іске қосу кезінде журнал терезесін көрсету"
 
 #: ../src/core/ui_callbacks.c:177 ../src/teauilib/core/ui_callbacks.c:177
 msgid "Read message"
-msgstr ""
+msgstr "Оқылды"
 
 #: ../src/core/ui_settings.c:96 ../src/teauilib/core/ui_settings.c:96
 #: ../src/teauilib/core/ui_settings.c:104
 msgid "Remove old notifications"
-msgstr ""
+msgstr "Ескі хабарландыруларды жою"
 
 #: ../src/teauilib/core/ui_settings.c:96
+#, fuzzy
 msgid "Autologin on startup"
-msgstr ""
+msgstr "Іске қосу кезінде журнал терезесін көрсету"

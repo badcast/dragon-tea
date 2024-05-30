@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: lmecomposer@gmail.com\n"
-"POT-Creation-Date: 2024-04-03 03:46+0500\n"
+"POT-Creation-Date: 2024-05-06 22:33+0500\n"
 "PO-Revision-Date: 2024-03-25 15:15+0500\n"
 "Last-Translator: badcast <lmecomposer@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -21,7 +21,7 @@ msgstr ""
 "X-Generator: Lokalize 24.02.1\n"
 
 #: ../src/tea.c:270 ../src/tea.c:273 ../src/tea.c:308 ../src/tea.c:311
-#: ../src/tea.c:322 ../src/teauilib/tea.c:322
+#: ../src/tea.c:322 ../src/teauilib/tea.c:322 ../src/teauilib/tea.c:333
 msgid "Error"
 msgstr "Ошибка"
 
@@ -40,11 +40,13 @@ msgstr "Веб-страница"
 
 #: ../src/core/ui_settings.c:32 ../src/core/ui_settings.c:35
 #: ../src/core/ui_settings.c:79 ../src/teauilib/core/ui_settings.c:79
+#: ../src/teauilib/core/ui_settings.c:83
 msgid "Switch server: "
 msgstr "Предпочитаемый сервер: "
 
 #: ../src/core/ui_settings.c:46 ../src/core/ui_settings.c:49
 #: ../src/core/ui_settings.c:105 ../src/teauilib/core/ui_settings.c:105
+#: ../src/teauilib/core/ui_settings.c:113
 msgid "Apply changes"
 msgstr "Применить изменения"
 
@@ -162,6 +164,7 @@ msgstr "О программе"
 
 #: ../src/core/ui.c:72 ../src/core/ui.c:83 ../src/core/ui.c:97
 #: ../src/core/ui.c:113 ../src/core/ui.c:100 ../src/teauilib/core/ui.c:100
+#: ../src/teauilib/core/ui.c:105
 msgid "You state is offline"
 msgstr "Не выполнен вход на сервер"
 
@@ -298,6 +301,7 @@ msgstr ""
 "------\n"
 
 #: ../src/core/ui_settings.c:92 ../src/teauilib/core/ui_settings.c:92
+#: ../src/teauilib/core/ui_settings.c:100
 msgid "Show log window on startup"
 msgstr "Показывать окно журнала при запуске"
 
@@ -306,5 +310,11 @@ msgid "Read message"
 msgstr "Прочитано"
 
 #: ../src/core/ui_settings.c:96 ../src/teauilib/core/ui_settings.c:96
+#: ../src/teauilib/core/ui_settings.c:104
 msgid "Remove old notifications"
 msgstr "Удалять старые уведомления"
+
+#: ../src/teauilib/core/ui_settings.c:96
+#, fuzzy
+msgid "Autologin on startup"
+msgstr "Показывать окно журнала при запуске"
