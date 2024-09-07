@@ -35,11 +35,11 @@ void show_log_dialog()
     gtk_window_get_position(widgets.main_window, &x, &y);
     gtk_window_get_size(widgets.main_window, &w, NULL);
 
-    widgets.log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    widgets.log_window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
 
     gtk_window_set_default_size(widgets.log_window, 300, 400);
     gtk_window_move(widgets.log_window, x + w, y);
-    GtkBox *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkBox *box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
 
     GtkWidget *scrolled_text = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_text), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -58,6 +58,6 @@ void show_log_dialog()
 
     gtk_box_pack_end(box, clearButton, FALSE, TRUE, 0);
 
-    gtk_container_add(GTK_CONTAINER(widgets.log_window), box);
+    gtk_container_add(GTK_CONTAINER(widgets.log_window), GTK_WIDGET(box));
     gtk_widget_show_all(GTK_WIDGET(widgets.log_window));
 }

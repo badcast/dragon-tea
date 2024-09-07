@@ -9,6 +9,11 @@
 
 #include "ui_callbacks.h"
 
+#define MACRO_PUT_CASE(X)  \
+    case X:                \
+        result_value = #X; \
+        break;
+
 struct tea_settings env;
 
 const char *get_conf_dir();
@@ -41,11 +46,8 @@ void tea_save();
 
 const char *tea_error_string(int error_code)
 {
-#define MACRO_PUT_CASE(X)  \
-    case X:                \
-        result_value = #X; \
-        break;
-    const char *result_value = NULL;
+    const char *result_value;
+
     switch(error_code)
     {
         MACRO_PUT_CASE(TEA_STATUS_OK);
@@ -66,7 +68,7 @@ const char *tea_error_string(int error_code)
             break;
     }
     return result_value;
-#undef MACRO_PUT_CASE
+
 }
 
 const char *tea_version()
@@ -291,10 +293,7 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     for(len = 0, cmp2 = 1; strlen(env.servers[len]); ++len)
         cmp2 *= 1 | tea_get_server_id(env.servers[len]);
 
-    if(prevset.id_info.user_id == save_tea->id_info.user_id &&
-       strcmp(save_tea->id_info.user_nickname, prevset.id_info.user_nickname) == 0 && prevset.active_server == env.active_server &&
-       cmp1 == cmp2 && save_tea->show_logs == prevset.show_logs && save_tea->old_notify_remove == prevset.old_notify_remove &&
-       save_tea->autologin == prevset.autologin)
+    if(prevset.id_info.user_id == save_tea->id_info.user_id && strcmp(save_tea->id_info.user_nickname, prevset.id_info.user_nickname) == 0 && prevset.active_server == env.active_server && cmp1 == cmp2 && save_tea->show_logs == prevset.show_logs && save_tea->old_notify_remove == prevset.old_notify_remove && save_tea->autologin == prevset.autologin)
     {
         return;
     }
@@ -322,15 +321,13 @@ void tea_save_conf(const struct tea_settings *save_tea, const char *filename)
     }
 
     json_object_put(confJson);
-
 }
 
 void ui_error(const char *str)
 {
     tea_log(str);
 
-    GtkWidget *dialog = gtk_message_dialog_new(
-        widgets.main_window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Error"));
+    GtkWidget *dialog = gtk_message_dialog_new(widgets.main_window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Error"));
     gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "%s", str);
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
@@ -349,3 +346,5 @@ int tea_server_version()
 
     return (int) (cur_server.server_version.major | cur_server.server_version.minor << 8 | cur_server.server_version.patch << 16);
 }
+
+#undef MACRO_PUT_CASE

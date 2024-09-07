@@ -54,7 +54,7 @@ int TEA_API tea_main(int argc, char *argv[])
     // Window Looping
     gtk_main();
 
-    // Free Unused resources DTM
+    // Free Resources DTM (Dragon Tea Messenger)
     tea_free();
 
 #if USE_ONCE_LAUNCH
