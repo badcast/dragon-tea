@@ -160,12 +160,7 @@ int net_send(const char *url, const char *body, size_t len, struct net_responce_
     return net_result == CURLE_OK;
 }
 
-int net_api_read_messages(
-    const struct tea_id_info *user,
-    tea_id_t target_user_id,
-    tea_id_t msg_id_start,
-    int max_messages,
-    struct tea_message_read_result *output)
+int net_api_read_messages(const struct tea_id_info *user, tea_id_t target_user_id, tea_id_t msg_id_start, int max_messages, struct tea_message_read_result *output)
 {
     const char *jstr;
     int result;
@@ -272,8 +267,7 @@ int net_api_read_messages(
     return result;
 }
 
-int net_api_write_message(
-    const struct tea_id_info *user_sender, tea_id_t target_user_id, const char *message, int len, struct tea_message_send_result *output)
+int net_api_write_message(const struct tea_id_info *user_sender, tea_id_t target_user_id, const char *message, int len, struct tea_message_send_result *output)
 {
     int net;
     size_t _size;
@@ -353,6 +347,13 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
         if((net = net_send(cur_server.urls.url_auth, json_serialized, _size, &input, 1)) && input.raw_data)
         {
             jresult = json_tokener_parse(input.json_data);
+            if(jresult == NULL)
+            {
+                // Json response have invalid data
+                net = 0;
+                output->status = TEA_STATUS_INTERNAL_SERVER_ERROR;
+                break;
+            }
 
             if(!json_object_object_get_ex(jresult, "status", &jval))
             {
@@ -414,41 +415,50 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     json_object_object_add(json_request, "user_nickname", json_object_new_string(nickname));
 
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
-
-    if((net = net_send(cur_server.urls.url_reg, json_serialized, _size, &input, 1)) && input.raw_data)
+    while(1)
     {
-        jresult = json_tokener_parse(input.json_data);
-
-        json_object_object_get_ex(jresult, "status", &jval);
-        output->status = json_object_get_int(jval);
-
-        if(json_object_object_get_ex(jresult, "authorized", &jval) && (output->authorized = json_object_get_boolean(jval)))
+        if((net = net_send(cur_server.urls.url_reg, json_serialized, _size, &input, 1)) && input.raw_data)
         {
-            json_object *jresult_obj;
-            json_object_object_get_ex(jresult, "result", &jresult_obj);
+            jresult = json_tokener_parse(input.json_data);
+            if(jresult == NULL)
+            {
+                // Json response have invalid data
+                net = 0;
+                output->status = TEA_STATUS_INTERNAL_SERVER_ERROR;
+                break;
+            }
 
-            json_object_object_get_ex(jresult_obj, "user_id", &jval);
-            output->result.user_id = json_object_get_int64(jval);
+            json_object_object_get_ex(jresult, "status", &jval);
+            output->status = json_object_get_int(jval);
 
-            json_object_object_get_ex(jresult_obj, "user_nickname", &jval);
-            json_serialized = json_object_get_string(jval);
-            strncpy(output->result.user_nickname, json_serialized, TEA_MAXLEN_USERNAME);
+            if(json_object_object_get_ex(jresult, "authorized", &jval) && (output->authorized = json_object_get_boolean(jval)))
+            {
+                json_object *jresult_obj;
+                json_object_object_get_ex(jresult, "result", &jresult_obj);
 
-            json_object_object_get_ex(jresult_obj, "creation_date", &jval);
-            output->result.creation_date = json_object_get_int64(jval);
+                json_object_object_get_ex(jresult_obj, "user_id", &jval);
+                output->result.user_id = json_object_get_int64(jval);
 
-            json_object_object_get_ex(jresult_obj, "last_login", &jval);
-            output->result.last_login = json_object_get_int64(jval);
+                json_object_object_get_ex(jresult_obj, "user_nickname", &jval);
+                json_serialized = json_object_get_string(jval);
+                strncpy(output->result.user_nickname, json_serialized, TEA_MAXLEN_USERNAME);
+
+                json_object_object_get_ex(jresult_obj, "creation_date", &jval);
+                output->result.creation_date = json_object_get_int64(jval);
+
+                json_object_object_get_ex(jresult_obj, "last_login", &jval);
+                output->result.last_login = json_object_get_int64(jval);
+            }
+
+            // free json resource
+            json_object_put(jresult);
         }
-
-        // free json resource
-        json_object_put(jresult);
+        else
+        {
+            output->status = TEA_STATUS_NETWORK_ERROR;
+        }
+        break;
     }
-    else
-    {
-        output->status = TEA_STATUS_NETWORK_ERROR;
-    }
-
     // free json resource
     json_object_put(json_request);
 
@@ -510,14 +520,7 @@ int tea_fetch_server()
             if(nrwp.raw_data != NULL)
             {
                 int rfeatures = 0;
-                sscanf(
-                    nrwp.raw_data,
-                    "%" SCNd8 ".%" SCNd8 ".%" SCNd8 "\n%s\n%s",
-                    &cur_server.server_version.major,
-                    &cur_server.server_version.minor,
-                    &cur_server.server_version.patch,
-                    &cur_server.maintainer,
-                    &cur_server.license);
+                sscanf(nrwp.raw_data, "%" SCNd8 ".%" SCNd8 ".%" SCNd8 "\n%s\n%s", &cur_server.server_version.major, &cur_server.server_version.minor, &cur_server.server_version.patch, &cur_server.maintainer, &cur_server.license);
 
                 /*
                  * 1.0.0: - no supported get first/last message id
@@ -568,8 +571,9 @@ int tea_fetch_server()
 
 void tea_read_urls(struct tea_server_urls *wrData)
 {
-    const char *server = tea_url_server();
+    const char *server;
 
+    server = tea_url_server();
     if(server == NULL)
     {
         tea_log("server == NULL");
