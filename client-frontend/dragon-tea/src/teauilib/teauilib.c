@@ -60,7 +60,7 @@ int TEA_API tea_main(int argc, char *argv[])
 #if USE_ONCE_LAUNCH
     // Close launch
     if(sem_post(sem) == -1)
-    {
+    {a
         perror("sem_post");
         return EXIT_FAILURE;
     }

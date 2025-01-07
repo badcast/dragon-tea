@@ -76,14 +76,14 @@ gboolean on_chat_sending_async(const gchar *text)
             char buffer[255];
             const char format[] = "%H:%M";
             gchar *sended_time, *received_time;
-            GDateTime *datet = g_date_time_new_from_unix_local(last_send_result.time_saved);
+            GDateTime *date1 = g_date_time_new_from_unix_local(last_send_result.time_saved);
             GDateTime *date2 = g_date_time_new_from_unix_local(last_send_result.time_received);
-            sended_time = g_date_time_format(datet, format);
+            sended_time = g_date_time_format(date1, format);
             received_time = g_date_time_format(date2, format);
             snprintf(buffer, sizeof(buffer), _("The message has been sent. Time of sending %s, received %s"), sended_time, received_time);
             g_free(sended_time);
             g_free(received_time);
-            g_date_time_unref(datet);
+            g_date_time_unref(date1);
             g_date_time_unref(date2);
 
             tea_ui_chat_status_text(buffer);
@@ -185,9 +185,6 @@ gboolean on_chat_message_handler_async(gpointer)
                     g_array_append_val(env.local_msg_db, *message);
                 }
 
-                // Have notify
-
-                // Освобождение старого массива
                 g_array_free(last_read_result.messages, TRUE);
                 last_read_result.messages = NULL;
 

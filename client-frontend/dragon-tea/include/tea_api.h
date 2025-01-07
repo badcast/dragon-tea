@@ -26,8 +26,8 @@ enum TeaErrorStatus
 
 const char *tea_url_server();
 
-int tea_switch_server(int newServerID);
+void tea_switch_server(int newServerID);
 
-int tea_fetch_server();
+void tea_fetch_server();
 
 #endif

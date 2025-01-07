@@ -13,6 +13,7 @@ struct net_responce_t
 
 struct tea_net_stats net_stats;
 struct tea_server_info cur_server;
+GThread* _fetchThread;
 GMutex nmutex;
 
 void net_init()
@@ -20,12 +21,21 @@ void net_init()
     g_mutex_init(&nmutex);
     curl_global_init(CURL_GLOBAL_ALL);
     memset(&net_stats, 0, sizeof(net_stats));
+    _fetchThread = NULL;
 }
 
 void net_free()
 {
     g_mutex_clear(&nmutex);
     curl_global_cleanup();
+    GThread* fthreadCl = _fetchThread;
+    if(fthreadCl)
+    {
+        tea_log("close fetching");
+        g_thread_join(fthreadCl);
+        g_thread_unref(fthreadCl);
+        _fetchThread = NULL;
+    }
 }
 
 size_t curl_writer(void *ptr, size_t size, size_t nmemb, struct net_responce_t *data)
@@ -494,79 +504,75 @@ const char *tea_url_server()
     return env.servers[s];
 }
 
-int tea_switch_server(int newServerID)
+void tea_switch_server(int newServerID)
 {
-    env.active_server = newServerID;
-
     // init new server ID
+    env.active_server = newServerID;
     tea_read_urls(&cur_server.urls);
     tea_fetch_server();
-
-    return 0;
 }
 
-int tea_fetch_server()
+gpointer _tea_fetch_async(gpointer pointer)
 {
     int result;
-
-    const char *server = tea_url_server();
-
-    if(server != NULL)
+    struct net_responce_t nrwp;
+    if((result = net_send(cur_server.urls.url_info, NULL, 0, &nrwp, 0)))
     {
-        struct net_responce_t nrwp;
-
-        if((result = net_send(cur_server.urls.url_info, NULL, 0, &nrwp, 0)))
+        if(nrwp.raw_data != NULL)
         {
-            if(nrwp.raw_data != NULL)
-            {
-                int rfeatures = 0;
-                sscanf(nrwp.raw_data, "%" SCNd8 ".%" SCNd8 ".%" SCNd8 "\n%s\n%s", &cur_server.server_version.major, &cur_server.server_version.minor, &cur_server.server_version.patch, &cur_server.maintainer, &cur_server.license);
+            int sup_features = 0;
+            sscanf(nrwp.raw_data, "%" SCNd8 ".%" SCNd8 ".%" SCNd8 "\n%s\n%s", &cur_server.server_version.major, &cur_server.server_version.minor, &cur_server.server_version.patch, &cur_server.maintainer, &cur_server.license);
 
-                /*
+            /*
                  * 1.0.0: - no supported get first/last message id
                  *
                  * 1.1.0: - supported get first/last message id
                  *        - supported get server info
                  */
 
-                // calculate supported version
-                if(cur_server.server_version.major == 1)
-                {
-                    // MAJOR = 1
-
-                    if(cur_server.server_version.minor == 1)
-                    {
-                        rfeatures |= SV_VERFI | SV_MSGFL;
-                    }
-                }
+            // calculate supported version
+            if(cur_server.server_version.major == 1)
+            {
+                // MAJOR = 1
 
                 if(cur_server.server_version.minor == 1)
                 {
-                    // MINOR = 0
+                    sup_features |= SV_VERFI | SV_MSGFL;
                 }
-
-                if(cur_server.server_version.patch == 0)
-                {
-                    // PATCH = 1
-                }
-
-                // Set features
-                cur_server.features = rfeatures;
-
-                // put unused resource
-                free(nrwp.raw_data);
             }
-            else
-                result = 0;
+
+            if(cur_server.server_version.minor == 1)
+            {
+                // MINOR = 0
+            }
+
+            if(cur_server.server_version.patch == 0)
+            {
+                // PATCH = 1
+            }
+
+            // Set features
+            cur_server.features = sup_features;
+
+            // put unused resource
+            free(nrwp.raw_data);
         }
+        else
+            result = 0;
     }
-    else
-        result = 0;
+    return NULL;
+}
 
-    if(!result)
-        tea_log("Server fetch status is failed");
-
-    return result;
+void tea_fetch_server()
+{
+    int result;
+    const char *server;
+    server = tea_url_server();
+    if(server == NULL || _fetchThread != NULL)
+    {
+        return;
+    }
+    _fetchThread = g_thread_new(NULL, _tea_fetch_async, server);
 }
 
 void tea_read_urls(struct tea_server_urls *wrData)
