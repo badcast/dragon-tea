@@ -5,7 +5,7 @@
  */
 
 #ifndef TEA_STRUCTS_H
-#define TEA_STRUCTS_H
+#define TEA_STRUCTS_H 1
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -183,11 +183,9 @@ struct tea_app_widgets
     GtkWidget *widget_main;
     GtkWidget *widget_auth;
     GtkWidget *widget_settings;
-    GtkWindow *main_window;
-
-    GtkWindow *log_window;
-
     GtkWidget *notebook;
+    GtkWindow *main_window;
+    GtkWindow *log_window;
 };
 
 enum UiTabs

@@ -1,5 +1,5 @@
 #ifndef UI_CALLBACKS_H
-#define UI_CALLBACKS_H
+#define UI_CALLBACKS_H 1
 
 #include "tea.h"
 

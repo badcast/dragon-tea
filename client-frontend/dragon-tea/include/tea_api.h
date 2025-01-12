@@ -5,7 +5,7 @@
  */
 
 #ifndef TEA_API_H
-#define TEA_API_H
+#define TEA_API_H 1
 
 enum TeaErrorStatus
 {

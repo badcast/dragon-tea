@@ -5,7 +5,7 @@
  */
 
 #ifndef TEA_HEADER_H
-#define TEA_HEADER_H
+#define TEA_HEADER_H 1
 
 #ifdef __linux__
 #define TEA_OS_LINUX
@@ -28,7 +28,7 @@ typedef DWORD uid_t;
 #include <gtk/gtk.h>
 #include <json-c/json.h>
 #include <libnotify/notify.h>
-
+#include <libupower-glib/upower.h>/>
 #include "tea_structs.h"
 #include "tea_api.h"
 #include "tea_localization.h"

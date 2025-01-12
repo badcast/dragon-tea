@@ -14,7 +14,6 @@
 int TEA_API tea_main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "");
-
     bindtextdomain(DRAGON_TEA_TEXTDOMAIN, DRAGON_TEA_LOCALE_DIR);
     textdomain(DRAGON_TEA_TEXTDOMAIN);
 
@@ -60,7 +59,7 @@ int TEA_API tea_main(int argc, char *argv[])
 #if USE_ONCE_LAUNCH
     // Close launch
     if(sem_post(sem) == -1)
-    {a
+    {
         perror("sem_post");
         return EXIT_FAILURE;
     }

@@ -1,10 +1,10 @@
 #pragma once
 
 // MSVC/MinGW Compiller
-#if _MSC_VER || WIN32
+#if defined(_MSC_VER) || defined(WIN32)
 #define API_EXPORT __declspec(dllexport)
 #define API_IMPORT __declspec(dllimport)
-#elif __linux__ || __unix__
+#elif defined(__linux__)
 // Linux/Unix GNU Compiller
 #if defined(__GNUC__) && __GNUC__ >= 4
 #define __GCCAPI__ __attribute__((visibility("default")))

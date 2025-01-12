@@ -3,6 +3,8 @@
 
 #include "tea.h"
 
+#define TEA_DEFAULT_TIMEOUT 1000
+
 struct net_responce_t
 {
     size_t size;
@@ -78,7 +80,7 @@ int curl_xferinfo(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_
     return CURLE_OK;
 }
 
-int net_send(const char *url, const char *body, size_t len, struct net_responce_t *receiver, int find_json)
+int net_send(const char *url, const char *body, size_t len, struct net_responce_t *receiver, int find_json, size_t timeout)
 {
     CURL *curl;
     CURLcode net_result;
@@ -105,6 +107,8 @@ int net_send(const char *url, const char *body, size_t len, struct net_responce_
 #ifdef NDEBUG
     // timeout 10 seconds
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
+#else
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeout);
 #endif
 
     g_mutex_lock(&nmutex);
@@ -211,7 +215,7 @@ int net_api_read_messages(const struct tea_id_info *user, tea_id_t target_user_i
     json_object_object_add(json_request, "max_messages", json_object_new_int(max_messages));
     jstr = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if((result = net_send(cur_server.urls.url_msg_handler, jstr, _size, &input, 1)) && input.raw_data)
+    if((result = net_send(cur_server.urls.url_msg_handler, jstr, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.raw_data)
     {
         json_result = json_tokener_parse(input.json_data);
 
@@ -304,7 +308,7 @@ int net_api_write_message(const struct tea_id_info *user_sender, tea_id_t target
     json_object_object_add(json_request, "message", json_object_new_string_len(message, len));
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
 
-    if((net = net_send(cur_server.urls.url_msg_handler, json_serialized, _size, &input, 1)) && input.raw_data)
+    if((net = net_send(cur_server.urls.url_msg_handler, json_serialized, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.raw_data)
     {
         json_result = json_tokener_parse(input.json_data);
 
@@ -354,7 +358,7 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
         json_object_object_add(json_request, "user_id", json_object_new_int64(user_id));
 
         json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
-        if((net = net_send(cur_server.urls.url_auth, json_serialized, _size, &input, 1)) && input.raw_data)
+        if((net = net_send(cur_server.urls.url_auth, json_serialized, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.raw_data)
         {
             jresult = json_tokener_parse(input.json_data);
             if(jresult == NULL)
@@ -427,7 +431,7 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
     while(1)
     {
-        if((net = net_send(cur_server.urls.url_reg, json_serialized, _size, &input, 1)) && input.raw_data)
+        if((net = net_send(cur_server.urls.url_reg, json_serialized, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.raw_data)
         {
             jresult = json_tokener_parse(input.json_data);
             if(jresult == NULL)
@@ -516,7 +520,7 @@ gpointer _tea_fetch_async(gpointer pointer)
 {
     int result;
     struct net_responce_t nrwp;
-    if((result = net_send(cur_server.urls.url_info, NULL, 0, &nrwp, 0)))
+    if((result = net_send(cur_server.urls.url_info, NULL, 0, &nrwp, FALSE, 500)))
     {
         if(nrwp.raw_data != NULL)
         {
@@ -572,7 +576,7 @@ void tea_fetch_server()
     {
         return;
     }
-    _fetchThread = g_thread_new(NULL, _tea_fetch_async, server);
+    _fetchThread = g_thread_new(NULL, _tea_fetch_async, NULL);
 }
 
 void tea_read_urls(struct tea_server_urls *wrData)
