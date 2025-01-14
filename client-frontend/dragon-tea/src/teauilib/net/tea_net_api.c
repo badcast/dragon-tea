@@ -3,7 +3,7 @@
 
 #include "tea.h"
 
-#define TEA_DEFAULT_TIMEOUT 1000
+#define TEA_DEFAULT_TIMEOUT 2000
 
 struct net_responce_t
 {
