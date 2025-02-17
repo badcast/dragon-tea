@@ -358,7 +358,7 @@ int net_api_signin(tea_id_t user_id, tea_login_result *output)
         json_object_object_add(json_request, "user_id", json_object_new_int64(user_id));
 
         json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
-        if((net = net_send(cur_server.urls.url_auth, json_serialized, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.raw_data)
+        if((net = net_send(cur_server.urls.url_auth, json_serialized, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.json_data)
         {
             jresult = json_tokener_parse(input.json_data);
             if(jresult == NULL)
@@ -431,7 +431,7 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     json_serialized = json_object_to_json_string_length(json_request, JSON_C_TO_STRING_PLAIN, &_size);
     while(1)
     {
-        if((net = net_send(cur_server.urls.url_reg, json_serialized, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.raw_data)
+        if((net = net_send(cur_server.urls.url_reg, json_serialized, _size, &input, TRUE, TEA_DEFAULT_TIMEOUT)) && input.json_data)
         {
             jresult = json_tokener_parse(input.json_data);
             if(jresult == NULL)
@@ -480,7 +480,6 @@ int net_api_signup(const char *nickname, tea_register_result *output)
     if(input.raw_data)
     {
         free(input.raw_data);
-        input.raw_data = NULL;
     }
 
     return net;
